@@ -3,6 +3,8 @@
 
  $popper = mysfw_popper::itself();
 
+ $popper->swallow("view");
+
  $tmpl = $popper->pop('view');
  
  $tmpl->set('title', 'Oh yeah !');

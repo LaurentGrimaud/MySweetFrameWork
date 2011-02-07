@@ -16,19 +16,30 @@
   }
 
   public function pop($classname) {
-   require_once($this->_build_file_name($classname));
    $full_name = "mysfw_$classname";
    $o = new $full_name;
    $o->set_popper($this);
    return $o;
   }
 
+  public function swallow($modulename) {
+   require_once($this->_build_module_name($modulename));
+  }
+
   public function set_home($v) {$this->_home = $v;}
   public function get_home() {return $this->_home;}
 
 
-  private function _build_file_name($classname) {
-   return $this->_home.'/'.$classname.'.class.php';
+  private function _build_file_name($f) {
+   return $this->_home.'/'.$f;
+  }
+
+  private function _build_module_name($module) {
+   return $this->_home."/modules/$module/$module.module.php";
+  }
+
+  private function _learn($it) {
+   require_once($this->_build_file_name($it));
   }
  }
 ?>
