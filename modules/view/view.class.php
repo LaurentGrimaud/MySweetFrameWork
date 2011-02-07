@@ -1,7 +1,7 @@
 <?php
 
- require_once 'mysfw_core.class.php';
- require_once 'mysfw_view.interface.php';
+// require_once 'mysfw_core.class.php';
+// require_once 'mysfw_view.interface.php';
 
  class mysfw_view extends mysfw_core implements mysfw_view_interface {
   protected $_home = ''; // XXX
