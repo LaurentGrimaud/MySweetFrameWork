@@ -1,0 +1,41 @@
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 1] This is the default implementation of get_ready() method, seems that this object lacks specific implementation
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 1] [mysfw_mysql_data_storage] This is the default implementation of get_ready() method, seems that this object lacks specific implementation
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 1] [mysfw_redis_data_storage] This is the default implementation of get_ready() method, seems that this object lacks specific implementation
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] `add` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `add` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: INSERT INTO users SET pseudo = 'Harry Ketchup', level = '45'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] `add` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] data uid is users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_redis_data_storage] `users` item set, with uid users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] Data added to both base and cache data storage, base uid is 95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] `change` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `change` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: UPDATE users SET pseudo = 'Harry Ketchup', level = '53', user_id = '95' WHERE user_id = '95'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `retrieve` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: SELECT * FROM users WHERE user_id = '95'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] `add` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] data uid is users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_redis_data_storage] `users` item set, with uid users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] Data updated in both cache and base data storage
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] `change` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `change` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: UPDATE users SET level = '47' WHERE user_id = '95'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `retrieve` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: SELECT * FROM users WHERE user_id = '95'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] `add` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] data uid is users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_redis_data_storage] `users` item set, with uid users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] Data updated in both cache and base data storage
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] `retrieve` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] `retrieve` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] data uid is users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_redis_data_storage] Item of type users and uid users|user_id:95 retrieved
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] Data found on cache data storage
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] `delete` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] `delete` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_redis_data_storage] data uid is users|user_id:95
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_redis_data_storage] Item of type users and uid users|user_id:95 removed from redis
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_mysql_data_storage] `delete` action requested
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_mysql_data_storage] Will execute: DELETE from users WHERE user_id = '95'
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 2] [mysfw_cached_data_storage] Data deleted from base and cache data storages
+[Sat, 03 Dec 2011 01:24:08 +0100] [level 3] [mysfw_operator] Mapped data are now deleted from underlaying data storage

@@ -3,9 +3,11 @@
  class mysfw_popper {
   private static $_itself;
   private $_home;
+  private $_register = array();
+
 
   private function __construct() { // No external instanciation
-   $this->set_home(dirname(__FILE__));
+   $this->set_home(__DIR__);
   }
 
 
@@ -17,8 +19,15 @@
 
   public function pop($classname) {
    $full_name = "mysfw_$classname";
+   if(! class_exists($full_name)){
+    $this->swallow($classname);
+   }
    $o = new $full_name;
    $o->set_popper($this);
+   // Does a default reporter exist ?
+   // XXX
+   if($r = $this->indicate('reporter')){$o->set_reporter($r);}
+   $o->get_ready();
    return $o;
   }
 
@@ -28,6 +37,19 @@
 
   public function set_home($v) {$this->_home = $v;}
   public function get_home() {return $this->_home;}
+
+  // XXX temp
+  public function register($name, $object_name) {
+   if(is_string($object_name)) {
+    $this->_register[$name] = &$this->pop($object_name);
+    return true;
+   }
+   $this->_register[$name] = $object_name;
+   return true;
+  }
+
+  // XXX temp
+  public function indicate($name) {return @$this->_register[$name];}
 
 
   private function _build_file_name($f) {

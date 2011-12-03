@@ -1,0 +1,4 @@
+* Choisir un mécanisme d'update pour les data_storage => FAIT (à vérifier quand même)
+* Implementation d'un data_storage pour Redis => FAIT
+* Mecanisme de configuration => EN COURS, à sortir du popper et à encapsuler
+* Creer un objet gestionnaire de connexions
