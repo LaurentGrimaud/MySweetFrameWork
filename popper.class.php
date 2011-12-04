@@ -26,7 +26,11 @@
    $o->set_popper($this);
    // Does a default reporter exist ?
    // XXX
-   if($r = $this->indicate('reporter')){$o->set_reporter($r);}
+   if($_ = $this->indicate('reporter')){$o->set_reporter($_);}
+   // Does a default configurator exist ?
+   // XXX
+   if($_ = $this->indicate('configurator')){$o->set_configurator($_);}
+
    $o->get_ready();
    return $o;
   }

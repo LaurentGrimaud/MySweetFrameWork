@@ -1,15 +1,17 @@
 <?php
  /**
-  * Defines common base for ALL mysfw objects
-  * Currently, only three things:
+  * Defines common base for ALL mysfw objects, except popper
+  * Currently, four things:
   * 1. Gives knowledge and access to the popper object
   * 2. Provides logging capabilities, by interfacing to a reporter object 
   * 3. Define an auto_initialise method, called by the popper
+  * 4. Provides configuration access, by interfacing a configurator object
   **/
 
  abstract class mysfw_core {
   protected $_p; // mysfw popper
   protected $_r; // mysfw reporter
+  protected $_c; // mysfw configurator
 
   public function set_popper($_) {$this->_p = $_;}
   public function get_popper() {return $this->_p;}
@@ -21,6 +23,14 @@
   public function report_info($msg){return $this->_report("info", $msg);}
   public function report_warning($msg){return $this->_report("warning", $msg);}
   public function report_error($msg){return $this->_report("error", $msg);}
+
+  public function set_configurator($_) {$this->_c = $_;}
+  public function get_configurator() {return $this->_c;}
+
+  public function inform($c){
+   if(! $_c = $this->get_configurator()) return false;
+   return $_c->inform($c);
+  }
 
   public function get_ready(){
    $this->report_warning("This is the default implementation of get_ready() method, seems that this object lacks specific implementation");

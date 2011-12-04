@@ -5,8 +5,9 @@
   private $_level_ceil = 3;
 
 
-  public function __construct() {
-   $this->_fd = fopen('file_report.txt', 'a'); // XXX temp
+  public function get_ready() {
+   if(false === ($log = $this->inform('log_file_name'))){return false;}
+   return ($this->_fd = fopen($log, 'a')) ? true : false;
   }
 
   public function report_debug($msg){return $this->_report($msg, 3);}
@@ -16,6 +17,8 @@
 
   private function _report($msg, $level) {
    if($level > $this->_level_ceil) return true;
+
+   if(! $this->_fd) return false;
 
    return fwrite($this->_fd, '['.date('r')."] [level $level] $msg\n");
   }
