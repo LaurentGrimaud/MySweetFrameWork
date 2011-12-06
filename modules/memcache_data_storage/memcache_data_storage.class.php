@@ -1,6 +1,6 @@
 <?php
 /**
- * Yet naive implementation of mySFW Data Storage against Memcache
+ * Yet naive implementation of MySFW Data Storage against Memcache
  *
  * XXX error handling
  * XXX TTL handling
