@@ -1,13 +1,22 @@
 <?php
 
+ /**
+  * Implementation of MySFW data storage agains MongoDB
+  *
+  * This is WORK IN PROGRESS
+  *
+  * XXX uid support is not yet correct
+  * XXX everything here needs to be carefully checked and tested
+  *
+  */
+
  class mysfw_mongodb_data_storage extends mysfw_core implements mysfw_data_storage {
 
   // XXX temp - draft
-  private function _get_connection(){
+  private function _get_connection($type){
    try {
     $m = new Mongo();
-    $m->selectDB("mysfw");
-    return $m;
+    return $m->selectCollection("mysfw", $type); // XXX Conf should be taken from configurator object
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     return false;
@@ -34,53 +43,42 @@
     return false;
    }
 
-   $r = $sep = '';
-   foreach($crit as $k => $v){
-    if(is_null($v)){
-     $this->report_error("No value for `$k` part of uid");
-     return false;
-    }
-    $r .= "$k:$v";
-    $sep = '/';
+   $crit = (array)$crit;
+
+   if(count($crit) !== 1){
+    $this->report_error("Only one part uid supported in this version. Sorry...");
+    return false;
    }
 
-   $uid = "$type|$r";
+   var_dump($crit);
+
+   $uid = array_pop($crit);
    $this->report_info("data uid is $uid");
    return $uid;
   }
 
 
-  private function _encode($values) {
-   return json_encode($values);
-  }
-
-  private function _decode($data) {
-   return json_decode($data);
-  }
-
-
   public function retrieve($type, $crit){
    try{
-   $this->report_info('`retrieve` action requested');
-   if(! $c = $this->_get_connection()){
-    $this->report_error("Failed to get redis connection");
-    return false;
-   }
+    $this->report_info('`retrieve` action requested');
+    if(! $c = $this->_get_connection($type)){
+     $this->report_error("Failed to get MongoDB connection");
+     return false;
+    }
 
-   if(! $uid = $this->_criteria_talk($type, $crit)){
-    $this->report_error("Failed to get data uid");
-    return false;
-   }
+    if(! $uid = $this->_criteria_talk($type, $crit)){
+     $this->report_error("Failed to get data uid");
+     return false;
+    }
 
-   $c->selectCollection($type);
+    if(false === $data = $c->findOne(array('_id' => new MongoId($uid)))){
+     $this->report_warning("Failed to retrieve data with uid $uid");
+     return null;
+    }
 
-   if(false === $data = $c->get($uid)){
-    $this->report_warning("Failed to retrieve data with uid $uid");
-    return null;
-   }
+    $this->report_debug("Item of type $type and uid $uid retrieved");
+    return $data;
 
-   $this->report_debug("Item of type $type and uid $uid retrieved");
-   return $this->_decode($data);
    }catch(exception $e){
     $this->report_error("Exception thrown, message is: ".$e->getMessage());
     return false;
@@ -90,8 +88,35 @@
 
   public function add($type, $crit, $values){
    $this->report_info('`add` action requested');
-   if(! $c = $this->_get_connection()){
-    $this->report_error("Failed to get redis connection");
+
+   if(! $c = $this->_get_connection($type)){
+    $this->report_error("Failed to get MongoDB connection");
+    return false;
+   }
+
+   try {
+    $data_to_insert = (array)$values;
+
+    if(! $c->save($data_to_insert)) {
+     $this->report_error("Failed to set data in MongoDB - Aborting");
+     return false;
+    }
+
+    $uid = (string)(@$data_to_insert['_id']);
+
+    $this->report_debug("`$type` item set, with uid $uid");
+    return $uid;
+
+   }catch(exception $e){
+    $this->report_error("Exception thrown, message is: ".$e->getMessage());
+    return false;
+   }
+  }
+
+
+  private function _save($type, $crit, $values) {
+   if(! $c = $this->_get_connection($type)){
+    $this->report_error("Failed to get MongoDB connection");
     return false;
    }
 
@@ -100,64 +125,43 @@
     return false;
    }
 
-   if(! $data = $this->_encode($values)){
-    $this->report_error("Failed to encode `$values`");
+   $values->_id = $uid;
+
+   try {
+    if(! $c->save((array)$values)){
+     $this->report_error("Failed to set data in MongoDB - Aborting");
+     return false;
+    }
+
+    $this->report_debug("`$type` item set, with uid $uid");
+    return $uid;
+
+   }catch(exception $e){
+    $this->report_error("Exception thrown, message is: ".$e->getMessage());
     return false;
    }
-
-   if(! $c->set($uid, $data)){
-    $this->report_error("Failed to set data in redis - Aborting");
-    return false;
-   }
-
-   $this->report_debug("`$type` item set, with uid $uid");
-   return $uid;
   }
 
 
   public function change($type, $crit, $values){
    $this->report_info('`change` action requested');
-   if(! $c = $this->_get_connection()){
-    $this->report_error("Failed to get redis connection");
+
+   if(! $previous_data = $this->retrieve($type, $crit)){
     return false;
    }
 
-   if(! $uid = $this->_criteria_talk($type, $crit)){
-    $this->report_error("Failed to build uid - Aborting");
-    return false;
+   foreach($values as $p => $v){
+    $previous_data[$p] = $v;
    }
 
-   if(false === $raw_data = $c->get($uid)){
-    $this->report_error("Failed to retrieve data with uid $uid");
-    return false;
-   }
-
-   if(! $previous_values = $this->_decode($raw_data)){
-    $this->report_error("Failed to decode `$raw_data`");
-    return false;
-   }
-
-   foreach($values as $k => $v){
-    $previous_values->$k = $v;
-   }
-
-   if(! $raw_data = $this->_encode($previous_values)){
-    $this->report_error("Failed to encode `$previous_values`");
-    return false;
-   }
-
-   if(false === $c->set($this->_criteria_talk($type, $crit), $raw_data)){
-    return false;
-   }
-
-   return true;
+   return $this->_save($type, $crit, $previous_data);
   }
 
 
   public function delete($type, $crit){
    $this->report_info('`delete` action requested');
-   if(! $c = $this->_get_connection()){
-    $this->report_error("Failed to get redis connection");
+   if(! $c = $this->_get_connection($type)){
+    $this->report_error("Failed to get MongoDB connection");
     return false;
    }
 
@@ -166,19 +170,21 @@
     return false;
    }
 
-   if($c->delete($uid)) {
-    $this->report_debug("Item of type $type and uid $uid removed from redis");
-    return true;
-   }
+   try {
+    if($c->remove(array("_id" => $uid))) {
+     $this->report_debug("Item of type $type and uid $uid removed from MongoDB");
+     return true;
+    }
 
-   $this->report_error("Failed to remove item of type $type and uid $uid from redis");
-   return false;
+    $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
+    return false;
+   }catch(exception $e){
+    $this->report_error("Exception thrown, message is: ".$e->getMessage());
+    return false;
+   }
   }
 
  }
 
 ?>
 
- }
-
-?>
