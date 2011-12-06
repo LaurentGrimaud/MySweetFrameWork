@@ -83,9 +83,11 @@
   protected function _get_uid_injection(){return $this->_uid_injection;}
   protected function _uid_injectable(){return ! is_null($this->_uid_injection);}
 
+  // XXX to be checked
   protected function _set_uid($_){
    if(! $this->_uid_injectable()) return;
    $this->set($this->_get_uid_injection(), $_);
+   $this->_identify($this->_get_uid_injection(), $_);
    $this->_set_identified();
   }
 
