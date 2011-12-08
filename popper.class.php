@@ -43,13 +43,17 @@
   public function get_home() {return $this->_home;}
 
   // XXX temp
-  public function register($name, $object_name) {
-   if(is_string($object_name)) {
-    $this->_register[$name] = &$this->pop($object_name);
-    return true;
+  /**
+   * @return thing registered (created or simply referenced)
+   */
+
+  public function register($name, $stuff) {
+   if(is_string($stuff)) {
+    $this->_register[$name] = &$this->pop($stuff);
+    return $this->_register[$name];
    }
-   $this->_register[$name] = $object_name;
-   return true;
+   $this->_register[$name] = $stuff;
+   return $stuff;
   }
 
   // XXX temp
