@@ -3,7 +3,7 @@
  $popper = mysfw_popper::itself();
 
  // We need configuration
- $popper->register('configurator', 'configurator');
+ /// useless now ? $popper->register('configurator', 'configurator');
  $configurator = $popper->indicate("configurator");
  $configurator->define('log_file_name', './file_report.txt');
 

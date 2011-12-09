@@ -3,7 +3,7 @@
  class mysfw_popper {
   private static $_itself;
   private $_home;
-  private $_register = array();
+  private $_register = array(); // XXX here, or in configurator ... ?
 
 
   private function __construct() { // No external instanciation
@@ -13,6 +13,9 @@
 
   public static function itself() { // Singletonization
    if(! self::$_itself) {self::$_itself = new mysfw_popper;}
+
+   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
+   $c->define('main_root', __DIR__);
 
    return self::$_itself;
   }

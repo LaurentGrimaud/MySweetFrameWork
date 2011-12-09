@@ -2,15 +2,17 @@
  // XXX WIP
 
  class mysfw_view extends mysfw_core implements mysfw_view_interface {
-  protected $_home = ''; // XXX
+  const _dir  = 'tmpl';
+
+  protected $_home = ''; // XXX useful ?
 
   public function get_ready() {
-   if(($c = $this->get_configurator()) && ($dir = $c->inform('tmpl_root'))){
-    $this->_home = $dir;
+   if($dir = $this->inform('main_root')){
+    $this->_home = $dir.self::_dir;
     return $this;
    }
 
-   $this->_home = 'tmpl/'; // XXX temp
+   $this->_home = self::_dir; // XXX temp
    return $this;
   }
 
