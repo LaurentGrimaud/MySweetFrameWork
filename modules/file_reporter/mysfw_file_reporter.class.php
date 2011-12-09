@@ -5,8 +5,8 @@
   private $_level_ceil = 3;
 
 
-  public function get_ready() {
-   if(false === ($log = $this->inform('log_file_name'))){return false;}
+  protected function _get_ready() {
+   if(false === ($log = $this->inform('root').$this->inform('log_file_name'))){return false;}
    return ($this->_fd = fopen($log, 'a')) ? true : false;
   }
 

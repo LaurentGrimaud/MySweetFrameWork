@@ -37,7 +37,7 @@
 
   // Automatic initialisation method
   // XXX draft
-  public function get_ready() {
+  protected function _get_ready() {
    $this->set_data_storage($this->get_popper()->indicate('data_storage'));
   }
 

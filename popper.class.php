@@ -6,16 +6,17 @@
   private $_register = array(); // XXX here, or in configurator ... ?
 
 
-  private function __construct() { // No external instanciation
-   $this->set_home(__DIR__);
+  private function __construct($root) { // No external instanciation
+   $this->set_home(__DIR__); // XXX useful ?
+
+   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
+   $c->define('home', __DIR__.'/');
+   $c->define('root', $root.'/');
   }
 
 
-  public static function itself() { // Singletonization
-   if(! self::$_itself) {self::$_itself = new mysfw_popper;}
-
-   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
-   $c->define('main_root', __DIR__);
+  public static function itself($root) { // Singletonization
+   if(! self::$_itself) {self::$_itself = new mysfw_popper($root);}
 
    return self::$_itself;
   }
@@ -34,8 +35,7 @@
    // XXX
    if($_ = $this->indicate('configurator')){$o->set_configurator($_);}
 
-   $o->get_ready();
-   return $o;
+   return $o->get_ready();
   }
 
   public function swallow($modulename) {
@@ -52,8 +52,7 @@
 
   public function register($name, $stuff) {
    if(is_string($stuff)) {
-    $this->_register[$name] = &$this->pop($stuff);
-    return $this->_register[$name];
+    return $this->_register[$name] = &$this->pop($stuff);
    }
    $this->_register[$name] = $stuff;
    return $stuff;

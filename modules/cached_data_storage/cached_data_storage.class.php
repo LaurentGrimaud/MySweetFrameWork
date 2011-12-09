@@ -6,7 +6,7 @@
 
   // Automatic initialisation method
   // XXX draft
-  public function get_ready() {
+  protected function _get_ready() {
    $this->set_cache_data_storage($this->get_popper()->indicate('cache_data_storage'));
    $this->set_base_data_storage($this->get_popper()->indicate('base_data_storage'));
   }

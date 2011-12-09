@@ -9,9 +9,10 @@
   **/
 
  abstract class mysfw_core {
-  protected $_p; // mysfw popper
-  protected $_r; // mysfw reporter
-  protected $_c; // mysfw configurator
+  private $_p; // mysfw popper
+  private $_r; // mysfw reporter
+  private $_c; // mysfw configurator
+  protected $_defaults;
 
   public function set_popper($_) {$this->_p = $_;}
   public function get_popper() {return $this->_p;}
@@ -32,8 +33,19 @@
    return $_c->inform($c);
   }
 
-  public function get_ready(){
-   $this->report_warning("This is the default implementation of get_ready() method, seems that this object lacks specific implementation");
+  public function define($c, $v){
+   if(! $_c = $this->get_configurator()) return false;
+   return $_c->define($c, $v);
+  }
+
+  final public function get_ready(){
+   $this->_defaults();
+   $this->_get_ready();
+   return $this;
+  }
+
+  protected function _get_ready() {
+   $this->report_warning("This is the default implementation of _get_ready() method, seems that this object lacks specific implementation");
   }
 
   private function _report($method, $msg){
@@ -47,6 +59,13 @@
    */
   private function _emsg($msg){
    return '['.get_class($this)."] $msg";
+  }
+
+  protected function _defaults(){
+   if(! $this->_defaults) return;
+   foreach($this->_defaults as $conf => $default_value){
+    if(! $this->inform($conf)) $this->define($conf, $default_value);
+   }
   }
  }
 
