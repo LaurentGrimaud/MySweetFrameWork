@@ -74,7 +74,7 @@
   public function set($property, $value){$this->_values->$property = $value;}
 
   public function get_values(){return $this->_values;}
-  protected function _set_values($_){$this->_values=$_;}
+  public function set_values($_){$this->_values=$_;}
 
   protected function _set_identified() {$this->_is_identified = true;}
   protected function _is_identified() {return $this->_is_identified;}
@@ -90,6 +90,8 @@
    $this->_identify($this->_get_uid_injection(), $_);
    $this->_set_identified();
   }
+
+ public function set_uid($_){$this->_set_uid();} // XXX temp
 
   /**
    * Object's data are created in underlaying data storage
@@ -124,7 +126,7 @@
   public function recall() {
    if(!$values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria)) return false;
 
-   $this->_set_values($values);
+   $this->set_values($values);
    return true;
   }
 
