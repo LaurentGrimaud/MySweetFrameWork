@@ -169,7 +169,7 @@
    }
 
    try {
-    if($c->remove(array("_id" => $uid))) {
+    if($c->remove(array("_id" => new MongoId($uid)))) {
      $this->report_debug("Item of type $type and uid $uid removed from MongoDB");
      return true;
     }
