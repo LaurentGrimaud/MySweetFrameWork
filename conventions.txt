@@ -1,0 +1,1 @@
+* Directory names finish with a /
