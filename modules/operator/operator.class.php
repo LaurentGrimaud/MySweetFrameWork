@@ -91,7 +91,7 @@
    $this->_set_identified();
   }
 
- public function set_uid($_){$this->_set_uid();} // XXX temp
+ public function set_uid($_){$this->_set_uid($_);} // XXX temp
 
   /**
    * Object's data are created in underlaying data storage
