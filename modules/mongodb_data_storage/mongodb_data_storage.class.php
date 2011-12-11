@@ -50,8 +50,6 @@
     return false;
    }
 
-   var_dump($crit);
-
    $uid = array_pop($crit);
    $this->report_info("data uid is $uid");
    return $uid;
