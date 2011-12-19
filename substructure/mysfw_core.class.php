@@ -45,7 +45,7 @@
   }
 
   protected function _get_ready() {
-   $this->report_warning("This is the default implementation of _get_ready() method, seems that this object lacks specific implementation");
+   $this->report_warning("This is the default (empty) implementation of _get_ready() method, seems that this object lacks specific implementation");
   }
 
   private function _report($method, $msg){
