@@ -1,10 +1,10 @@
 <?php
  /**
-  * Defines common base for ALL mysfw objects, except popper
+  * Defines common roles for ALL mysfw objects, except popper
   * Currently, four things:
   * 1. Gives knowledge and access to the popper object
   * 2. Provides logging capabilities, by interfacing to a reporter object 
-  * 3. Define an auto_initialise method, called by the popper
+  * 3. Defines an auto_initialise mechanism, called by the popper
   * 4. Provides configuration access, by interfacing a configurator object
   **/
 
@@ -12,7 +12,7 @@
   private $_p; // mysfw popper
   private $_r; // mysfw reporter
   private $_c; // mysfw configurator
-  protected $_defaults;
+  protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
 
   public function set_popper($_) {$this->_p = $_;}
   public function get_popper() {return $this->_p;}
