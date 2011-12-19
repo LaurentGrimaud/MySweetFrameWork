@@ -31,6 +31,8 @@
    * @param $type string
    * @param $crit object of criteria key/value
    * @return uid as string, false on error
+   *
+   * XXX useful ?
    */
   private function _criteria_talk($type, $crit){
    if(! $crit){
@@ -64,18 +66,27 @@
      return false;
     }
 
-    if(! $uid = $this->_criteria_talk($type, $crit)){
-     $this->report_error("Failed to get data uid");
-     return false;
+    if($crit) {
+     if(! $uid = $this->_criteria_talk($type, $crit)){
+      $this->report_error("Failed to get data uid");
+      return false;
+     }
+     $finalCrit = array('_id' => new MongoId($uid));
+    }else{
+     $finalCrit = array();
     }
 
-    if(false === $data = $c->findOne(array('_id' => new MongoId($uid)))){
+    if(false === $data = $c->find($finalCrit)){
      $this->report_warning("Failed to retrieve data with uid $uid");
      return null;
     }
 
+    foreach($data as $result){
+     $results[] = $result;
+    }
+
     $this->report_debug("Item of type $type and uid $uid retrieved");
-    return $data;
+    return $results;
 
    }catch(exception $e){
     $this->report_error("Exception thrown, message is: ".$e->getMessage());
@@ -123,10 +134,11 @@
     return false;
    }
 
-   $values->_id = $uid;
+   $values = (array)$values;
+   $values['_id'] = new MongoId($uid);
 
    try {
-    if(! $c->save((array)$values)){
+    if(! $c->save($values)){
      $this->report_error("Failed to set data in MongoDB - Aborting");
      return false;
     }
@@ -144,9 +156,11 @@
   public function change($type, $crit, $values){
    $this->report_info('`change` action requested');
 
-   if(! $previous_data = $this->retrieve($type, $crit)){
+   if(! $entity_list = (array)$this->retrieve($type, $crit)){ // XXX temp cast
     return false;
    }
+
+   $preivous_data = array_pop($entity_list);
 
    foreach($values as $p => $v){
     $previous_data[$p] = $v;
