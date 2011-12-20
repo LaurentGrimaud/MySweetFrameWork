@@ -58,6 +58,7 @@
   }
 
 
+  // XXX WIP
   public function retrieve($type, $crit, $metacrit){
    try{
     $this->report_info('`retrieve` action requested');
@@ -67,16 +68,12 @@
     }
 
     if($crit) {
-     if(! $uid = $this->_criteria_talk($type, $crit)){
-      $this->report_error("Failed to get data uid");
-      return false;
-     }
-     $finalCrit = array('_id' => new MongoId($uid));
+     if($crit['_id']) {$crit['_id'] = new MongoId($crit['_id']);}
     }else{
-     $finalCrit = array();
+     $crit = array();
     }
 
-    if(false === $data = $c->find($finalCrit)){
+    if(false === $data = $c->find($crit)){
      $this->report_warning("Failed to retrieve data with uid $uid");
      return null;
     }
