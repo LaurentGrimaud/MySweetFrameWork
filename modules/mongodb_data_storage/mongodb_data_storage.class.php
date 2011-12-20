@@ -58,7 +58,7 @@
   }
 
 
-  public function retrieve($type, $crit){
+  public function retrieve($type, $crit, $metacrit){
    try{
     $this->report_info('`retrieve` action requested');
     if(! $c = $this->_get_connection($type)){
@@ -81,9 +81,11 @@
      return null;
     }
 
-    foreach($data as $result){
-     $results[] = $result;
+    if($metacrit && $metacrit['l']){
+     $data->limit($metacrit['l']);
     }
+
+    $results = iterator_to_array($data);
 
     $this->report_debug("Item of type $type and uid $uid retrieved");
     return $results;
