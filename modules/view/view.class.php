@@ -11,7 +11,7 @@
   public function set($k, $v) {$this->_values[$k] = $v;}
 
   public function reveal($t) {
-   include $this->inform('n_root').$this->inform('tmpl_dir').$t.'.tmpl.php'; // XXX 
+   include $this->inform('main_root').$this->inform('tmpl_dir').$t.'.tmpl.php'; // XXX 
   }
  }
 ?>
