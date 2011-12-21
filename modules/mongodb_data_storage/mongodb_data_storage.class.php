@@ -11,12 +11,15 @@
   */
 
  class mysfw_mongodb_data_storage extends mysfw_core implements mysfw_data_storage {
+  protected $_defaults = array(
+    "mongo_db_name" => "mysfw_demo"
+   );
 
   // XXX temp - draft
   private function _get_connection($type){
    try {
     $m = new Mongo();
-    return $m->selectCollection("mysfw", $type); // XXX Conf should be taken from configurator object
+    return $m->selectCollection($this->inform('mongo_db_name'), $type); // XXX Conf should be taken from configurator object
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     return false;
@@ -67,9 +70,7 @@
      return false;
     }
 
-    if($crit) {
-     if($crit['_id']) {$crit['_id'] = new MongoId($crit['_id']);}
-    }else{
+    if(! $crit) {
      $crit = array();
     }
 

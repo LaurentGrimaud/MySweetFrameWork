@@ -1,13 +1,18 @@
 <?php
 
  class mysfw_redis_data_storage extends mysfw_core implements mysfw_data_storage {
+  protected $_defaults = array(
+   'redis_host'    => '127.0.0.1',
+   'redis_port'    => 6379,
+   'redis_db_name' => 'redis_demo'
+  );
 
   // XXX temp - draft
   private function _get_connection(){
    $single_server = array(
-     'host'     => '127.0.0.1', 
-     'port'     => 6379, 
-     'database' => 15
+     'host'     => $this->inform('redis_host'),
+     'port'     => $this->inform('redis_port'),
+     'database' => $this->inform('redis_db_name')
      );
    if(! $predis = new Predis\Client($single_server)) {
     $this->report_error('Failed to connect to Redis server');
@@ -62,7 +67,7 @@
   }
 
 
-  public function retrieve($type, $crit){
+  public function retrieve($type, $crit, $metacrit){
    $this->report_info('`retrieve` action requested');
    if(! $c = $this->_get_connection()){
     $this->report_error("Failed to get redis connection");
@@ -170,10 +175,6 @@
    $this->report_error("Failed to remove item of type $type and uid $uid from redis");
    return false;
   }
-
- }
-
-?>
 
  }
 
