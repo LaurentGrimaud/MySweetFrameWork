@@ -8,6 +8,9 @@
   * XXX uid support is not yet correct
   * XXX everything here needs to be carefully checked and tested
   *
+  * Requires mongo pecl extension
+  * pecl install mongo
+  *
   */
 
  class mysfw_mongodb_data_storage extends mysfw_core implements mysfw_data_storage {
