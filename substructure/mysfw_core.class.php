@@ -4,11 +4,11 @@
   * Currently, four things:
   * 1. Gives knowledge and access to the popper object
   * 2. Provides logging capabilities, by interfacing to a reporter object 
-  * 3. Defines an auto_initialise mechanism, called by the popper
+  * 3. Defines an auto-initialise mechanism, called by the popper
   * 4. Provides configuration access, by interfacing a configurator object
   **/
 
- abstract class mysfw_core {
+ abstract class mysfw_core implements mysfw_dna {
   private $_p; // mysfw popper
   private $_r; // mysfw reporter
   private $_c; // mysfw configurator
@@ -17,7 +17,7 @@
   public function set_popper($_) {$this->_p = $_;}
   public function get_popper() {return $this->_p;}
 
-  public function set_reporter($_) {$this->_r = $_;}
+  public function set_reporter(mysfw_reporter $_) {$this->_r = $_;}
   public function get_reporter() {return $this->_r;}
 
   public function report_debug($msg){return $this->_report("debug", $msg);}

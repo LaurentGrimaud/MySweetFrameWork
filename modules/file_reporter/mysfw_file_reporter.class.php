@@ -1,6 +1,6 @@
 <?php
 
- class mysfw_file_reporter extends mysfw_core {
+ class mysfw_file_reporter extends mysfw_core implements mysfw_reporter {
   private $_fd;
   private $_level_ceil = 3;
 
