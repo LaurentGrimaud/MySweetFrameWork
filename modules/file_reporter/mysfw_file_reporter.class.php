@@ -1,6 +1,6 @@
 <?php
 
- class mysfw_file_reporter extends mysfw_core implements mysfw_reporter {
+ class mysfw_file_reporter extends mysfw_core implements mysfw_reporter, mysfw_dna {
   private $_fd;
   private $_level_ceil = 3;
 
@@ -10,12 +10,12 @@
    return ($this->_fd = fopen($log, 'a')) ? true : false;
   }
 
-  public function report_debug($msg){return $this->_report($msg, 3);}
-  public function report_info($msg){return $this->_report($msg, 2);}
-  public function report_warning($msg){return $this->_report($msg, 1);}
-  public function report_error($msg){return $this->_report($msg, 0);}
+  public function debug($msg){return $this->_r($msg, 3);}
+  public function info($msg){return $this->_r($msg, 2);}
+  public function warning($msg){return $this->_r($msg, 1);}
+  public function error($msg){return $this->_r($msg, 0);}
 
-  private function _report($msg, $level) {
+  private function _r($msg, $level) {
    if($level > $this->_level_ceil) return true;
 
    if(! $this->_fd) return false;

@@ -1,6 +1,10 @@
 <?php
 
- class mysfw_popper {
+ // XXX temp static requires
+ require_once 'substructure/mysfw_popper.interface.php';
+ require_once 'substructure/mysfw_dna.interface.php';
+
+ class mysfw_default_popper implements mysfw_popper {
   private static $_itself;
   private $_home;
   private $_register = array(); // XXX here, or in configurator ... ?
@@ -9,14 +13,14 @@
   private function __construct($root) { // No external instanciation
    $this->set_home(__DIR__); // XXX useful ?
 
-   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
+   $c = $this->register('configurator', 'default_configurator'); // XXX error handling ?
    $c->define('home', __DIR__.'/');
    $c->define('root', $root.'/');
   }
 
 
   public static function itself($root) { // Singletonization
-   if(! self::$_itself) {self::$_itself = new mysfw_popper($root);}
+   if(! self::$_itself) {self::$_itself = new mysfw_default_popper($root);}
 
    return self::$_itself;
   }

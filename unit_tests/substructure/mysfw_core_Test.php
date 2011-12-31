@@ -1,10 +1,8 @@
 <?php
-/**
- * XXX mysfw_view::reveal() tests to be completed
- */
 
  require_once 'substructure/mysfw_dna.interface.php';
  require_once 'substructure/mysfw_reporter.interface.php';
+ require_once 'substructure/mysfw_popper.interface.php';
 
  require_once 'substructure/mysfw_core.class.php';
 
@@ -18,9 +16,29 @@
    $this->x = new mysfw_core_instance;
   }
 
-  public function test_define_failure_when_configurator_not_set() {
+  final public function test_define_failure_when_configurator_not_set() {
    $this->assertFalse($this->x->define('fjfjgjgjgj', 'lsldjfkfkfk'));
   }
+
+  /**
+   * @expectedException PHPUnit_Framework_Error
+   */
+  final public function test_incorrect_popper_injection() {
+   $this->x->set_popper('hhh');
+  }
+
+  /**
+   * @expectedException PHPUnit_Framework_Error
+   */
+  final public function test_incorrect_popper_injection_object() {
+   $this->x->set_popper((object)array('djdjdjdjd' => 'dkskfjfj'));
+  }
+
+  final public function test_correct_type_popper_injection() {
+   $p = $this->getMock('mysfw_popper');
+   $this->x->set_popper($p);
+  }
+
  }
 
 ?>

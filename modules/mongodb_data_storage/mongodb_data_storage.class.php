@@ -78,7 +78,7 @@
     }
 
     if(false === $data = $c->find($crit)){
-     $this->report_warning("Failed to retrieve data with uid $uid");
+     $this->report_warning("Failed to retrieve data (type $type)");
      return null;
     }
 
@@ -88,7 +88,7 @@
 
     $results = iterator_to_array($data);
 
-    $this->report_debug("Item of type $type and uid $uid retrieved");
+    $this->report_debug("Item(s) of type $type retrieved");
     return $results;
 
    }catch(exception $e){

@@ -1,1 +1,6 @@
+* mySFW objects names begin with "mysfw_"
+
+* all mysfw objects must implements mysfw_dna, except poppers
+
 * Directory names finish with a /
+

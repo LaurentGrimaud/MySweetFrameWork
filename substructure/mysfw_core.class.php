@@ -14,28 +14,28 @@
   private $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
 
-  public function set_popper($_) {$this->_p = $_;}
-  public function get_popper() {return $this->_p;}
+  final public function set_popper(mysfw_popper $_) {$this->_p = $_;}
+  final public function get_popper() {return $this->_p;}
 
-  public function set_reporter(mysfw_reporter $_) {$this->_r = $_;}
-  public function get_reporter() {return $this->_r;}
+  final public function set_reporter(mysfw_reporter $_) {$this->_r = $_;}
+  final public function get_reporter() {return $this->_r;}
 
-  public function report_debug($msg){return $this->_report("debug", $msg);}
-  public function report_info($msg){return $this->_report("info", $msg);}
-  public function report_warning($msg){return $this->_report("warning", $msg);}
-  public function report_error($msg){return $this->_report("error", $msg);}
+  final public function report_debug($msg){return $this->_report("debug", $msg);}
+  final public function report_info($msg){return $this->_report("info", $msg);}
+  final public function report_warning($msg){return $this->_report("warning", $msg);}
+  final public function report_error($msg){return $this->_report("error", $msg);}
 
-  public function set_configurator($_) {$this->_c = $_;}
-  public function get_configurator() {return $this->_c;}
+  final public function set_configurator(mysfw_configurator $_) {$this->_c = $_;}
+  final public function get_configurator() {return $this->_c;}
 
-  public function inform($c){
+  final public function inform($c){
    if(! $_c = $this->get_configurator()) return false;
-   return $_c->inform($c);
+   return $_c->get_back($c);
   }
 
-  public function define($c, $v){
+  final public function define($c, $v){
    if(! $_c = $this->get_configurator()) return false;
-   return $_c->define($c, $v);
+   return $_c->memorize($c, $v);
   }
 
   final public function get_ready(){
@@ -44,24 +44,30 @@
    return $this;
   }
 
+  /**
+   * Should be overriden to follown specific initialisation requirements
+   */
   protected function _get_ready() {
    $this->report_warning("This is the default (empty) implementation of _get_ready() method, seems that this object lacks specific implementation");
   }
 
-  private function _report($method, $msg){
+  /**
+   * XXX temp
+   **/
+  final private function _report($method, $msg){
    if(! $r = $this->get_reporter()) return false;
-   $method_name = "report_$method";
+   $method_name = "$method";
    return $r->$method_name($this->_emsg($msg));
   }
 
   /**
    * Build encapsulated message
    */
-  private function _emsg($msg){
+  final private function _emsg($msg){
    return '['.get_class($this)."] $msg";
   }
 
-  protected function _defaults(){
+  final protected function _defaults(){
    if(! $this->_defaults) return;
    foreach($this->_defaults as $conf => $default_value){
     if(! $this->inform($conf)) $this->define($conf, $default_value);

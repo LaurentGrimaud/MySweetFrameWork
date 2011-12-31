@@ -3,13 +3,15 @@
  * XXX mysfw_view::reveal() tests to be completed
  */
 
+ require_once 'unit_tests/substructure/mysfw_core_Test.php';
+
  require_once 'substructure/mysfw_dna.interface.php';
  require_once 'substructure/mysfw_view.interface.php';
  require_once 'substructure/mysfw_core.class.php';
 
  require_once 'modules/view/view.class.php';
 
- class mysfw_view_Test extends PHPUnit_Framework_TestCase {
+ class mysfw_view_Test extends mysfw_core_Test {
 
   public function setUp() {
    $this->x = new  mysfw_view;
