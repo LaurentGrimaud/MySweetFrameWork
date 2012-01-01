@@ -7,8 +7,9 @@
    $this->_repository = (object) null;
   }
 
-  public function memorize($c, $v){$this->_repository->$c = $v;}
-  public function get_back($c){return @$this->_repository->$c;}
+  /** Overrides of the generic behaviour implemented in mysfw_core **/
+  public function define($c, $v){$this->_repository->$c = $v;}
+  public function inform($c){return @$this->_repository->$c;}
  }
 
 ?>

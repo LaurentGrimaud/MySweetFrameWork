@@ -5,10 +5,10 @@
 
  interface mysfw_reporter {
 
-  public function debug($msg);
-  public function info($msg);
-  public function warning($msg);
-  public function error($msg);
+  public function report_debug($msg);
+  public function report_info($msg);
+  public function report_warning($msg);
+  public function report_error($msg);
 
  }
 
