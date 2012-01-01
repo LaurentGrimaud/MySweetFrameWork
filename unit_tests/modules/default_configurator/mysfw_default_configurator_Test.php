@@ -1,5 +1,5 @@
 <?php
-
+ /** XXX what about object intialisation (get_ready()) ? **/
  require_once 'unit_tests/substructure/mysfw_core_Test.php';
 
  require_once 'substructure/mysfw_dna.interface.php';
