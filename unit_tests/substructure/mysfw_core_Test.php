@@ -17,7 +17,11 @@
   }
 
   final public function test_define_failure_when_configurator_not_set() {
-   $this->assertFalse($this->x->define('fjfjgjgjgj', 'lsldjfkfkfk'));
+   if(in_array('mysfw_configurator', class_implements($this->x))) {
+    $this->assertNull($this->x->define('fjfjgjgjgj', 'lsldjfkfkfk'));
+   }else{
+    $this->assertFalse($this->x->define('fjfjgjgjgj', 'lsldjfkfkfk'));
+   }
   }
 
   /**
