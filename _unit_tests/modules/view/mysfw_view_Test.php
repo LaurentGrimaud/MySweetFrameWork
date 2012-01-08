@@ -3,7 +3,7 @@
  * XXX mysfw_view::reveal() tests to be completed
  */
 
- require_once 'unit_tests/substructure/mysfw_core_Test.php';
+ require_once '_unit_tests/substructure/mysfw_core_Test.php';
 
  require_once 'substructure/mysfw_dna.interface.php';
  require_once 'substructure/mysfw_view.interface.php';
@@ -48,6 +48,16 @@
    $this->assertNull($v->get('gni'));
    return $v;
   }
+
+  /**
+   */
+  public function test_set_all() {
+   $d = array('un' => 'un', 'deux' => 'deux');
+   $this->x->set_all($d);
+   $this->assertEquals($this->x->get_all(), $d);
+  }
+
+
 
   /**
    * @expectedException PHPUnit_Framework_Error

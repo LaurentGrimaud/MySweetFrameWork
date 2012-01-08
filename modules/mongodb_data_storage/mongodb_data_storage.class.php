@@ -88,7 +88,8 @@
 
     $results = iterator_to_array($data);
 
-    $this->report_debug("Item(s) of type $type retrieved");
+    $this->report_debug(count($results)." `$type` item(s) retrieved");
+
     return $results;
 
    }catch(exception $e){
@@ -125,20 +126,14 @@
    }
   }
 
-
+ // XXX duplicate of add 
   private function _save($type, $crit, $values) {
    if(! $c = $this->_get_connection($type)){
     $this->report_error("Failed to get MongoDB connection");
     return false;
    }
 
-   if(! $uid = $this->_criteria_talk($type, $crit)){
-    $this->report_error("Failed to build uid - Aborting");
-    return false;
-   }
-
    $values = (array)$values;
-   $values['_id'] = new MongoId($uid);
 
    try {
     if(! $c->save($values)){
@@ -146,8 +141,8 @@
      return false;
     }
 
-    $this->report_debug("`$type` item set, with uid $uid");
-    return $uid;
+    $this->report_debug("`$type` item set, with uid {$values['_id']}");
+    return (string)$values['_id'];
 
    }catch(exception $e){
     $this->report_error("Exception thrown, message is: ".$e->getMessage());
@@ -163,7 +158,7 @@
     return false;
    }
 
-   $preivous_data = array_pop($entity_list);
+   $previous_data = array_pop($entity_list);
 
    foreach($values as $p => $v){
     $previous_data[$p] = $v;
