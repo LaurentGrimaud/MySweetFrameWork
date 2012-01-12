@@ -25,6 +25,12 @@
    return self::$_itself;
   }
 
+  /**
+   * Creates, configures and returns an instance of the requested class
+   * Handles the includes eventually needed
+   * 
+   * @return an instance of the requested class
+  **/
   public function pop($classname) {
    $full_name = "mysfw_$classname";
    if(! class_exists($full_name)){
