@@ -16,6 +16,7 @@
    $c = $this->register('configurator', 'default_configurator'); // XXX error handling ?
    $c->define('home', __DIR__.'/');
    $c->define('root', $root.'/');
+   $c->define('extensions_dir', $root.'/../includes/mysfw_extensions/'); // XXX temp
   }
 
 
@@ -49,7 +50,9 @@
   }
 
   public function swallow($modulename) {
-   require_once($this->_build_module_name($modulename));
+   if(! include_once($this->_build_module_name($modulename))){
+    include_once($this->_build_custom_file_name($modulename));
+   }
   }
 
   public function set_home($v) {$this->_home = $v;}
@@ -78,6 +81,10 @@
 
   private function _build_module_name($module) {
    return $this->_home."/modules/$module/$module.module.php";
+  }
+
+  private function _build_custom_file_name($f) {
+   return $this->indicate('configurator')->inform('extensions_dir')."$f.class.php";
   }
 
   private function _learn($it) {

@@ -13,7 +13,7 @@
   public function get_all() {return $this->_values;}
 
   public function reveal($t) {
-   include $this->inform('main_root').$this->inform('tmpl_dir').$t.'.tmpl.php'; // XXX 
+   include $this->inform('root').$this->inform('tmpl_dir').$t.'.tmpl.php'; // XXX 
   }
  }
 ?>
