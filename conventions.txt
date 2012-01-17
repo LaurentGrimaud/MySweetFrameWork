@@ -4,3 +4,4 @@
 
 * Directory names finish with a /
 
+* Module-related configuration names start with "[module_name]."
