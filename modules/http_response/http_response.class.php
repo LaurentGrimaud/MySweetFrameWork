@@ -1,11 +1,15 @@
 <?php
+/**
+ * @example
+ * $r= $popper->pop("http_response");
+ * $r->define("response.http_status_code", mysfw_http_response::http_status_code_created);
+ */
+ 
 class mysfw_http_response extends mysfw_core implements mysfw_response_interface, mysfw_dna{
     
     protected $_defaults= array(
-        'response.status_code'=>      255,
         'response.http_status_code'=> 501,
         'response.http_version'=>     'HTTP/1.1',
-        'response.view'=>    'view',
     );
     
 /** 
@@ -125,10 +129,9 @@ class mysfw_http_response extends mysfw_core implements mysfw_response_interface
     
     public function get_http_response_headers(){return $this->_http_response_headers;}
 
-    public function reveal($_t) {
+    public function reveal() {
     
         $this->_send_headers();
-        $this->inform('response.view')->reveal($_t);
     }
   
     private function _send_headers(){
