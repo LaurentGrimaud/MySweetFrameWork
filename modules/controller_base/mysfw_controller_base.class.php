@@ -12,7 +12,10 @@
 
   protected function _set($k, $v){$this->_v->set($k, $v);}
   protected function _get($_){return $this->_v->get($_);}
+  
+  protected function _set_all($_){$this->_v->set_all($_);}
 
+  // XXX _get_ready() may be overriden by custom controllers
   protected function _get_ready() {
    $this->_v = $this->get_popper()->pop($this->inform('controller_base.view'));
   }
