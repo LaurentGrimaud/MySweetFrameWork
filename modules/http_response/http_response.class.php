@@ -143,7 +143,7 @@ class mysfw_http_response extends mysfw_core implements mysfw_response_interface
 
         if($this->inform('response.http_status_code') and self::$_http_reason_phrase[$this->inform('response.http_status_code')]){
             // Output status line
-            $status_line= $this->inform('response.http_version') . " " . $this->inform('response.http_status_code') . " " . self::$_http_reason_phrase[$this->_http_status_code];
+            $status_line= $this->inform('response.http_version') . " " . $this->inform('response.http_status_code') . " " . self::$_http_reason_phrase[$this->inform('response.http_status_code')];
             header($status_line, true, $this->inform('response.http_status_code'));
             $this->report_debug("Sent status line: `{$status_line}` for status code: `" . $this->inform('response.http_status_code') . "`.");
             foreach($this->_http_response_headers as $http_response_header_field => $value){
