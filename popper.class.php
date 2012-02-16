@@ -50,7 +50,7 @@
   }
 
   public function swallow($modulename) {
-   if(! include_once($this->_build_module_name($modulename))){
+   if(! @include_once($this->_build_module_name($modulename))){
     include_once($this->_build_custom_file_name($modulename));
    }
   }
