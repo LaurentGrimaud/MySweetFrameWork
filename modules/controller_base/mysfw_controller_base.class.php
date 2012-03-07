@@ -4,7 +4,7 @@
   private $_v;    // Object implementing mysfw_view
   private $_tmpl; // Template to be used by the view
   protected $_defaults = array(
-    'controller_base.view' => 'view' // Name of the view to be used by the controller
+    'controller_base.view' => 'http_response' // Name of the view to be used by the controller
     );
 
   protected function _set_tmpl($_){$this->_tmpl = $_;}
@@ -17,6 +17,7 @@
 
   // XXX _get_ready() may be overriden by custom controllers
   protected function _get_ready() {
+   $this->report_debug("Popping ".$this->inform('controller_base.view'). " object");
    $this->_v = $this->get_popper()->pop($this->inform('controller_base.view'));
   }
 
