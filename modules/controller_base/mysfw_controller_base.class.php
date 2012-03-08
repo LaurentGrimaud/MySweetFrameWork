@@ -21,6 +21,8 @@
    $this->_v = $this->get_popper()->pop($this->inform('controller_base.view'));
   }
 
+  public function get_view(){return $this->_v;}
+
   public function control_and_reveal($p) {
    $this->control($p);
    $this->_v->reveal($this->_get_tmpl());
