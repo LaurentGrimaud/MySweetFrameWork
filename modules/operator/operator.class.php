@@ -14,14 +14,13 @@
 
 
   // XXX draft, refactor needed
-  public function morph($type) {
+  public function morph($type, $operator_definition) {
    $this->_underlaying_type = $type;
    $this->_values = (object) null;
    $this->_criteria = (object) null;
-   $operators_definitions = $this->get_popper()->indicate('operators_definitions'); // XXX draft
    $identified = true;
    $step_to_identification = 0;
-   foreach($operators_definitions[$type] as $p => $v){ // XXX temp
+   foreach($operator_definition as $p => $v){ // XXX temp
     $this->_identify($p, $v);
     if(is_null($v)){
      $step_to_identification++;
