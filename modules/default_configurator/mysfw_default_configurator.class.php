@@ -8,8 +8,8 @@
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
-  public function define($c, $v){$this->_repository->$c = $v;}
-  public function inform($c){return @$this->_repository->$c;}
+  public function define($c, $v, $cc = null){$_c = $cc? "$cc.$c" : $c;$this->_repository->$_c = $v;}
+  public function inform($c, $cc = null){$_c = $cc ? "$cc.$c" : $c; return @$this->_repository->$_c;}
  }
 
 ?>

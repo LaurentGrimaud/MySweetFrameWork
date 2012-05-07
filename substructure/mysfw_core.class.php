@@ -13,6 +13,7 @@
   private $_r; // mysfw reporter
   private $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
+  protected $_conf_context = null; // configuration context, as a string
 
   /** Imposed behaviors **/
   final public function set_popper(mysfw_popper $_) {$this->_p = $_;}
@@ -23,6 +24,9 @@
 
   final public function set_configurator(mysfw_configurator $_) {$this->_c = $_;}
   final public function get_configurator() {return $this->_c;}
+
+  final public function set_configuration_context($context = null) {$this->_conf_context = $context;}
+  final public function get_configuration_context(){return $this->_conf_context;}
 
   final public function get_ready(){
    $this->_defaults();
@@ -39,12 +43,12 @@
 
   public function inform($c){
    if(! $_c = $this->get_configurator()) return false;
-   return $_c->inform($c);
+   return $_c->inform($c, $this->get_configuration_context());
   }
 
   public function define($c, $v){
    if(! $_c = $this->get_configurator()) return false;
-   return $_c->define($c, $v);
+   return $_c->define($c, $v, $this->get_configuration_context());
   }
 
 
@@ -81,6 +85,7 @@
     if(! $this->inform($conf)) $this->define($conf, $default_value);
    }
   }
+
  }
 
 ?>

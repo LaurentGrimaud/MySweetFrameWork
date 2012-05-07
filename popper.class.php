@@ -32,7 +32,7 @@
    * 
    * @return an instance of the requested class
   **/
-  public function pop($classname) {
+  public function pop($classname, $conf_context = null) {
    $full_name = "mysfw_$classname";
    if(! class_exists($full_name)){
     $this->swallow($classname);
@@ -45,6 +45,8 @@
    // Does a default configurator exist ?
    // XXX
    if($_ = $this->indicate('configurator')){$o->set_configurator($_);}
+
+   if($conf_context) $o->set_configuration_context($conf_context);
 
    return $o->get_ready();
   }
