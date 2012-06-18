@@ -151,7 +151,8 @@
   }
 
 
-  public function change($type, $crit, $values){
+  // XXX old implementation, using retrieve then change
+  public function OLD_change($type, $crit, $values){
    $this->report_info('`change` action requested');
 
    if(! $entity_list = (array)$this->retrieve($type, $crit)){ // XXX temp cast
@@ -165,6 +166,38 @@
    }
 
    return $this->_save($type, $crit, $previous_data);
+  }
+
+  // New implementation, using MongoCollection::update()
+  public function change($type, $crit, $values){
+   $this->report_info('`change` action requested');
+
+   if(! $c = $this->_get_connection($type)){
+    $this->report_error("Failed to get MongoDB connection");
+    return false;
+   }
+
+   if(! $uid = $this->_criteria_talk($type, $crit)){
+    $this->report_error("Failed to build uid - Aborting");
+    return false;
+   }
+
+   unset($values->_id);
+   $this->report_debug(print_r((array)$values, true));
+
+   try {
+    if($res = $c->update(array("_id" => $uid), array('$set' => (array)$values))) {
+     $this->report_debug(print_r($res, true));
+     $this->report_debug("Item of type $type and uid $uid updated");
+     return true;
+    }
+
+    $this->report_error("Failed to update item of type $type and uid $uid from MongoDB");
+    return false;
+   }catch(exception $e){
+    $this->report_error("Exception thrown, message is: ".$e->getMessage());
+    return false;
+   }
   }
 
 
