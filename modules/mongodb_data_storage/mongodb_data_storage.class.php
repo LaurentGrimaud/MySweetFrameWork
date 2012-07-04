@@ -65,6 +65,10 @@
 
 
   // XXX WIP
+  /**
+   * metacrit[l] = 10
+   * metacrit[s][field_name] = 1|-1 (asc ou desc)
+   */
   public function retrieve($type, $crit, $metacrit){
    try{
     $this->report_info('`retrieve` action requested');
@@ -82,8 +86,15 @@
      return null;
     }
 
-    if($metacrit && $metacrit['l']){
-     $data->limit($metacrit['l']);
+    if($metacrit) {
+     if($metacrit['l']){
+      $data->limit($metacrit['l']);
+     }
+
+     if($metacrit['s']) {
+      $data->sort($metacrit['s']);
+     }
+     $this->report_debug(print_r($metacrit, true));
     }
 
     $results = iterator_to_array($data);
