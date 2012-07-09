@@ -138,13 +138,20 @@
     return false;
    }
 
-   if(! $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria)){
+   $r = $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria);
+
+   if($r === false){
     $this->report_error("Failed to delete mapped data in underlaying data storage");
     return false;
    }
 
+   if($r === 0) {
+    $this->report_error("No data to delete in underlaying data storage");
+    return 0;
+   }
+
    $this->report_debug("Mapped data are now deleted from underlaying data storage");
-   return true;
+   return 1;
   }
 
  }

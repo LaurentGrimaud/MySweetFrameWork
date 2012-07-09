@@ -17,6 +17,9 @@
   protected $_defaults = array(
     "mongo_db_name" => "mysfw_demo"
    );
+  protected $_collection_options = array(
+    "safe" => true
+   );
 
   // XXX temp - draft
   private function _get_connection($type){
@@ -212,6 +215,11 @@
   }
 
 
+  /**
+   * @return false on error
+   *         1 if one item found and deleted
+   *         0 if no item found (and deleted)
+   **/
   public function delete($type, $crit){
    $this->report_info('`delete` action requested');
    if(! $c = $this->_get_connection($type)){
@@ -225,13 +233,26 @@
    }
 
    try {
-    if($c->remove(array("_id" => new MongoId($uid)))) {
-     $this->report_debug("Item of type $type and uid $uid removed from MongoDB");
-     return true;
+    $res = $c->remove(array("_id" => new MongoId($uid)), $this->_collection_options);
+
+    if($res === false || @$res['err']) {
+     $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
+     return false;
     }
 
-    $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
+    if($res === true || $res['n'] === 1) {
+     $this->report_debug("Item of type $type and uid $uid removed from MongoDB - ".print_r($res, true));
+     return 1;
+    }
+
+    if($res['n'] === 0) {
+     $this->report_warning("No item of type $type and uid $uid to remove from MongoDB");
+     return 0;
+    }
+
+    $this->report_error("Something strange just happened: {$res['n']} items of $type and uid $uid removed from MongoDB");
     return false;
+
    }catch(exception $e){
     $this->report_error("Exception thrown, message is: ".$e->getMessage());
     return false;
