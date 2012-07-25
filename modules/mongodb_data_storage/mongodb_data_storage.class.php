@@ -33,6 +33,18 @@
   }
 
 
+  // XXX temp - draft - Needs to be in data storage interface
+  public function get_connection() {
+   try {
+    $m = new Mongo();
+    return $m->selectDB($this->inform('mongo_db_name'));
+   }catch(exception $e){
+    $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
+    return false;
+   }
+  }
+
+
   /**
    * Build data set uid according to given criteria object
    * Based (!) on memcache_data_storage::_criteria_talk()
