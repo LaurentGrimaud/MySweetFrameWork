@@ -83,6 +83,12 @@
   /**
    * metacrit[l] = 10
    * metacrit[s][field_name] = 1|-1 (asc ou desc)
+   *
+   * crit[field_name] = value               // exact match
+   * crit[field_name] = ["$gt"  => value]   // strictly greater than
+   * crit[field_name] = ["$gte" => value]   // greater than or equal to
+   * crit[field_name] = ["$lt"  => value]   // strictly lower than
+   * crit[field_name] = ["$lte" => value]   // lower than or equal to
    */
   public function retrieve($type, $crit, $metacrit){
    try{
