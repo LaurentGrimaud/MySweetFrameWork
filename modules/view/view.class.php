@@ -8,7 +8,7 @@
     'view.response' => 'mysfw_http_response'
     );
 
-  public function get($k) {return @$this->_values[$k];}
+  public function get($k) {return isset($this->_values[$k]) ? $this->_values[$k] : $this->inform($k);}
   public function set($k, $v) {$this->_values[$k] = $v;}
   public function set_all($_) {$this->_values = (array)$_;}
   public function get_all() {return $this->_values;}
