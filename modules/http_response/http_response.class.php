@@ -8,7 +8,7 @@
  class mysfw_http_response extends mysfw_core implements mysfw_view_interface, mysfw_response_interface, mysfw_dna{
   private $_v;                               // Object implementing mysfw_view interface
   protected $_defaults= array(
-    'response.http_status_code' => 501,
+    'response.http_status_code' => 200,
     'response.http_version'     => 'HTTP/1.1',
     'response.view'             => 'view', // Name of the underlaying MySFW view object to use
     );
@@ -110,6 +110,12 @@
     'WWW-Authenticate',
     );
 
+  protected static $_extra_headers = array(
+    self::http_status_code_unauthorized => array(
+     'WWW-Authenticate' => 'Basic realm="My Realm"'
+     )
+    );
+
   // Response= Status-Line *(( general-header | response-header | entity-header ) CRLF) CRLF
   protected $_http_response_headers= array();
 
@@ -154,6 +160,12 @@
     $status_line= $this->inform('response.http_version') . " $status_code " . self::$_http_reason_phrase[$status_code];
     header($status_line, true, $status_code);
     $this->report_debug("Sent status line: `{$status_line}` for status code: `" . $status_code . "`.");
+    // Build extra headers
+    if(@self::$_extra_headers[$status_code]) {
+     foreach(self::$_extra_headers[$status_code] as $header => $value) {
+      $this->set_http_response_header($header, $value);
+     }
+    }
     foreach($this->_http_response_headers as $http_response_header_field => $value){
      // Output response headers
      header("{$http_response_header_field}: {$value}",true);
