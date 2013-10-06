@@ -30,7 +30,7 @@
    *
    * @return the only one popper object
   */
-  public static function itself($root) { // Singletonization
+  public static function itself($root) {
    if(! self::$_itself) {self::$_itself = new mysfw_default_popper($root);}
 
    return self::$_itself;
@@ -48,15 +48,11 @@
     $this->swallow($classname);
    }
    $o = new $full_name;
-   $o->set_popper($this);
-   // Does a default reporter exist ?
-   // XXX
-   if($_ = $this->indicate('reporter')){$o->set_reporter($_);}
-   // Does a default configurator exist ?
-   // XXX
-   if($_ = $this->indicate('configurator')){$o->set_configurator($_);}
-
-   if($conf_context) $o->set_configuration_context($conf_context);
+   $o->set_popper($this)->set_configuration_context($conf_context);
+   try {
+    $o->set_reporter($this->indicate('reporter'))
+      ->set_configurator($this->indicate('configurator'));
+   }catch(Exception $e){ } // No reporter nor configurator is OK
 
    return $o->get_ready();
   }
@@ -65,6 +61,8 @@
    * Simple module load, aimed to replace autoload process
    * First look for the files in mysfw hierarchy, and defaults
    * to project's one if not found
+   *
+   * @param $modulename string name of the module to load
    */
   public function swallow($modulename) {
    if(@include_once($this->_build_module_name($modulename))) return;
@@ -96,8 +94,12 @@
    *
    * @param $name string the name of the register's entry to investigate
    * @return object the register object
+   * @throws Exception if nothing found in register
   */
-  public function indicate($name) {return @$this->_register[$name];}
+  public function indicate($name) {
+   if(! @$this->_register[$name]) throw new Exception("Nothing in register for name `$name`");
+   return $this->_register[$name];
+  }
 
   /**
    * Builds an usuable path for inclusion of the given element
