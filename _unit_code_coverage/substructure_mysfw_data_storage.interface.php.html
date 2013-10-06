@@ -5,12 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>mysfw_data_storage.interface.php</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="container.css">
-    <script type="text/javascript" src="yahoo-dom-event.js"></script>
-    <script type="text/javascript" src="container-min.js"></script>
   </head>
 
-  <body class="yui-skin-sam">
+  <body>
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr><td class="title">mysfw_data_storage.interface.php</td></tr>
       <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
@@ -20,7 +17,7 @@
           <table cellpadding="1" border="0" width="100%">
             <tr>
               <td class="headerItem" width="20%">Current file:</td>
-              <td class="headerValue" width="80%"><a href="index.html">/projects/MySweetFrameWork</a>/<a href="substructure.html">substructure</a>/<a href="substructure_mysfw_data_storage.interface.php.html">mysfw_data_storage.interface.php</a></td>
+              <td class="headerValue" width="80%"><a href="index.html">/home/l00/projets/MySweetFW</a>/<a href="substructure.html">substructure</a>/<a href="substructure_mysfw_data_storage.interface.php.html">mysfw_data_storage.interface.php</a></td>
             </tr>
             <tr>
               <td class="legendItem" width="20%">Legend:</td>
@@ -45,12 +42,12 @@
       <table width="90%" cellpadding="2" cellspacing="1" border="0">
         <tr>
           <td class="tableHead" width="30%">&nbsp;</td>
-          <td class="tableHead" colspan="10">Coverage</td>
+          <td class="tableHead" colspan="9">Coverage</td>
         </tr>
         <tr>
           <td class="tableHead">&nbsp;</td>
           <td class="tableHead" colspan="3">Classes</td>
-          <td class="tableHead" colspan="4">Functions / Methods</td>
+          <td class="tableHead" colspan="3">Functions / Methods</td>
           <td class="tableHead" colspan="3">Lines</td>
         </tr>
         <tr>
@@ -92,16 +89,16 @@
       <tr>
         <td>
 <pre class="source">
-<span class="lineNum" id="container1"><a name="1"></a><a href="#1" id="line1">       1</a> </span>                : &lt;?php                                               
+<span class="lineNum" id="container1"><a name="1"></a><a href="#1" id="line1">       1</a> </span>                : <span class="default">&lt;?php</span>                                               
 <span class="lineNum" id="container2"><a name="2"></a><a href="#2" id="line2">       2</a> </span>                :                                                     
-<span class="lineNum" id="container3"><a name="3"></a><a href="#3" id="line3">       3</a> </span><span class="lineCov">              1 :  interface mysfw_data_storage {                     </span>
-<span class="lineNum" id="container4"><a name="4"></a><a href="#4" id="line4">       4</a> </span>                :   public function retrieve($type, $crit, $metacrit);
-<span class="lineNum" id="container5"><a name="5"></a><a href="#5" id="line5">       5</a> </span>                :   public function add($type, $crit, $values);       
-<span class="lineNum" id="container6"><a name="6"></a><a href="#6" id="line6">       6</a> </span>                :   public function change($type, $crit, $values);    
-<span class="lineNum" id="container7"><a name="7"></a><a href="#7" id="line7">       7</a> </span>                :   public function delete($type, $crit);             
-<span class="lineNum" id="container8"><a name="8"></a><a href="#8" id="line8">       8</a> </span>                :  }                                                  
+<span class="lineNum" id="container3"><a name="3"></a><a href="#3" id="line3">       3</a> </span><span class="lineCov">              1 : <span class="default">&nbsp;</span><span class="default">interface</span><span class="default">&nbsp;</span><span class="default">mysfw_data_storage</span><span class="default">&nbsp;</span><span class="keyword">{</span>                     </span>
+<span class="lineNum" id="container4"><a name="4"></a><a href="#4" id="line4">       4</a> </span>                : <span class="default">&nbsp;&nbsp;</span><span class="keyword">public</span><span class="default">&nbsp;</span><span class="keyword">function</span><span class="default">&nbsp;</span><span class="default">retrieve</span><span class="keyword">(</span><span class="default">$type</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$crit</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$metacrit</span><span class="keyword">)</span><span class="keyword">;</span>
+<span class="lineNum" id="container5"><a name="5"></a><a href="#5" id="line5">       5</a> </span>                : <span class="default">&nbsp;&nbsp;</span><span class="keyword">public</span><span class="default">&nbsp;</span><span class="keyword">function</span><span class="default">&nbsp;</span><span class="default">add</span><span class="keyword">(</span><span class="default">$type</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$crit</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$values</span><span class="keyword">)</span><span class="keyword">;</span>       
+<span class="lineNum" id="container6"><a name="6"></a><a href="#6" id="line6">       6</a> </span>                : <span class="default">&nbsp;&nbsp;</span><span class="keyword">public</span><span class="default">&nbsp;</span><span class="keyword">function</span><span class="default">&nbsp;</span><span class="default">change</span><span class="keyword">(</span><span class="default">$type</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$crit</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$values</span><span class="keyword">)</span><span class="keyword">;</span>    
+<span class="lineNum" id="container7"><a name="7"></a><a href="#7" id="line7">       7</a> </span>                : <span class="default">&nbsp;&nbsp;</span><span class="keyword">public</span><span class="default">&nbsp;</span><span class="keyword">function</span><span class="default">&nbsp;</span><span class="default">delete</span><span class="keyword">(</span><span class="default">$type</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$crit</span><span class="keyword">)</span><span class="keyword">;</span>             
+<span class="lineNum" id="container8"><a name="8"></a><a href="#8" id="line8">       8</a> </span>                : <span class="default">&nbsp;</span><span class="keyword">}</span>                                                  
 <span class="lineNum" id="container9"><a name="9"></a><a href="#9" id="line9">       9</a> </span>                :                                                     
-<span class="lineNum" id="container10"><a name="10"></a><a href="#10" id="line10">      10</a> </span>                : ?&gt;                                                  
+<span class="lineNum" id="container10"><a name="10"></a><a href="#10" id="line10">      10</a> </span>                : <span class="default">?&gt;</span>                                                  
 
 </pre>
         </td>
@@ -110,52 +107,9 @@
 
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
-      <tr><td class="versionInfo">Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 1.1.1</a> using <a href="http://www.php.net/" target="_top">PHP 5.3.6-13ubuntu3.3</a> and PHPUnit 3.6.7 at Thu Jan 12 23:30:14 CET 2012.</td></tr>
+      <tr><td class="versionInfo">Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 1.1.2</a> using <a href="http://www.php.net/" target="_top">PHP 5.4.9-4ubuntu2.3</a> and PHPUnit 3.6.10 at Sun Oct 6 5:24:52 CEST 2013.</td></tr>
     </table>
 
     <br />
-
-    <script type="text/javascript">
-      //<![CDATA[
-      $E = YAHOO.util.Event;
-      YAHOO.namespace("phpunit.container");
-      YAHOO.phpunit.container.panelsData = {
-        "panel3": {
-          "header": "1 test covers line 3",
-          "body": "<ul><li class=\"testPassed\">mysfw_default_popper_Test::test_pop_returns_correct_object</li></ul>",
-          "footer": ""
-        },
-      "dummy": ""
-      };
-
-      YAHOO.phpunit.container.prepare = function (e) {
-        var elemId = $E.getTarget(e).id;
-        var line = elemId.substr(4);
-        var panelId = "panel" + line;
-        var containerId = "container" + line;
-
-        var panelData = YAHOO.phpunit.container.panelsData[panelId];
-
-        var panel = new YAHOO.widget.Panel(panelId, { visible:false, draggable:false, close:true } );
-        panel.setHeader(panelData["header"]);
-        panel.setBody(panelData["body"]);
-        panel.setFooter(panelData["footer"]);
-        panel.render(containerId);
-
-        $E.addListener(elemId, "click", panel.show, panel, true);
-        $E.removeListener(elemId, "mouseover");
-      };
-
-      function init() {
-        var ypc = YAHOO.phpunit.container;
-        for (var panelId in ypc.panelsData) {
-          var elemId = "line" + panelId.substr(5);
-          $E.addListener(elemId, "mouseover", ypc.prepare);
-        }
-      }
-
-      $E.addListener(window, "load", init);
-      //]]>
-    </script>
   </body>
 </html>
