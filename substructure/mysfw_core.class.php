@@ -16,16 +16,16 @@
   protected $_conf_context = null; // configuration context, as a string
 
   /** Imposed behaviors **/
-  final public function set_popper(mysfw_popper $_) {$this->_p = $_;}
+  final public function set_popper(mysfw_popper $_) {$this->_p = $_; return $this;}
   final public function get_popper() {return $this->_p;}
 
-  final public function set_reporter(mysfw_reporter $_) {$this->_r = $_;}
+  final public function set_reporter(mysfw_reporter $_) {$this->_r = $_;return $this;}
   final public function get_reporter() {return $this->_r;}
 
-  final public function set_configurator(mysfw_configurator $_) {$this->_c = $_;}
+  final public function set_configurator(mysfw_configurator $_) {$this->_c = $_;return $this;}
   final public function get_configurator() {return $this->_c;}
 
-  final public function set_configuration_context($context = null) {$this->_conf_context = $context;}
+  final public function set_configuration_context($_ = null) {$this->_conf_context = $_;return $this;}
   final public function get_configuration_context(){return $this->_conf_context;}
 
   final public function get_ready(){
