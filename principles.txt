@@ -1,0 +1,8 @@
+. KISS 
+. COC
+. All is module, except popper
+. A module is self-configured
+. A module can be externally configured
+. Nothing is static, except in popper
+. Error means exception
+. Exception means error
