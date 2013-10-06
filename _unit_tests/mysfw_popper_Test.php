@@ -1,5 +1,5 @@
 <?php
-
+// require_once 'vfsStream/vfsStream.php';
  require_once 'popper.class.php';
 
  class mysfw_default_popper_Test extends PHPUnit_Framework_TestCase {
@@ -12,7 +12,7 @@
   }
 
   public function setUp(){
-   $this->x = mysfw_default_popper::itself(__DIR__);
+   $this->x = mysfw_default_popper::itself(__DIR__.DIRECTORY_SEPARATOR."fake_project_root/www");
   }
 
   public function test_singletonisation(){
@@ -51,6 +51,11 @@
    $a = (object)array('hhhhh' => 'ffgfg', 'gbghbghbg' => 0);
    $this->x->register('a', $a);
    $this->assertSame($a, $this->x->indicate('a'));
+  }
+
+  /** XXX must use vfsStream **/
+  public function test_external_swallowing(){
+   $this->assertEquals(get_class($this->x->pop('fake_extension')), "mysfw_fake_extension");
   }
 
  }
