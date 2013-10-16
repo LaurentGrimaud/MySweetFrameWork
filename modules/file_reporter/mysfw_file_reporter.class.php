@@ -6,8 +6,8 @@
 
 
   protected function _get_ready() {
-   if(false === ($log = $this->inform('root').$this->inform('log_file_name'))){return false;}
-   return ($this->_fd = fopen($log, 'a')) ? true : false;
+   $log = $this->inform('root').$this->inform('log_file_name');
+   if(! $this->_fd = fopen($log, 'a')) throw new mysfw\exception("Failed to open report file `$log`");
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
