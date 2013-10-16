@@ -2,7 +2,7 @@
 
 namespace mysfw;
 
-class dispatcher {
+class mysfw_dispatcher extends mysfw_core {
  protected $_defaults = [
   'controller_parameter' => 'controller',
   'controller_suffix'    => '_controller',
