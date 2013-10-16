@@ -51,6 +51,8 @@
    return $_c->define($c, $v, $this->get_configuration_context());
   }
 
+  public function except($m){throw new mysfw\exception($m);}
+
 
   /**
    * Should be overriden to follown specific initialisation requirements
