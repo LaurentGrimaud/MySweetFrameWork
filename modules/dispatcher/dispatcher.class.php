@@ -1,6 +1,6 @@
 <?php
 
-namespace mysfw;
+//namespace mysfw;
 
 class mysfw_dispatcher extends mysfw_core {
  protected $_defaults = [
@@ -10,6 +10,7 @@ class mysfw_dispatcher extends mysfw_core {
   ];
 
  protected function _get_ready() {
+  $this->report_debug("Dispatcher is ready");
  }
 
  /**
