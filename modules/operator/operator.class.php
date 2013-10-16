@@ -31,7 +31,7 @@
    $identified = true;
    $step_to_identification = 0;
    $defs = $this->inform('operators:custom_definitions')[$type] ? : $this->inform('operators:generic_definitions');
-   if(!$defs) throw new mysfw\exception("No definition available for `$type` operator");
+   if(!$defs) $this->except("No definition available for `$type` operator");
    foreach($defs as $p => $v){ // XXX temp
     $this->_identify($p, $v);
     if(is_null($v)){
@@ -55,15 +55,12 @@
   public function get_data_storage() {return $this->_data_storage;}
   public function set_data_storage($_) {$this->_data_storage = $_;}
 
+  /**
+   * @throw myswf\exception on identification errors
+   */
   public function identify($field, $value) {
-   if($this->_is_identified()){
-    $this->report_error("Identifying of already identified operator is forbidden");
-    return false;
-   }
-   if(!is_null(@$this->_criteria->$field)){
-    $this->report_error("uid part `$field` already valued (to `{$this->_criteria->$field}`)");
-    return false;
-   }
+   if($this->_is_identified()) $this->except("Trying to identify an already identified operator");
+   if(!is_null(@$this->_criteria->$field)) $this->except("UID part `$field` already valued (to `{$this->_criteria->$field}`)");
    $this->_identify($field, $value);
    $this->_check_identification();
    return true;
@@ -106,14 +103,12 @@
 
   /**
    * Object's data are created in underlaying data storage
+   * @throw myswf\exception on error
    */
   public function create() {   
-   if($this->_is_identified()){
-    $this->report_error("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
-    return false;
-   }
+   if($this->_is_identified()) $this->except("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
 
-   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values)) return false;
+   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values)) $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
 
    $this->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
 
@@ -122,22 +117,23 @@
 
   /**
    * Object's data are updated in underlaying data storage
+   * @throw myswf\exception on error
    */
   public function update(){
    if($this->_is_identified()){
     return $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_values);
    }
-   $this->report_error("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
-   return false;
+   $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
   }
 
   /**
    * Object's data are retrieved from underlaying data storage
+   * @throw myswf\exception on error
    */
   public function recall() {
    $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
-   if(count($values) > 1) {
-    throw mysfw\exception("Too many entities (".count($values).") recall from data storage");
+   if(count($values) !== 1) {
+    $this->except("Bad entities count (".count($values).") recall from data storage, expected exactly 1");
    }
 
    $this->set_values($values[0]);
@@ -146,24 +142,14 @@
 
   /**
    * Object's data are deleted from underlaying data storage
+   * @throw myswf\exception on error, especially if there is no data to delete
    */
   public function erase() {
-   if(! $this->_is_identified()){
-    $this->report_error("Couldn't erase non-identified object");
-    return false;
-   }
+   if(! $this->_is_identified()) $this->except("Couldn't erase non-identified object");
 
    $r = $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria);
 
-   if($r === false){
-    $this->report_error("Failed to delete mapped data in underlaying data storage");
-    return false;
-   }
-
-   if($r === 0) {
-    $this->report_error("No data to delete in underlaying data storage");
-    return 0;
-   }
+   if($r === 0) $this->except("No data to delete in underlaying data storage"); // XXX Exception or return code ?
 
    $this->report_debug("Mapped data are now deleted from underlaying data storage");
    return 1;
