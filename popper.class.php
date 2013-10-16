@@ -84,7 +84,7 @@
    */
   public function register($name, $stuff) {
    if(is_string($stuff)) {
-    return $this->_register[$name] = &$this->pop($stuff);
+    return $this->_register[$name] = $this->pop($stuff);
    }
    return $this->_register[$name] = $stuff;
   }
