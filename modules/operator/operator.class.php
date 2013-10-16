@@ -12,15 +12,18 @@
   private $_data_storage;
   private $_uid_injection = null;
 
+  protected $_defaults = [
+   'operators_definitions' => ['_id' => null]
+   ];
 
   // XXX draft, refactor needed
-  public function morph($type, $operator_definition) {
+  public function morph($type) {
    $this->_underlaying_type = $type;
    $this->_values = (object) null;
    $this->_criteria = (object) null;
    $identified = true;
    $step_to_identification = 0;
-   foreach($operator_definition as $p => $v){ // XXX temp
+   foreach($this->inform('operators_definitions') as $p => $v){ // XXX temp
     $this->_identify($p, $v);
     if(is_null($v)){
      $step_to_identification++;
