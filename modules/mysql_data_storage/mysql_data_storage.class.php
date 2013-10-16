@@ -18,6 +18,7 @@
 
    $r = $this->_query($c, $sql);
 
+   $res = [];
    while($row = $r->fetch_object()) {
     $res[] = $row;
    }
