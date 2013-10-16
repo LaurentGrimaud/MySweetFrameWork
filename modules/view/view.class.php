@@ -4,7 +4,7 @@
  class mysfw_view extends mysfw_core implements mysfw_view_interface, mysfw_dna {
   private $_values;
   protected $_defaults = array(
-    'tmpl_dir' =>      'tmpl/',
+    'tmpl_dir' =>      '../includes/tmpl/', // XXX temp ?
     'view.response' => 'mysfw_http_response'
     );
 
