@@ -42,7 +42,7 @@
   public function report_error($msg){return $this->_report("error", $msg);}
 
   public function inform($c){
-   if(! $_c = $this->get_configurator()) return null;
+   if(! $_c = $this->get_configurator()) throw new mysfw\exception("No configurator defined");
    return $_c->inform($c, $this->get_configuration_context());
   }
 
