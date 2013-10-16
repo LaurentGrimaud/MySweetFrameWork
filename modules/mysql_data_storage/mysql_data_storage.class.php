@@ -1,8 +1,16 @@
 <?php
 
  class mysfw_mysql_data_storage extends mysfw_core implements mysfw_data_storage { 
+  protected $_defaults = [
+   'mysql.host' => 'localhost',
+   'mysql.port' => 3306,
+   'mysql.user' => 'mysfw',
+   'mysql.pass' => 'mysfw',
+   'mysql.db'   => 'mysfw',
+   ];
 
-  public function retrieve($type, $crit) {
+  // XXX Refactor needed
+  public function retrieve($type, $crit, $metacrit = null) {
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
 
@@ -63,7 +71,11 @@
 
   // XXX temp
   private function _connect() {
-   return new mysqli('localhost', 'mysfw_test', 'grrrr', 'mysfw_test');
+   $c =  new mysqli($this->inform('mysql.host'), $this->inform('mysql.user'), $this->inform('mysql.pass'), $this->inform('mysql.db'), $this->inform('mysql.port'));
+   if($c->connect_errno) {
+    throw new mysfw\exception("Failed to connect to mysql data storage. Message was: ".$c->connect_error);
+   }
+   return $c;
   }
 
   private function _query($c, $sql) {
