@@ -13,17 +13,26 @@
   private $_uid_injection = null;
 
   protected $_defaults = [
-   'operators_definitions' => ['_id' => null]  // XXX draft for generic operator behavior
+   'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
+   'operators:custom_definitions'  => [                 // XXX draft operator specific definitions
+    'user' => ['id' => null]
+    ]
    ];
 
-  // XXX draft, refactor needed
+  /**
+   * XXX draft, refactor needed
+   * @throw myswf\exception if no definitions available for the given operator
+   * @return this current object
+   */
   public function morph($type) {
    $this->_underlaying_type = $type;
    $this->_values = (object) null;
    $this->_criteria = (object) null;
    $identified = true;
    $step_to_identification = 0;
-   foreach($this->inform('operators_definitions') as $p => $v){ // XXX temp
+   $defs = $this->inform('operators:custom_definitions')[$type] ? : $this->inform('operators:generic_definitions');
+   if(!$defs) throw new mysfw\exception("No definition available for `$type` operator");
+   foreach($defs as $p => $v){ // XXX temp
     $this->_identify($p, $v);
     if(is_null($v)){
      $step_to_identification++;
