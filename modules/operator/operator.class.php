@@ -13,7 +13,7 @@
   private $_uid_injection = null;
 
   protected $_defaults = [
-   'operators_definitions' => ['_id' => null]
+   'operators_definitions' => ['_id' => null]  // XXX draft for generic operator behavior
    ];
 
   // XXX draft, refactor needed
@@ -126,9 +126,12 @@
    * Object's data are retrieved from underlaying data storage
    */
   public function recall() {
-   if(!$values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria)) return false;
+   $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
+   if(count($values) > 1) {
+    throw mysfw\exception("Too many entities (".count($values).") recall from data storage");
+   }
 
-   $this->set_values($values);
+   $this->set_values($values[0]);
    return true;
   }
 
