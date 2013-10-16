@@ -3,6 +3,7 @@
  // XXX temp static requires
  require_once 'substructure/mysfw_popper.interface.php';
  require_once 'substructure/mysfw_dna.interface.php';
+ require_once 'substructure/mysfw_exception.class.php';
 
  class mysfw_default_popper implements mysfw_popper {
   private static $_itself;
@@ -52,7 +53,7 @@
    try {
     $o->set_reporter($this->indicate('reporter'))
       ->set_configurator($this->indicate('configurator'));
-   }catch(Exception $e){ } // No reporter nor configurator is OK
+   }catch(mysfw\exception $e){ } // No reporter nor configurator is OK
 
    return $o->get_ready();
   }
@@ -94,10 +95,10 @@
    *
    * @param $name string the name of the register's entry to investigate
    * @return object the register object
-   * @throws Exception if nothing found in register
+   * @throws mysfw\exception if nothing found in register
   */
   public function indicate($name) {
-   if(! @$this->_register[$name]) throw new Exception("Nothing in register for name `$name`");
+   if(! @$this->_register[$name]) throw new mysfw\exception("Nothing in register for name `$name`");
    return $this->_register[$name];
   }
 
