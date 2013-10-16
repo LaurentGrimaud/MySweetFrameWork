@@ -2,6 +2,7 @@
 
 ** For running unit tests
  Install phpunit
+ Install xdebug php extension
  Install vfsStream
   * pear channel-discover pear.bovigo.org
   * pear install bovigo/vfsStream-beta
