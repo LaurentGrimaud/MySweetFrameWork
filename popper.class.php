@@ -51,9 +51,12 @@
    $o = new $full_name;
    $o->set_popper($this)->set_configuration_context($conf_context);
    try {
-    $o->set_reporter($this->indicate('reporter'))
-      ->set_configurator($this->indicate('configurator'));
-   }catch(mysfw\exception $e){ } // No reporter nor configurator is OK
+    $o->set_configurator($this->indicate('configurator'));
+   } catch(mysfw\exception $e) { } // No configurator is OK
+   try {
+    $o->set_reporter($this->indicate('reporter'));
+   }catch(mysfw\exception $e){ } // No reporter is OK
+
 
    return $o->get_ready();
   }
@@ -66,8 +69,17 @@
    * @param $modulename string name of the module to load
    */
   public function swallow($modulename) {
-   if(@include_once($this->_build_module_name($modulename))) return;
-   include_once($this->_build_custom_file_name($modulename));
+   $file = $this->_build_module_name($modulename);
+   if(file_exists($file)){
+    require_once($file);
+    return;
+   }
+   $file_alt = $this->_build_custom_file_name($modulename);
+   if(file_exists($file_alt)){
+    require_once($file_alt);
+    return;
+   }
+   throw new mysfw\exception("No `$file` nor `$file_alt` files found for module `$modulename`"); 
   }
 
   public function set_home($v) {$this->_home = $v;}
