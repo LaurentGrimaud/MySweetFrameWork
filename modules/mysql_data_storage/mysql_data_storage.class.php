@@ -31,10 +31,7 @@
    $c = $this->_connect();
 
    $sql = "INSERT INTO $type ".$this->_values_talk($c, $mysfw_data_object);
-   if(! $this->_query($c, $sql)) {
-    $this->report_error("Failed to add data");
-    return false;
-   }
+   $this->_query($c, $sql);
 
    return $c->insert_id;
   }
@@ -46,9 +43,7 @@
 
    $sql = "UPDATE $type {$this->_values_talk($c, $values)} {$this->_criteria_talk($c, $crit)}";
 
-   if(! $this->_query($c, $sql)) {
-    return false;
-   }
+   $this->_query($c, $sql);
 
    return $c->affected_rows;
   }
@@ -60,9 +55,7 @@
 
    $sql = "DELETE from $type {$this->_criteria_talk($c, $crit)}";
 
-   if(! $this->_query($c, $sql)) {
-    return false;
-   }
+   $this->_query($c, $sql);
 
    return $c->affected_rows;
   }
@@ -116,9 +109,4 @@
    }
    return $sql;
   }
-
-
-
  }
-
-?>
