@@ -9,7 +9,9 @@
   * 5. Provides exception handling facility (factory method except())
   **/
 
- abstract class mysfw_core implements mysfw_dna {
+ namespace t0t1\mysfw\frame;
+
+ abstract class dna implements contract\dna {
   private $_p; // mysfw popper
   private $_r; // mysfw reporter
   private $_c; // mysfw configurator
@@ -17,13 +19,13 @@
   protected $_conf_context = null; // configuration context, as a string
 
   /** Imposed behaviors **/
-  final public function set_popper(mysfw_popper $_) {$this->_p = $_; return $this;}
+  final public function set_popper(contract\popper $_) {$this->_p = $_; return $this;}
   final public function get_popper() {return $this->_p;}
 
-  final public function set_reporter(mysfw_reporter $_) {$this->_r = $_;return $this;}
+  final public function set_reporter(contract\reporter $_) {$this->_r = $_;return $this;}
   final public function get_reporter() {return $this->_r;}
 
-  final public function set_configurator(mysfw_configurator $_) {$this->_c = $_;return $this;}
+  final public function set_configurator(contract\configurator $_) {$this->_c = $_;return $this;}
   final public function get_configurator() {return $this->_c;}
 
   final public function set_configuration_context($_ = null) {$this->_conf_context = $_;return $this;}
