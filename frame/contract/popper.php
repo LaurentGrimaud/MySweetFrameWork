@@ -1,6 +1,7 @@
 <?php
+ namespace t0t1\mysfw\frame\contract;
 
- interface mysfw_popper {
+ interface popper {
 
   public static function itself($root);
 
