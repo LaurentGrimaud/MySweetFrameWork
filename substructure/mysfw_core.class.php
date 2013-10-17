@@ -51,7 +51,22 @@
    return $_c->define($c, $v, $this->get_configuration_context());
   }
 
-  public function except($m){throw new mysfw\exception($m);}
+  /**
+   * factory of mysfw exceptions
+   * @param string $m message of the exception
+   * @param string $t the requested type of mysfw exception
+   *
+   * @return instance of mysfw\exception or of one of this child
+   * XXX namespace finalization needed
+   */
+  public function except($m, $t = null){
+   if($t && @$this->_exceptions[$t]){
+    $ens = $this->_mns.'\exception\\'.$t;
+   }else{
+    $ens = '\mysfw\exception'; // XXX until the raise of mysfw exceptions
+   }
+   return new $ens($m, $t);
+  }
 
 
   /**
