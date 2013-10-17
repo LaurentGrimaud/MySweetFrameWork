@@ -45,7 +45,8 @@
    $this->_criteria = (object) null;
    $identified = true;
    $step_to_identification = 0;
-   $defs = $this->inform('operators:custom_definitions')[$type] ? : $this->inform('operators:generic_definitions');
+   $customer_defs = $this->inform('operators:custom_definitions');
+   $defs = @$customer_defs[$type] ? : $this->inform('operators:generic_definitions');
    if(!$defs) throw $this->except("No definition available for `$type` operator");
    foreach($defs as $p => $v){ // XXX temp
     $this->_identify($p, $v);
