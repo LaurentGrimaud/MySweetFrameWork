@@ -6,8 +6,12 @@
   * @XXX obsoletes return values due to exceptions introduction
   * @XXX check behavior with several uid parts
   */
+ namespace t0t1\mysfw\module\operator;
+ use t0t1\mysfw\frame;
 
- class mysfw_operator extends mysfw_core {
+ $this->_learn('module\operator\exception\no_entry');
+
+ class operator extends frame\dna implements frame\contract\dna {
   private $_is_identified = false;
   private $_underlaying_type;
   private $_values;
@@ -15,7 +19,7 @@
   private $_data_storage;
   private $_uid_injection = null;
 
-  protected $_mns = '\mysfw\module\operator';
+  protected $_mns = '\t0t1\mysfw\module\operator'; //XXX
 
   protected $_defaults = [
    'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
@@ -172,4 +176,3 @@
 
  }
 
-?>
