@@ -1,5 +1,5 @@
 <?php
- namespace t0t1\mysfw;
+ namespace t0t1\mysfw\module\mysql_data_storage;
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\data_storage");
