@@ -2,8 +2,9 @@
 /**
  * XXX what about log ceil ?
  */
+ namespace t0t1\mysfw\frame\contract;
 
- interface mysfw_reporter {
+ interface reporter {
 
   public function report_debug($msg);
   public function report_info($msg);

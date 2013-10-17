@@ -1,6 +1,7 @@
 <?php
+ namespace t0t1\mysfw\frame\contract;
 
- interface mysfw_data_storage {
+ interface data_storage {
   public function retrieve($type, $crit, $metacrit);
   public function add($type, $crit, $values);
   public function change($type, $crit, $values);

@@ -1,5 +1,8 @@
 <?php
+ // XXX empty, isn't it ?
 
- interface mysfw_response_interface {
+ namespace t0t1\mysfw\frame\contract;
+
+ interface response {
  }
 ?>
