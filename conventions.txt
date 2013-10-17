@@ -1,7 +1,8 @@
-* mySFW objects names begin with "mysfw_"
+mysfw conventions, version 0.2
 
-* all mysfw objects must implements mysfw_dna, except poppers
+1. Naming
+1.1 No plural form (ie final 's') in directory or file names
 
-* Directory names finish with a /
+2. Coding
+2.1 All mysfw objects must implements frame\interface\dna, except poppers
 
-* Module-related configuration names start with "[module_name]."
