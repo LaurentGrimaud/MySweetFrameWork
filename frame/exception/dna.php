@@ -2,10 +2,11 @@
  /**
   * Empty nutshell for mysfw exceptions
   * Just here to permit a potential special process of exceptions
+  * So every other mysfw exception should extends this one
   */
- namespace mysfw;
+ namespace t0t1\mysfw\frame\exception;
 
- class exception extends \Exception {
+ class dna extends \Exception {
   private $_requested_type;
 
   public function __construct($m, $t = null) {
