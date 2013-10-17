@@ -1,18 +1,24 @@
-A typical layout for mysfw is:
+### myswf namespacing organization
+XXX What about abstract things ?
+
+Typical layout for mysfw namespaces:
 
 t0t1/
 └── mysfw
     ├── frame
-    │   ├── core
-    │   ├── interfaces
-    │   │   ├── core
+    │   ├── contract
     │   │   ├── data_storage
+    │   │   ├── dna
     │   │   ├── operator
     │   │   └── reporter
+    │   ├── dna
+    │   ├── exception
+    │   │   ├── debug_exception
+    │   │   └── exception
     │   └── popper
-    └── modules
+    └── module
         └── operator
-            └── exceptions
+            └── exception
                 ├── no_entry
                 └── too_many_entries
 
