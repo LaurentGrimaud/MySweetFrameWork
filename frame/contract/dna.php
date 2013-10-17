@@ -1,13 +1,15 @@
 <?php
+ namespace t0t1\mysfw\frame\contract;
+ use t0t1\mysfw\frame;
 
- interface mysfw_dna {
-  public function set_popper(mysfw_popper $_);
+ interface dna {
+  public function set_popper(frame\contract\popper $_);
   public function get_popper();
 
-  public function set_reporter(mysfw_reporter $_);
+  public function set_reporter(frame\contract\reporter $_);
   public function get_reporter();
 
-  public function set_configurator(mysfw_configurator $_);
+  public function set_configurator(frame\contract\configurator $_);
   public function get_configurator();
 
   public function report_debug($msg);
