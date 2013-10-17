@@ -1,14 +1,16 @@
 <?php
-/*
+ /**
  * XXX use of exceptions factory ?
  */
+ namespace \t0t1\mysfw\frame;
+ use \t0t1\mysfw;
 
  // XXX temp static requires
- require_once 'substructure/mysfw_popper.interface.php';
- require_once 'substructure/mysfw_dna.interface.php';
- require_once 'substructure/mysfw_exception.class.php';
+ require_once 'frame/contract/popper.php';
+ require_once 'frame/contract/dna.php';
+ require_once 'frame/exception/dna.php';
 
- class mysfw_default_popper implements mysfw_popper {
+ class popper implements contract\popper {
   private static $_itself;
   private $_home;
   private $_register = array(); // XXX here, or in configurator ... ?
@@ -55,10 +57,10 @@
    $o->set_popper($this)->set_configuration_context($conf_context);
    try {
     $o->set_configurator($this->indicate('configurator'));
-   } catch(mysfw\exception $e) { } // No configurator is OK
+   } catch(exception\dna $e) { } // No configurator is OK
    try {
     $o->set_reporter($this->indicate('reporter'));
-   }catch(mysfw\exception $e){ } // No reporter is OK
+   }catch(exception\dna $e){ } // No reporter is OK
 
 
    return $o->get_ready();
@@ -82,7 +84,7 @@
     require_once($file_alt);
     return;
    }
-   throw new mysfw\exception("No `$file` nor `$file_alt` files found for module `$modulename`");  // XXX use of exception factory ?
+   throw new exception\dna("No `$file` nor `$file_alt` files found for module `$modulename`");  // XXX use of exception factory ?
   }
 
   public function set_home($v) {$this->_home = $v;}
@@ -110,10 +112,10 @@
    *
    * @param $name string the name of the register's entry to investigate
    * @return object the register object
-   * @throws mysfw\exception if nothing found in register
+   * @throws exception\dna if nothing found in register
   */
   public function indicate($name) {
-   if(! @$this->_register[$name]) throw new mysfw\exception("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
+   if(! @$this->_register[$name]) throw new exception\dna("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
    return $this->_register[$name];
   }
 
