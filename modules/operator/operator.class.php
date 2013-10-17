@@ -3,6 +3,7 @@
   * First implementation
   *
   * @XXX warning when accessing non-existent property
+  * @XXX obsoletes return values due to exceptions introduction
   * @XXX check behavior with several uid parts
   */
 
@@ -40,7 +41,7 @@
    $identified = true;
    $step_to_identification = 0;
    $defs = $this->inform('operators:custom_definitions')[$type] ? : $this->inform('operators:generic_definitions');
-   if(!$defs) $this->except("No definition available for `$type` operator");
+   if(!$defs) throw $this->except("No definition available for `$type` operator");
    foreach($defs as $p => $v){ // XXX temp
     $this->_identify($p, $v);
     if(is_null($v)){
@@ -68,8 +69,8 @@
    * @throw myswf\exception on identification errors
    */
   public function identify($field, $value) {
-   if($this->_is_identified()) $this->except("Trying to identify an already identified operator");
-   if(!is_null(@$this->_criteria->$field)) $this->except("UID part `$field` already valued (to `{$this->_criteria->$field}`)");
+   if($this->_is_identified()) throw $this->except("Trying to identify an already identified operator");
+   if(!is_null(@$this->_criteria->$field)) throw $this->except("UID part `$field` already valued (to `{$this->_criteria->$field}`)");
    $this->_identify($field, $value);
    $this->_check_identification();
    return true;
@@ -115,9 +116,9 @@
    * @throw myswf\exception on error
    */
   public function create() {   
-   if($this->_is_identified()) $this->except("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
+   if($this->_is_identified()) throw $this->except("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
 
-   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values)) $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
+   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values)) throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
 
    $this->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
 
@@ -132,12 +133,13 @@
    if($this->_is_identified()){
     return $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_values);
    }
-   $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
+   throw $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
   }
 
   /**
    * Object's data are retrieved from underlaying data storage
    * @throw myswf\exception on error
+   * XXX recall on unidentified operator .. ?
    */
   public function recall() {
    $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
@@ -149,7 +151,7 @@
      return;
 
     default:
-     throw $this->except("Too many entries found in data storage", 'operator\too_many_entries');
+     throw $this->except("Too many entries found in data storage", 'too_many_entries');
    }
   }
 
@@ -158,11 +160,11 @@
    * @throw myswf\exception on error, especially if there is no data to delete
    */
   public function erase() {
-   if(! $this->_is_identified()) $this->except("Couldn't erase non-identified object");
+   if(! $this->_is_identified()) throw $this->except("Couldn't erase non-identified object");
 
    $r = $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria);
 
-   if($r === 0) $this->except("No data to delete in underlaying data storage"); // XXX Exception or return code ?
+   if($r === 0) throw $this->except("No data to delete in underlaying data storage"); // XXX Exception or return code ?
 
    $this->report_debug("Mapped data are now deleted from underlaying data storage");
    return 1;
