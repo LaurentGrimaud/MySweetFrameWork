@@ -2,8 +2,10 @@
  /**
   * First implementation
   *
+  * @XXX warning when accessing non-existent property
   * @XXX check behavior with several uid parts
   */
+
  class mysfw_operator extends mysfw_core {
   private $_is_identified = false;
   private $_underlaying_type;
@@ -12,12 +14,19 @@
   private $_data_storage;
   private $_uid_injection = null;
 
+  protected $_mns = '\mysfw\module\operator';
+
   protected $_defaults = [
    'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
    'operators:custom_definitions'  => [                 // XXX draft operator specific definitions
     'user' => ['id' => null]
     ]
    ];
+
+  protected $_exceptions = [
+   'no_entry' => 1,
+   'too_many_entries' => 1
+    ];
 
   /**
    * XXX draft, refactor needed
@@ -132,12 +141,16 @@
    */
   public function recall() {
    $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
-   if(count($values) !== 1) {
-    $this->except("Bad entities count (".count($values).") recall from data storage, expected exactly 1");
-   }
+   switch(count($values)) {
+    case 0:
+     throw $this->except("No matching entry found in data storage", 'no_entry');
+    case 1:
+     $this->set_values($values[0]);
+     return;
 
-   $this->set_values($values[0]);
-   return true;
+    default:
+     throw $this->except("Too many entries found in data storage", 'operator\too_many_entries');
+   }
   }
 
   /**
