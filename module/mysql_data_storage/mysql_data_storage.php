@@ -1,6 +1,10 @@
 <?php
+ namespace t0t1\mysfw;
+ use t0t1\mysfw\frame;
 
- class mysfw_mysql_data_storage extends mysfw_core implements mysfw_data_storage { 
+ $this->_learn("frame\contract\data_storage");
+
+ class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
   protected $_defaults = [
    'mysql:host' => 'localhost',
    'mysql:port' => 3306,
@@ -63,7 +67,7 @@
 
   // XXX temp
   private function _connect() {
-   $c = new mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
+   $c = new \mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
    if($c->connect_errno) {
     throw $this->except("Failed to connect to mysql data storage. Message was: ".$c->connect_error);
    }
