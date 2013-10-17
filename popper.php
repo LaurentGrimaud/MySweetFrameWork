@@ -1,16 +1,20 @@
 <?php
  /**
  * XXX use of exceptions factory ?
+ * XXX should be in frame/ ?
+ * XXX this class should be "final" ?
+ * XXX needs a bootstrap ?
+ * XXX Depends on `directories` extension, due to DIRECTORY_SEPARATOR use ?
  */
- namespace \t0t1\mysfw\frame;
- use \t0t1\mysfw;
+ namespace t0t1\mysfw; 
+ use t0t1\mysfw\frame\exception;
 
  // XXX temp static requires
  require_once 'frame/contract/popper.php';
  require_once 'frame/contract/dna.php';
  require_once 'frame/exception/dna.php';
 
- class popper implements contract\popper {
+ class popper implements frame\contract\popper {
   private static $_itself;
   private $_home;
   private $_register = array(); // XXX here, or in configurator ... ?
@@ -21,10 +25,10 @@
    * 
    * @param $root the path for the project (using mysfw)
    */
-  private function __construct($root) {
+  final private function __construct($root) {
    $this->set_home(__DIR__); // XXX useful ?
 
-   $c = $this->register('configurator', 'default_configurator'); // XXX error handling ?
+   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
    $c->define('home', __DIR__.'/');
    $c->define('root', $root.'/');
    $c->define('extensions_dir', $root.'/../includes/mysfw_extensions/'); // XXX temp
@@ -37,7 +41,7 @@
    * @return the only one popper object
   */
   public static function itself($root) {
-   if(! self::$_itself) {self::$_itself = new mysfw_default_popper($root);}
+   if(! self::$_itself) {self::$_itself = new popper($root);}
 
    return self::$_itself;
   }
@@ -49,7 +53,7 @@
    * @return an instance of the requested class
   **/
   public function pop($classname, $conf_context = null) {
-   $full_name = "mysfw_$classname";
+   $full_name = "\\t0t1\\mysfw\\module\\$classname\\$classname"; // XXX static and absolute namespace
    if(! class_exists($full_name)){
     $this->swallow($classname);
    }
@@ -76,7 +80,7 @@
   public function swallow($modulename) {
    $file = $this->_build_module_name($modulename);
    if(file_exists($file)){
-    require_once($file);
+    require_once($file); // XXX require_once, really ?
     return;
    }
    $file_alt = $this->_build_custom_file_name($modulename);
@@ -128,7 +132,7 @@
    * XXX bad name
    */
   private function _build_file_name($f) {
-   return $this->_home.'/'.$f;
+   return $this->_home.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $f).".php";
   }
 
   /**
@@ -140,7 +144,7 @@
    * XXX bad name
    */
   private function _build_module_name($module) {
-   return $this->_home."/modules/$module/$module.module.php";
+   return $this->_home."/module/$module/$module.php";
   }
 
   /**
