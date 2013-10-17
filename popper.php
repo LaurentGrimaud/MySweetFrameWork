@@ -5,6 +5,7 @@
  * XXX this class should be "final" ?
  * XXX needs a bootstrap ?
  * XXX Depends on `directories` extension, due to DIRECTORY_SEPARATOR use ?
+ * XXX swallow() should check classname existence, and pop() shouldn't
  */
  namespace t0t1\mysfw; 
  use t0t1\mysfw\frame\exception;
