@@ -6,4 +6,10 @@
  namespace mysfw;
 
  class exception extends \Exception {
+  private $_requested_type;
+
+  public function __construct($m, $t = null) {
+   parent::__construct($m);
+   $this->_requested_type = $t;
+  }
  }
