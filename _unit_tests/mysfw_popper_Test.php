@@ -58,6 +58,13 @@
    $this->assertEquals(get_class($this->x->pop('fake_extension')), "mysfw_fake_extension");
   }
 
+  /**
+   * @expectedException mysfw\exception
+   */
+  public function test_indicate_exceptions() {
+   $this->x->indicate('non_existent_register_entry');
+  }
+
  }
 
 ?>
