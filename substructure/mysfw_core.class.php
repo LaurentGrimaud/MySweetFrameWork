@@ -1,11 +1,12 @@
 <?php
  /**
   * Defines common roles for ALL mysfw objects, except popper
-  * Currently, four things:
+  * Currently, five things:
   * 1. Gives knowledge and access to the popper object
   * 2. Provides logging capabilities, by interfacing to a reporter object 
   * 3. Defines an auto-initialise mechanism, called by the popper
   * 4. Provides configuration access, by interfacing a configurator object
+  * 5. Provides exception handling facility (factory method except())
   **/
 
  abstract class mysfw_core implements mysfw_dna {
@@ -42,7 +43,7 @@
   public function report_error($msg){return $this->_report("error", $msg);}
 
   public function inform($c){
-   if(! $_c = $this->get_configurator()) throw new mysfw\exception("No configurator defined");
+   if(! $_c = $this->get_configurator()) throw $this->except("No configurator defined");
    return $_c->inform($c, $this->get_configuration_context());
   }
 

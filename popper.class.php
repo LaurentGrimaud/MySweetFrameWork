@@ -1,4 +1,7 @@
 <?php
+/*
+ * XXX use of exceptions factory ?
+ */
 
  // XXX temp static requires
  require_once 'substructure/mysfw_popper.interface.php';
@@ -79,7 +82,7 @@
     require_once($file_alt);
     return;
    }
-   throw new mysfw\exception("No `$file` nor `$file_alt` files found for module `$modulename`"); 
+   throw new mysfw\exception("No `$file` nor `$file_alt` files found for module `$modulename`");  // XXX use of exception factory ?
   }
 
   public function set_home($v) {$this->_home = $v;}
@@ -110,7 +113,7 @@
    * @throws mysfw\exception if nothing found in register
   */
   public function indicate($name) {
-   if(! @$this->_register[$name]) throw new mysfw\exception("Nothing in register for name `$name`");
+   if(! @$this->_register[$name]) throw new mysfw\exception("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
    return $this->_register[$name];
   }
 

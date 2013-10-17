@@ -12,7 +12,7 @@
 
   protected function _get_ready() {
    $report = $this->inform('root').$this->inform('report_dir').$this->inform('report_file_name');
-   if(! $this->_fd = fopen($report, 'a')) throw new mysfw\exception("Failed to open report file `$report`");
+   if(! $this->_fd = fopen($report, 'a')) throw $this->except("Failed to open report file `$report`");
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/

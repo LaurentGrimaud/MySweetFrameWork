@@ -65,7 +65,7 @@
   private function _connect() {
    $c = new mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
    if($c->connect_errno) {
-    throw new mysfw\exception("Failed to connect to mysql data storage. Message was: ".$c->connect_error);
+    throw $this->except("Failed to connect to mysql data storage. Message was: ".$c->connect_error);
    }
    return $c;
   }
@@ -77,7 +77,7 @@
    $this->report_debug("Will execute: $sql"); // XXX test
    if(false === $res = $c->query($sql)){
     $this->report_error("mySQL error: ".$c->error); // XXX test
-    throw new mysfw\exception("mysql query `$sql` failed with message: ".$c->error);
+    throw $this->except("mysql query `$sql` failed with message: ".$c->error);
    }
 
    return $res;
