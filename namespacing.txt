@@ -1,0 +1,18 @@
+A typical layout for mysfw is:
+
+t0t1/
+└── mysfw
+    ├── frame
+    │   ├── core
+    │   ├── interfaces
+    │   │   ├── core
+    │   │   ├── data_storage
+    │   │   ├── operator
+    │   │   └── reporter
+    │   └── popper
+    └── modules
+        └── operator
+            └── exceptions
+                ├── no_entry
+                └── too_many_entries
+
