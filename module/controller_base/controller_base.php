@@ -1,6 +1,12 @@
 <?php
+ //XXX bad name ?
 
- class mysfw_controller_base extends mysfw_core implements mysfw_controller, mysfw_dna {
+ namespace t0t1\mysfw\module\controller_base;
+ use t0t1\mysfw\frame;
+
+ $this->_learn('frame\contract\controller');
+
+ class controller_base extends frame\dna implements frame\contract\controller, frame\contract\dna {
   private $_v;    // Object implementing mysfw_view
   private $_tmpl; // Template to be used by the view
   protected $_defaults = array(
