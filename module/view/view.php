@@ -1,7 +1,10 @@
 <?php
- // XXX WIP
+ namespace t0t1\mysfw\module\view;
+ use t0t1\mysfw\frame;
 
- class mysfw_view extends mysfw_core implements mysfw_view_interface, mysfw_dna {
+ $this->_learn('frame\contract\view');
+
+ class view extends frame\dna implements frame\contract\view, frame\contract\dna {
   private $_values;
   protected $_defaults = array(
     'tmpl_dir' =>      '../includes/tmpl/', // XXX temp ?
