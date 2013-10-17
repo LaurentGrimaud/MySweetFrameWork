@@ -4,8 +4,13 @@
   * $r= $popper->pop("http_response");
   * $r->define("response.http_status_code", mysfw_http_response::http_status_code_created);
   */
+ namespace t0t1\mysfw\module\http_response;
+ use t0t1\mysfw\frame;
 
- class mysfw_http_response extends mysfw_core implements mysfw_view_interface, mysfw_response_interface, mysfw_dna{
+ $this->_learn('frame\contract\response');
+ $this->_learn('frame\contract\view');
+
+ class http_response extends frame\dna implements frame\contract\view, frame\contract\response, frame\contract\dna {
   private $_v;                               // Object implementing mysfw_view interface
   protected $_defaults= array(
     'response.http_status_code' => 200,
@@ -158,7 +163,7 @@
    if($status_code and self::$_http_reason_phrase[$status_code]){
     // Output status line
     $status_line= $this->inform('response.http_version') . " $status_code " . self::$_http_reason_phrase[$status_code];
-    header($status_line, true, $status_code);
+    \header($status_line, true, $status_code);
     $this->report_debug("Sent status line: `{$status_line}` for status code: `" . $status_code . "`.");
     // Build extra headers
     if(@self::$_extra_headers[$status_code]) {
@@ -168,7 +173,7 @@
     }
     foreach($this->_http_response_headers as $http_response_header_field => $value){
      // Output response headers
-     header("{$http_response_header_field}: {$value}",true);
+     \header("{$http_response_header_field}: {$value}",true);
      $this->report_debug("Sent header: `{$http_response_header_field}: {$value}` for status code: `" . $status_code . "`.");
     }
    }else{
@@ -183,4 +188,3 @@
    $this->_v = $this->get_popper()->pop($this->inform('response.view')); // Wich mysfw view object to use ?
   }
  }
-?>
