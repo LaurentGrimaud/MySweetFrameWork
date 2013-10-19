@@ -12,6 +12,7 @@
 
   public function setUp() {
    $this->x = new  mysfw_default_configurator;
+   $this->x->get_ready();
   }
 
   public function test_define_and_inform(){

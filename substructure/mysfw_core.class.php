@@ -42,12 +42,12 @@
   public function report_error($msg){return $this->_report("error", $msg);}
 
   public function inform($c){
-   if(! $_c = $this->get_configurator()) return false;
+   if(! $_c = $this->get_configurator()) return null;
    return $_c->inform($c, $this->get_configuration_context());
   }
 
   public function define($c, $v){
-   if(! $_c = $this->get_configurator()) return false;
+   if(! $_c = $this->get_configurator()) return null;
    return $_c->define($c, $v, $this->get_configuration_context());
   }
 
