@@ -1,6 +1,12 @@
 <?php
+ /**
+  * XXX Obsolete or WIP ?
+  * XXX Intended to become an abstract base for all *_data_storage modules ?
+  */
+ namespace t0t1\mysfw\module\data_storage;
+ use t0t1\mysfw\frame;
 
- class mysfw_data_storage extends mysfw_core {
+ class data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
 
   public function retrieve($type, $crit) {
    for($i=0;$i<5;$i++){
@@ -21,5 +27,3 @@
   public function delete($crit) {
   }
  }
-
-?>
