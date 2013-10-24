@@ -1,5 +1,4 @@
 <?php
-
  /**
   * Implementation of MySFW data storage agains MongoDB
   *
@@ -12,8 +11,12 @@
   * pecl install mongo
   *
   */
+ namespace t0t1\mysfw\module\mongodb_data_storage;
+ use t0t1\mysfw\frame;
 
- class mysfw_mongodb_data_storage extends mysfw_core implements mysfw_data_storage {
+ $this->_learn("frame\contract\mysfw_data_storage");
+
+ class mongodb_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
     "mongo_db_name" => "mysfw_demo"
    );
@@ -24,7 +27,7 @@
   // XXX temp - draft
   private function _get_connection($type){
    try {
-    $m = new Mongo();
+    $m = new \Mongo();
     return $m->selectCollection($this->inform('mongo_db_name'), $type); // XXX Conf should be taken from configurator object
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
@@ -36,7 +39,7 @@
   // XXX temp - draft - Needs to be in data storage interface
   public function get_connection() {
    try {
-    $m = new Mongo();
+    $m = new \Mongo();
     return $m->selectDB($this->inform('mongo_db_name'));
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
@@ -251,7 +254,7 @@
    }
 
    try {
-    $res = $c->remove(array("_id" => new MongoId($uid)), $this->_collection_options);
+    $res = $c->remove(array("_id" => new \MongoId($uid)), $this->_collection_options);
 
     if($res === false || @$res['err']) {
      $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
@@ -276,8 +279,4 @@
     return false;
    }
   }
-
  }
-
-?>
-
