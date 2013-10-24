@@ -1,6 +1,16 @@
 <?php
+ /**
+  * XXX Work in progress
+  * XXX Needs exceptions
+ */
+ namespace t0t1\mysfw\module\cached_data_storage;
+ use t0t1\mysfw\frame;
 
- class mysfw_cached_data_storage extends mysfw_core implements mysfw_data_storage {
+ $this->_learn("substructure/mysfw_core.class.php");
+ $this->_learn("substructure/mysfw_data_storage.interface.php");
+ $this->_learn("modules/cached_data_storage/cached_data_storage.class.php");
+
+ class cached_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   private $_cache_data_storage;
   private $_base_data_storage;
 
@@ -113,5 +123,3 @@
   private function _get_base_data_storage() {return $this->_base_data_storage;}
   private function _get_cache_storage() {return $this->_cache_data_storage;}
  }
-
-?>
