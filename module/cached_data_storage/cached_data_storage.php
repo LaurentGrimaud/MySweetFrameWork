@@ -6,9 +6,7 @@
  namespace t0t1\mysfw\module\cached_data_storage;
  use t0t1\mysfw\frame;
 
- $this->_learn("substructure/mysfw_core.class.php");
- $this->_learn("substructure/mysfw_data_storage.interface.php");
- $this->_learn("modules/cached_data_storage/cached_data_storage.class.php");
+ $this->_learn("frame\contract\mysfw_data_storage");
 
  class cached_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   private $_cache_data_storage;
