@@ -1,18 +1,23 @@
 <?php
-/**
- * Yet naive implementation of MySFW Data Storage against Memcache
- *
- * XXX error handling
- * XXX TTL handling
- * XXX Connection handling
- */
+ /**
+  * Yet naive implementation of MySFW Data Storage against Memcache
+  *
+  * XXX error handling
+  * XXX TTL handling
+  * XXX Connection handling
+  * XXX _defaults handling
+  */
+ namespace t0t1\mysfw\module\memcache_data_storage;
+ use t0t1\mysfw\frame;
 
- class mysfw_memcache_data_storage extends mysfw_core implements mysfw_data_storage {
+ $this->_learn("frame\contract\data_storage");
+
+ class memcache_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_ttl = 10; // XXX need parametrisation
 
   // XXX temp - draft
   private function _get_connection(){
-   $memcache = new Memcache;
+   $memcache = new \Memcache; // XXX factory ?
    if(! $memcache->connect('localhost', 11211)){
     $this->report_error('Failed to connect to memcache');
     return false;
