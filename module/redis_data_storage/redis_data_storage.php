@@ -1,6 +1,11 @@
 <?php
+ namespace t0t1\mysfw\module\redis_data_storage;
+ use t0t1\mysfw\frame;
 
- class mysfw_redis_data_storage extends mysfw_core implements mysfw_data_storage {
+ $this->_learn("frame\contract\data_storage");
+ $this->_learn("aliens\predis\lib\Predis.php"); //XXX
+
+ class redis_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
    'redis_host'    => '127.0.0.1',
    'redis_port'    => 6379,
@@ -14,7 +19,7 @@
      'port'     => $this->inform('redis_port'),
      'database' => $this->inform('redis_db_name')
      );
-   if(! $predis = new Predis\Client($single_server)) {
+   if(! $predis = new \Predis\Client($single_server)) {
     $this->report_error('Failed to connect to Redis server');
     return false;
    }
