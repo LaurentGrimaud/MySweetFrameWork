@@ -66,7 +66,7 @@
    if($t && @$this->_exceptions[$t]){
     $ens = $this->_mns.'\exception\\'.$t;
    }else{
-    $ens = '\mysfw\exception'; // XXX until the raise of mysfw exceptions
+    $ens = 't0t1\mysfw\frame\exception\dna'; // XXX until the raise of mysfw exceptions
    }
    return new $ens($m, $t);
   }
