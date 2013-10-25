@@ -1,0 +1,24 @@
+### myswf namespacing organization
+XXX What about abstract things ?
+
+Typical layout for mysfw namespaces:
+
+t0t1/
+└── mysfw
+    ├── frame
+    │   ├── contract
+    │   │   ├── data_storage
+    │   │   ├── dna
+    │   │   ├── operator
+    │   │   └── reporter
+    │   ├── dna
+    │   ├── exception
+    │   │   ├── debug_exception
+    │   │   └── exception
+    │   └── popper
+    └── module
+        ├── file_reporter
+        └── operator
+            └── exception
+                ├── no_entry
+                └── too_many_entries
