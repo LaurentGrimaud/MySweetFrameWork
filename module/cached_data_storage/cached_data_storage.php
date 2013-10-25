@@ -3,7 +3,7 @@
   * XXX Work in progress
   * XXX Needs exceptions
  */
- namespace t0t1\mysfw\module\cached_data_storage;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\mysfw_data_storage");

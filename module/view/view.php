@@ -1,5 +1,5 @@
 <?php
- namespace t0t1\mysfw\module\view;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn('frame\contract\view');

@@ -54,7 +54,7 @@
    * @return an instance of the requested class
   **/
   public function pop($classname, $conf_context = null) {
-   $full_name = "\\t0t1\\mysfw\\module\\$classname\\$classname"; // XXX static and absolute namespace
+   $full_name = "\\t0t1\\mysfw\\module\\$classname"; // XXX static and absolute namespace
    if(! class_exists($full_name)){
     $this->swallow($classname);
    }
@@ -164,6 +164,7 @@
    * Internally used by module main file to load components
    *
    * @param $it string the path of the component in the mysfw's hierarchy
+   * XXX what about dependencies against aliens ?
    */
   private function _learn($it) {
    require_once($this->_build_file_name($it));

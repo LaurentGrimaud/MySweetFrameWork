@@ -11,7 +11,7 @@
   * pecl install mongo
   *
   */
- namespace t0t1\mysfw\module\mongodb_data_storage;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\mysfw_data_storage");

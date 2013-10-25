@@ -2,7 +2,7 @@
  /**
   * Default implementation of myswf configurator contract
   */
- namespace t0t1\mysfw\module\configurator;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn('frame\dna');

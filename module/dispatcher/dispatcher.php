@@ -1,7 +1,7 @@
 <?php
  //XXX no contract for this class ?
 
- namespace t0t1\mysfw\module\dispatcher;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  class dispatcher extends frame\dna implements frame\contract\dna {

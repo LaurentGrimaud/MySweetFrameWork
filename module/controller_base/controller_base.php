@@ -1,7 +1,7 @@
 <?php
  //XXX bad name ?
 
- namespace t0t1\mysfw\module\controller_base;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn('frame\contract\controller');

@@ -6,7 +6,7 @@
   * @XXX obsoletes return values due to exceptions introduction
   * @XXX check behavior with several uid parts
   */
- namespace t0t1\mysfw\module\operator;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn('module\operator\exception\no_entry');
@@ -20,8 +20,6 @@
   private $_data_storage;
   private $_uid_injection = null;
 
-  protected $_mns = '\t0t1\mysfw\module\operator'; //XXX
-
   protected $_defaults = [
    'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
    'operators:custom_definitions'  => [                 // XXX draft operator specific definitions
@@ -29,6 +27,7 @@
     ]
    ];
 
+  protected $_mns = '\t0t1\mysfw\module\operator'; //XXX used by dna:except()
   protected $_exceptions = [
    'no_entry' => 1,
    'too_many_entries' => 1

@@ -7,7 +7,7 @@
   * XXX Connection handling
   * XXX _defaults handling
   */
- namespace t0t1\mysfw\module\memcache_data_storage;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\data_storage");

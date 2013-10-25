@@ -4,7 +4,7 @@
   * $r= $popper->pop("http_response");
   * $r->define("response.http_status_code", mysfw_http_response::http_status_code_created);
   */
- namespace t0t1\mysfw\module\http_response;
+ namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn('frame\contract\response');
