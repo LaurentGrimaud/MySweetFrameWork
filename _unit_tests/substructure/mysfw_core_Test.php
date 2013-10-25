@@ -39,6 +39,12 @@
    $this->x->set_popper($p);
   }
 
+  /**
+   * @expectedException mysfw\exception
+   */
+  final public function test_inform_no_configurator() {
+   $this->x->inform('xxx');
+  }
  }
 
 ?>
