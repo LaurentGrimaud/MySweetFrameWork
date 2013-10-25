@@ -3,7 +3,7 @@
 
  interface popper {
 
-  public static function itself($root);
+  public static function itself($root, $home);
 
   public function pop($classname);
 
