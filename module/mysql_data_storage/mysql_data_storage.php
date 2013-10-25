@@ -1,10 +1,18 @@
 <?php
+ /**
+  * XXX Several concerns need to be separated:
+  * ° SQL translation
+  * ° mySQL querying
+  * ° connections handling
+  * This should be done once the `submodules` concept be implemented
+  */
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\data_storage");
 
  class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
+  protected $_statement_prefix = 'sql_statements';
   protected $_defaults = [
    'mysql:host' => 'localhost',
    'mysql:port' => 3306,
@@ -13,13 +21,24 @@
    'mysql:db'   => 'mysfw',
    ];
 
+
+  /** XXX TEMP **/
+  public function sql_retrieve($statement) {
+   if(! $sql = $this->inform($this->_statement_prefix.':'.$statement)) throw $this->except("No statement `$statement` found");
+   $c = $this->_connect();
+   return $this->_query_and_fetch($sql, $c);
+  }
+
   // XXX Refactor needed
   public function retrieve($type, $crit, $metacrit = null) {
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
 
    $sql = "SELECT * FROM $type ".$this->_criteria_talk($c, $crit);
+   return $this->_query_and_fetch($sql, $c);
+  }
 
+  protected function _query_and_fetch($sql, $c) {
    $r = $this->_query($c, $sql);
 
    $res = [];
