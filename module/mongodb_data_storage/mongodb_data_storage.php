@@ -6,6 +6,7 @@
   *
   * XXX uid support is not yet correct
   * XXX everything here needs to be carefully checked and tested
+  * XXX migration to exceptions
   *
   * Requires mongo pecl extension
   * pecl install mongo
