@@ -4,7 +4,7 @@
   * ° SQL translation
   * ° mySQL querying
   * ° connections handling
-  * This should be done once the `submodules` concept be implemented
+  * This should be done once the `submodules` concept implemented
   */
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
