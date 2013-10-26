@@ -2,6 +2,8 @@ mysfw conventions, version 0.2
 
 1. Naming
 1.1 No plural form (ie final 's') in directory or file names
+1.2 [TEMP] Configuration items are prefixed by module's name followed by a colon:
+ "dispatcher:controller", "view.response", ...
 
 2. Coding
 2.1 All mysfw objects must implements frame\interface\dna, except poppers
