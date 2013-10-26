@@ -28,7 +28,7 @@
    ];
 
   protected $_mns = '\t0t1\mysfw\module\operator'; //XXX used by dna:except()
-  protected $_exceptions = [
+  protected $_exceptions = [   // XXX TEMP exceptions definition
    'no_entry' => 1,
    'too_many_entries' => 1
     ];
