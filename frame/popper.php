@@ -25,7 +25,7 @@
    $c = $this->register('configurator', 'configurator');
    $c->define('home', $home.'/');
    $c->define('root', $root.'/');
-   $c->define('extensions_dir', $root.'/../includes/mysfw_extensions/'); // XXX temp
+   $c->define('extension_dir', $root.'/../include/'); // XXX temp
   }
 
 
@@ -149,7 +149,7 @@
    * @return string the path for inclusion
    */
   private function _build_custom_file_name($f) {
-   return $this->indicate('configurator')->inform('extensions_dir')."$f.class.php";
+   return $this->indicate('configurator')->inform('extension_dir')."/module/$module/$module.php";
   }
 
   /**

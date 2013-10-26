@@ -7,7 +7,7 @@
  class view extends frame\dna implements frame\contract\view, frame\contract\dna {
   private $_values;
   protected $_defaults = array(
-    'tmpl_dir' =>      '../includes/tmpl/', // XXX temp ?
+    'tmpl_dir' =>      '../include/tmpl/', // XXX temp ?
     'view.response' => 'mysfw_http_response'
     );
 

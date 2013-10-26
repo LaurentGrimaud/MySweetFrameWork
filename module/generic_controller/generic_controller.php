@@ -12,7 +12,7 @@
   private $_tmpl; // Template to be used by the view
   protected $_defaults = array(
     'generic_controller:view' => 'http_response',                // Name of the view to be used by the controller
-    'generic_controller:controls_dir' => '../includes/controls/' // Directory to search for controls implementations
+    'generic_controller:control_dir' => '../include/control/' // Directory to search for controls implementations
     );
 
   protected function _set_tmpl($_){$this->_tmpl = $_;return $this;}
@@ -39,7 +39,7 @@
 
   public function control($p){
    // XXX default implementation
-   include $this->inform('generic_controller:controls_dir').$this->_param.'.php'; // XXX 
+   include $this->inform('generic_controller:control_dir').$this->_param.'.php'; // XXX 
   }
 
  }
