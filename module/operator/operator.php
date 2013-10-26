@@ -78,7 +78,7 @@
    if(!is_null(@$this->_criteria->$field)) throw $this->except("UID part `$field` already valued (to `{$this->_criteria->$field}`)");
    $this->_identify($field, $value);
    $this->_check_identification();
-   return true;
+   return $this;
   }
 
   protected function _identify($p, $v){$this->_criteria->$p = $v;}
@@ -94,10 +94,10 @@
   }
 
   public function get($property){return $this->_values->$property;} 
-  public function set($property, $value){$this->_values->$property = $value;}
+  public function set($property, $value){$this->_values->$property = $value;return $this;}
 
   public function get_values(){return $this->_values;}
-  public function set_values($_){$this->_values=$_;}
+  public function set_values($_){$this->_values=$_;return $this;}
 
   protected function _set_identified() {$this->_is_identified = true;}
   protected function _is_identified() {return $this->_is_identified;}
