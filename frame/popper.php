@@ -148,7 +148,7 @@
    * @param $f string the name of an external object
    * @return string the path for inclusion
    */
-  private function _build_custom_file_name($f) {
+  private function _build_custom_file_name($module) {
    return $this->indicate('configurator')->inform('extension_dir')."/module/$module/$module.php";
   }
 
