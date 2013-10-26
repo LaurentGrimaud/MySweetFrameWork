@@ -6,11 +6,13 @@
 
  $this->_learn('frame\contract\controller');
 
- class controller_base extends frame\dna implements frame\contract\controller, frame\contract\dna {
+ class generic_controller extends frame\dna implements frame\contract\controller, frame\contract\dna {
+  private $_param;    // XXX
   private $_v;    // Object implementing mysfw_view
   private $_tmpl; // Template to be used by the view
   protected $_defaults = array(
-    'controller_base.view' => 'http_response' // Name of the view to be used by the controller
+    'generic_controller:view' => 'http_response',                // Name of the view to be used by the controller
+    'generic_controller:controls_dir' => '../includes/controls/' // Directory to search for controls implementations
     );
 
   protected function _set_tmpl($_){$this->_tmpl = $_;return $this;}
@@ -23,10 +25,11 @@
 
   // XXX _get_ready() may be overriden by custom controllers
   protected function _get_ready() {
-   $this->report_debug("Popping ".$this->inform('controller_base.view'). " object");
-   $this->_v = $this->get_popper()->pop($this->inform('controller_base.view'));
+   $this->report_debug("Popping ".$this->inform('generic_controller:view'). " object");
+   $this->_v = $this->get_popper()->pop($this->inform('generic_controller:view'));
   }
 
+  public function set_param($param){$this->_param = $param;$this->_set_tmpl($param);return $this;}
   public function get_view(){return $this->_v;}
 
   public function control_and_reveal($p) {
@@ -36,6 +39,7 @@
 
   public function control($p){
    // XXX default implementation
+   include $this->inform('generic_controller:controls_dir').$this->_param.'.php'; // XXX 
   }
 
  }
