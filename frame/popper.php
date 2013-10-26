@@ -1,21 +1,14 @@
 <?php
  /**
  * XXX use of exceptions factory ?
- * XXX should be in frame/ ?
  * XXX this class should be "final" ?
- * XXX needs a bootstrap ?
  * XXX Depends on PHP `directories` extension, due to DIRECTORY_SEPARATOR use ?
  * XXX swallow() should check classname existence, and pop() shouldn't
  */
- namespace t0t1\mysfw; 
- use t0t1\mysfw\frame\exception;
+ namespace t0t1\mysfw\frame; 
+ use t0t1\mysfw\frame\exception; // XXX useless
 
- // XXX temp static requires
- require_once 'frame/contract/popper.php';
- require_once 'frame/contract/dna.php';
- require_once 'frame/exception/dna.php';
-
- class popper implements frame\contract\popper {
+ class popper implements contract\popper {
   private static $_itself;
   private $_home;
   private $_register = array(); // XXX here, or in configurator ... ?
@@ -26,11 +19,11 @@
    * 
    * @param $root the path for the project (using mysfw)
    */
-  final private function __construct($root) {
-   $this->set_home(__DIR__); // XXX useful ?
+  final private function __construct($root, $home) {
+   $this->set_home($home); // XXX useful ?
 
-   $c = $this->register('configurator', 'configurator'); // XXX error handling ?
-   $c->define('home', __DIR__.'/');
+   $c = $this->register('configurator', 'configurator');
+   $c->define('home', $home.'/');
    $c->define('root', $root.'/');
    $c->define('extensions_dir', $root.'/../includes/mysfw_extensions/'); // XXX temp
   }
@@ -41,8 +34,8 @@
    *
    * @return the only one popper object
   */
-  public static function itself($root) {
-   if(! self::$_itself) {self::$_itself = new popper($root);}
+  public static function itself($root, $home) {
+   if(! self::$_itself) {self::$_itself = new popper($root, $home);}
 
    return self::$_itself;
   }
