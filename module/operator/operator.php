@@ -5,6 +5,9 @@
   * @XXX warning when accessing non-existent property
   * @XXX obsoletes return values due to exceptions introduction
   * @XXX check behavior with several uid parts
+  * @XXX uid injectability depends on data storage being used, among others
+  * @XXX uid should me more complicated than a single field
+  * @XXX lacks a get_uid() to retrieve the value of the injected uid ?
   */
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
@@ -32,6 +35,9 @@
    'no_entry' => 1,
    'too_many_entries' => 1
     ];
+
+  protected function _new_identify($defs) {
+  }
 
   /**
    * XXX draft, refactor needed
@@ -121,13 +127,12 @@
    * @throw myswf\exception on error
    */
   public function create() {   
-   if($this->_is_identified()) throw $this->except("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
-
-   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values)) throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
-
+   if($this->_is_identified())
+    throw $this->except("`create` action requested on identified `operator` object (type is {$this->_underlaying_type})");
+   if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->_criteria, $this->_values))
+    throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
    $this->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
-
-   return $uid;
+   return $this;
   }
 
   /**
@@ -139,6 +144,7 @@
     return $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_values);
    }
    throw $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
+   return $this;
   }
 
   /**
@@ -158,11 +164,13 @@
     default:
      throw $this->except("Too many entries found in data storage", 'too_many_entries');
    }
+   return $this;
   }
 
   /**
    * Object's data are deleted from underlaying data storage
    * @throw myswf\exception on error, especially if there is no data to delete
+   * @XXX Chainability is only here for interface homogeneity, but is useless, right ?
    */
   public function erase() {
    if(! $this->_is_identified()) throw $this->except("Couldn't erase non-identified object");
@@ -172,7 +180,7 @@
    if($r === 0) throw $this->except("No data to delete in underlaying data storage"); // XXX Exception or return code ?
 
    $this->report_debug("Mapped data are now deleted from underlaying data storage");
-   return 1;
+   return $this;
   }
 
  }
