@@ -94,7 +94,7 @@
    * crit[field_name] = ["$lt"  => value]   // strictly lower than
    * crit[field_name] = ["$lte" => value]   // lower than or equal to
    */
-  public function retrieve($type, $crit, $metacrit){
+  public function retrieve($type, $crit = null, $metacrit = null) {
    try{
     $this->report_info('`retrieve` action requested');
     if(! $c = $this->_get_connection($type)){
