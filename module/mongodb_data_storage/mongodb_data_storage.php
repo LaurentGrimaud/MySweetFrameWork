@@ -19,7 +19,7 @@
 
  class mongodb_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
-    "mongo_db_name" => "mysfw_demo"
+    "mongo:db" => "mysfw_demo"
    );
   protected $_collection_options = array(
     "safe" => true
@@ -29,7 +29,7 @@
   private function _get_connection($type){
    try {
     $m = new \Mongo();
-    return $m->selectCollection($this->inform('mongo_db_name'), $type); // XXX Conf should be taken from configurator object
+    return $m->selectCollection($this->inform('mongo:db'), $type); // XXX Conf should be taken from configurator object
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     return false;
@@ -41,7 +41,7 @@
   public function get_connection() {
    try {
     $m = new \Mongo();
-    return $m->selectDB($this->inform('mongo_db_name'));
+    return $m->selectDB($this->inform('mongo:db'));
    }catch(exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     return false;
