@@ -15,7 +15,7 @@
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
- $this->_learn("frame\contract\mysfw_data_storage");
+ $this->_learn("frame\contract\data_storage");
 
  class mongodb_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
