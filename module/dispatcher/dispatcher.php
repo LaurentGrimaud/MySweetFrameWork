@@ -5,12 +5,12 @@
  use t0t1\mysfw\frame;
 
  class dispatcher extends frame\dna implements frame\contract\dna {
-  protected $_defaults = [
+  protected $_defaults = array(
    'dispatcher:controller'        => 'generic_controller',
    'dispatcher:controller_suffix' => '_controller',
    'dispatcher:parameter'         => 'controller',
    'dispatcher:default'           => 'index',
-   ];
+   );
 
   protected function _get_ready() {
    $this->report_debug("Dispatcher is ready");

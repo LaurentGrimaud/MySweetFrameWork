@@ -8,11 +8,11 @@
   private $_fd;
   private $_level_ceil = 3;
 
-  protected $_defaults = [
+  protected $_defaults = array(
    'root' => '',
    'report_dir' => '../reports/',
    'report_file_name' => 'default.report'
-    ];
+    );
 
   protected function _get_ready() {
    $report = $this->inform('root').$this->inform('report_dir').$this->inform('report_file_name');
