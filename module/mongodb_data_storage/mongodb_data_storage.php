@@ -122,7 +122,7 @@
      $this->report_debug(print_r($metacrit, true));
     }
 
-    $results = iterator_to_array($data);
+    $results = iterator_to_array($data, false);
 
     $this->report_debug(count($results)." `$type` item(s) retrieved");
 

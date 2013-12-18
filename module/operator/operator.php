@@ -99,11 +99,14 @@
    $this->_set_identified();
   }
 
-  public function get($property){return $this->_values->$property;} 
+  public function get($property){
+    if( ! isset($this->_values->$property)) return null;
+    return $this->_values->$property;
+  } 
   public function set($property, $value){$this->_values->$property = $value;return $this;}
 
   public function get_values(){return $this->_values;}
-  public function set_values($_){$this->_values=$_;return $this;}
+  public function set_values($_){$this->_values=(object)$_;return $this;}
 
   protected function _set_identified() {$this->_is_identified = true;}
   protected function _is_identified() {return $this->_is_identified;}
