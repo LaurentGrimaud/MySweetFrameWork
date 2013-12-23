@@ -31,10 +31,11 @@
 
   public function control_and_reveal($p) {
    $this->control($p);
-   $this->_get_tmpl()?$this->_v->reveal($this->_get_tmpl()):$this->_v->reveal($this->_default_tmpl(get_class($this)));
+   $this->_v->reveal($this->_get_tmpl() ? : $this->_default_tmpl());
   }
 
-  protected function _default_tmpl($classname){
+  protected function _default_tmpl(){
+   $classname = get_class($this);
    $_classname = ( false === ($pos = strrpos($classname, $this->inform('dispatcher:controller_suffix'))))?$classname:substr_replace($classname, '', $pos, strlen($this->inform('dispatcher:controller_suffix'))); // if trailing dispatcher:controller_suffix found, strip it
    return join('', array_slice(explode('\\', $_classname), -1)); // strips namespace
   }
