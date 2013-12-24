@@ -23,18 +23,18 @@
   private $_data_storage;
   private $_uid_injection = null;
 
-  protected $_defaults = [
-   'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
-   'operators:custom_definitions'  => [                 // XXX draft operator specific definitions
-    'user' => ['id' => null]
-    ]
-   ];
+  protected $_defaults = array(
+   'operators:generic_definitions' => array('_id' => null),  // XXX draft generic definition
+   'operators:custom_definitions'  => array(                 // XXX draft operator specific definitions
+    'user' => array('id' => null)
+    )
+   );
 
   protected $_mns = '\t0t1\mysfw\module\operator'; //XXX used by dna:except()
-  protected $_exceptions = [   // XXX TEMP exceptions definition
+  protected $_exceptions = array(   // XXX TEMP exceptions definition
    'no_entry' => 1,
    'too_many_entries' => 1
-    ];
+    );
 
   protected function _new_identify($defs) {
   }

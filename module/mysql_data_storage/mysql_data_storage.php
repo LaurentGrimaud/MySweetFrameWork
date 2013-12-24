@@ -13,13 +13,13 @@
 
  class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
   protected $_statement_prefix = 'sql_statements';
-  protected $_defaults = [
+  protected $_defaults = array(
    'mysql:host' => 'localhost',
    'mysql:port' => 3306,
    'mysql:user' => 'mysfw',
    'mysql:pass' => 'mysfw',
    'mysql:db'   => 'mysfw',
-   ];
+   );
 
 
   /** XXX TEMP **/
@@ -42,7 +42,7 @@
   protected function _query_and_fetch($sql, $c) {
    $r = $this->_query($c, $sql);
 
-   $res = [];
+   $res = array();
    while($row = $r->fetch_object()) {
     $res[] = $row;
    }
