@@ -28,7 +28,8 @@
    $this->report_debug("Popping ".$this->inform('generic_controller:view'). " object");
    $this->_v = $this->get_popper()->pop($this->inform('generic_controller:view'));
   }
-
+  
+  public function set($k, $v){return $this->_set($k, $v);}
   public function set_param($param){$this->_param = $param;$this->_set_tmpl($param);return $this;}
   public function get_view(){return $this->_v;}
 
