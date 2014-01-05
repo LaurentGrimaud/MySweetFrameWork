@@ -7,5 +7,3 @@
   public function change($type, $crit, $values);
   public function delete($type, $crit);
  }
-
-?>
