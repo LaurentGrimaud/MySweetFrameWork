@@ -19,8 +19,7 @@
   protected function _set($k, $v){$this->_v->set($k, $v);return $this;}
   protected function _get($_){return $this->_v->get($_);}
 
-  public function set($k, $v){$this->_v->set($k, $v);return $this;}
-  public function push($k, $v){
+  protected function _push($k, $v){
     if( is_array($this->_v->get($k))){
         $_v = $this->_v->get($k);
         array_push($_v,$v);
@@ -33,7 +32,6 @@
     }
     return $this;
   }
-  public function get($_){return $this->_v->get($_);}
   
   protected function _set_all($_){$this->_v->set_all($_);return $this;}
 
