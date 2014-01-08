@@ -26,7 +26,7 @@
         $this->_v->set($k, $_v);
     } else {
         $_v= array();
-        $_v[] = $this->_v->get($k);
+        if( $this->_v->get($k)) $_v[] = $this->_v->get($k);
         $_v[] = $v;
         $this->_v->set($k, $_v);
     }
