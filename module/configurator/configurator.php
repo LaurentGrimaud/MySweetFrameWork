@@ -23,6 +23,6 @@
   }
 
   /** Overrides the generic behaviour implemented in dna **/
-  public function define($c, $v, $cc = null){$_c = $cc? "$cc.$c" : $c;$this->_repository->$_c = $v;}
+  public function define($c, $v, $cc = null){$_c = $cc? "$cc.$c" : $c;$this->_repository->$_c = $v;return $this;}
   public function inform($c, $cc = null){$_c = $cc ? "$cc.$c" : $c; return @$this->_repository->$_c;}
  }
