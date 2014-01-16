@@ -3,7 +3,7 @@
  use t0t1\mysfw\frame;
 
  $this->_learn("frame\contract\data_storage");
- $this->_learn("aliens\predis\lib\Predis.php"); //XXX
+ $this->_learn("aliens\predis\lib\Predis"); //XXX
 
  class redis_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
@@ -35,6 +35,8 @@
    * @param $type string
    * @param $crit object of criteria key/value
    * @return uid as string, false on error
+   *
+   * XXX Error if $crit is empty ?
    */
   private function _criteria_talk($type, $crit){
    if(! $crit){
@@ -47,17 +49,17 @@
     return false;
    }
 
-   $r = $sep = '';
+   $uid = "$type|";
+   $sep = '';
    foreach($crit as $k => $v){
     if(is_null($v)){
      $this->report_error("No value for `$k` part of uid");
      return false;
     }
-    $r .= "$k:$v";
+    $uid .= "$sep$k:$v";
     $sep = '/';
    }
 
-   $uid = "$type|$r";
    $this->report_info("data uid is $uid");
    return $uid;
   }
@@ -72,7 +74,7 @@
   }
 
 
-  public function retrieve($type, $crit, $metacrit){
+  public function retrieve($type, $crit = null, $metacrit = null) {
    $this->report_info('`retrieve` action requested');
    if(! $c = $this->_get_connection()){
     $this->report_error("Failed to get redis connection");

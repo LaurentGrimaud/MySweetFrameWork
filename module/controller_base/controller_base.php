@@ -21,8 +21,8 @@
 
   protected function _set_all($_){$this->_v->set_all($_);return $this;}
 
-  // XXX _get_ready() may be overriden by custom controllers
-  protected function _get_ready() {
+  // XXX good place for that ?
+  final function __construct() {
    $this->report_debug("Popping ".$this->inform('controller_base:view'). " object");
    $this->_v = $this->get_popper()->pop($this->inform('controller_base:view'));
   }
