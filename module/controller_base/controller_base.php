@@ -19,20 +19,6 @@
   protected function _set($k, $v){$this->_v->set($k, $v);return $this;}
   protected function _get($_){return $this->_v->get($_);}
 
-  protected function _push($k, $v){
-    if( is_array($this->_v->get($k))){
-        $_v = $this->_v->get($k);
-        array_push($_v,$v);
-        $this->_v->set($k, $_v);
-    } else {
-        $_v= array();
-        if( $this->_v->get($k)) $_v[] = $this->_v->get($k);
-        $_v[] = $v;
-        $this->_v->set($k, $_v);
-    }
-    return $this;
-  }
-  
   protected function _set_all($_){$this->_v->set_all($_);return $this;}
 
   // XXX _get_ready() may be overriden by custom controllers
