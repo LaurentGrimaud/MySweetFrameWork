@@ -217,13 +217,13 @@
     $this->report_error("Failed to build uid - Aborting");
     return false;
    }
-   $values_id= $values->_id;
+   if(isset( $values->_id)) $values_id= $values->_id;
    unset($values->_id);
    $this->report_debug(print_r((array)$values, true));
 
    try {
     if($res = $c->update(array("_id" => $uid), array('$set' => (array)$values))) {
-     $values->_id = $values_id;
+     if(isset( $values_id)) $values->_id = $values_id;
      $this->report_debug(print_r($res, true));
      $this->report_debug("Item of type $type and uid $uid updated");
      return true;
