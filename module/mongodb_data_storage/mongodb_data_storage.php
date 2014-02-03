@@ -86,6 +86,7 @@
   // XXX WIP
   /**
    * metacrit[l] = 10
+   * metacrit[o] = 10
    * metacrit[s][field_name] = 1|-1 (asc ou desc)
    *
    * crit[field_name] = value               // exact match
@@ -112,6 +113,9 @@
     }
 
     if($metacrit) {
+     if( $metacrit['o']){
+      $data->skip($metacrit['o']);
+     }
      if($metacrit['l']){
       $data->limit($metacrit['l']);
      }
