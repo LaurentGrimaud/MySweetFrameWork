@@ -31,6 +31,7 @@
 
   public function control_and_reveal($p) {
    $this->control($p);
+   if( ! $this->_v ) $this->_prepare_view();
    $this->_v->reveal($this->_get_tmpl() ? : $this->_default_tmpl());
   }
 
