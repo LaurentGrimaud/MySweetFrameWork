@@ -20,10 +20,10 @@
 
   /** Imposed behaviors **/
   final public function set_popper(contract\popper $_) {$this->_p = $_; return $this;}
-  final public function get_popper() {return $this->_p;}
+  final public function get_popper() {if(!$this->_p) throw $this->except('No popper ?! Something is wrong in the mysfw kingdom...');return $this->_p;}
 
   final public function set_reporter(contract\reporter $_) {$this->_r = $_;return $this;}
-  final public function get_reporter() {return $this->_r;}
+  final public function get_reporter() {try {return $this->get_popper()->indicate('reporter');}catch(\Exception $e) {}} //XXX BERK !
 
   final public function set_configurator(contract\configurator $_) {$this->_c = $_;return $this;}
   final public function get_configurator() {return $this->_c;}
