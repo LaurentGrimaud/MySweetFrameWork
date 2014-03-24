@@ -86,6 +86,7 @@
   // XXX WIP
   /**
    * metacrit[l] = 10
+   * metacrit[o] = 10
    * metacrit[s][field_name] = 1|-1 (asc ou desc)
    *
    * crit[field_name] = value               // exact match
@@ -112,6 +113,9 @@
     }
 
     if($metacrit) {
+     if( $metacrit['o']){
+      $data->skip($metacrit['o']);
+     }
      if($metacrit['l']){
       $data->limit($metacrit['l']);
      }
@@ -217,12 +221,13 @@
     $this->report_error("Failed to build uid - Aborting");
     return false;
    }
-
+   $values_id= $values->_id;
    unset($values->_id);
    $this->report_debug(print_r((array)$values, true));
 
    try {
     if($res = $c->update(array("_id" => $uid), array('$set' => (array)$values))) {
+     $values->_id = $values_id;
      $this->report_debug(print_r($res, true));
      $this->report_debug("Item of type $type and uid $uid updated");
      return true;
