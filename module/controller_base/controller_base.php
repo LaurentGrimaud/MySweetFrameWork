@@ -27,12 +27,12 @@
    $this->_v = $this->get_popper()->pop($this->inform('controller_base:view'));
   }
 
-  public function get_view(){return $this->_v;}
+  public function get_view(){if( ! $this->_v ) $this->_prepare_view(); return $this->_v;}
 
   public function control_and_reveal($p) {
    if(!$this->_v) $this->_prepare_view();
    $this->control($p);
-   $this->_v->reveal($this->_get_tmpl() ? : $this->_default_tmpl());
+   $this->get_view()->reveal($this->_get_tmpl() ? : $this->_default_tmpl());
   }
 
   protected function _default_tmpl(){

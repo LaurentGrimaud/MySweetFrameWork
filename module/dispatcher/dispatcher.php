@@ -21,8 +21,8 @@
    * XXX params object or array ?
    * XXX bad balance between base_controller and generic_controller
    */
-  public function dispatch($params) {
-   if($controller = @$params[$this->inform('dispatcher:parameter')]){
+  public function dispatch(request $request) {
+   if($controller = $request->get_query($this->inform('dispatcher:parameter'))){
     $this->report_debug("Found specified controller `$controller`");
    }else{
     $controller = $this->inform('dispatcher:default');
@@ -35,6 +35,6 @@
     $controller_o = $this->get_popper()->pop($this->inform('dispatcher:controller'))->set_param($controller);
    }
 
-   $controller_o->control_and_reveal((object)$params);
+   $controller_o->control_and_reveal($request);
   }
  }
