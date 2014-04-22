@@ -190,7 +190,7 @@
   protected function _set($property, $value){$this->_values[$property] = $value; return $this;}
 
   public function get_values(){return $this->_values;}
-  public function set_values($_){$this->_new=$this->_values=[];return $this->_check_uided();}
+  public function set_values(array $_){$this->_new=$this->_values=(array)$_;return $this->_check_uided();}
 
   /**
    * Internal set_values()
