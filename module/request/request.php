@@ -21,7 +21,6 @@ class request extends mysfw\frame\dna{
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
         $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
     }
-
     public function get_query($k=null) {
         if(empty($k)  and $k!==0) return $this->_query;
         if(isset($this->_query[$k])) return $this->_query[$k];
@@ -45,4 +44,8 @@ class request extends mysfw\frame\dna{
         if(isset($this->_files[$k])) return $this->_files[$k];
         return null;
     }
- }
+
+    public function is_post(){
+        return ($this->get_server('REQUEST_METHOD')=='POST');
+    }
+}
