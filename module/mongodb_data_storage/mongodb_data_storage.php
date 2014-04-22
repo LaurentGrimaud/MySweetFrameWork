@@ -76,7 +76,6 @@
     $this->report_error("Only one part uid supported in this version. Sorry...");
     return false;
    }
-
    $uid = array_pop($crit);
    $this->report_info("data uid is $uid");
    return $uid;
@@ -221,13 +220,13 @@
     $this->report_error("Failed to build uid - Aborting");
     return false;
    }
-   if(isset( $values->_id)) $values_id= $values->_id;
-   unset($values->_id);
-   $this->report_debug(print_r((array)$values, true));
+   if(isset( $values['_id'])) $values_id= $values['_id'];
+   unset($values['_id']);
+   $this->report_debug(print_r($values, true));
 
    try {
-    if($res = $c->update(array("_id" => $uid), array('$set' => (array)$values))) {
-     if(isset( $values_id)) $values->_id = $values_id;
+    if($res = $c->update(array("_id" => $uid), array('$set' => $values))) {
+     if(isset( $values_id)) $values['_id'] = $values_id;
      $this->report_debug(print_r($res, true));
      $this->report_debug("Item of type $type and uid $uid updated");
      return true;
