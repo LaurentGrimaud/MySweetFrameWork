@@ -15,7 +15,7 @@
     ];
 
   protected function _get_ready() {
-   $report = $this->inform('root').$this->inform('report_dir').$this->inform('report_file_name');
+   $report = ( $this->inform('report_dir')==$this->_defaults['report_dir'])?$this->inform('root').$this->inform('report_dir').$this->inform('report_file_name'):$this->inform('report_dir') . $this->inform('report_file_name');
    if(! $this->_fd = \fopen($report, 'a')) throw $this->except("Failed to open report file `$report`");
   }
 
