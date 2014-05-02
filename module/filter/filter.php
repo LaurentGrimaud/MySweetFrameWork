@@ -5,12 +5,14 @@ class filter extends mysfw\frame\dna{
 
     public function apply(
         $value,
-        array $filters= array()
+        array $filters= null
     ){
         if( is_callable($value)) $value = call_user_func($value);
         if( is_array($value)) return $value; //XXX recursively validate array
-        foreach($filters as $filter){
-            if(is_callable($filter)) $value = call_user_func($filter,$value);
+        if( $filters){
+            foreach($filters as $filter){
+                if(is_callable($filter)) $value = call_user_func($filter,$value);
+            }
         }
         return $value;
     }

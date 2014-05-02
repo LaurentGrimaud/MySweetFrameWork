@@ -133,6 +133,7 @@
   public function set_http_response_header($_http_response_header_field, $_http_response_header_value){
    if(!in_array($_http_response_header_field, self::$_supported_http_response_headers)) return false;
    $this->_http_response_headers[$_http_response_header_field]= $_http_response_header_value;
+   return $this;
   }
 
   public function get_http_response_header($_http_response_header_field){return $this->_http_response_headers[$_http_response_header_field];}
