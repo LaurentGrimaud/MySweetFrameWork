@@ -231,7 +231,7 @@
   public function create() {   
    $this->_check_uided();
    if($this->_is_uided())
-    throw $this->except("`create` action requested on UIDed `operator` object (type is {$this->_underlaying_type})");
+    throw $this->except("`create` action requested on UIDed `operator` object (type is `{$this->_underlaying_type}`)");
    if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->get_uid(), $this->_new))
     throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
    $this->_reset_new()->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
@@ -246,10 +246,12 @@
   public function update(){
    $this->_check_uided();
    if($this->_is_uided()){
-    return $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new);
+    if(! $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new)){
+     throw $this->except("`change` action failed in underlaying data storage");
+    }
+    return $this->_reset_new();
    }
-   throw $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
-   return $this->_reset_new();
+   throw $this->except("`update` action requested on unidentified `operator` object (type is `{$this->_underlaying_type}`)");
   }
 
   /**
@@ -261,7 +263,7 @@
   public function recall() {
    $this->_check_uided();
 //   print $this->status();
-    if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is {$this->_underlaying_type})");
+    if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is `{$this->_underlaying_type}`)");
    $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
    switch(count($values)) {
     case 0:
@@ -281,6 +283,7 @@
    * @XXX Chainability is only here for interface homogeneity, but is useless, right ?
    */
   public function erase() {
+   $this->_check_uided();
    if(! $this->_is_uided()) throw $this->except("Couldn't erase unUIDed object");
 
    $r = $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria);
