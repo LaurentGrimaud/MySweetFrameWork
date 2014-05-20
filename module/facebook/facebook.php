@@ -10,7 +10,7 @@ class facebook extends mysfw\frame\dna{
         'auth:facebook:appId'=> 'YOUR_APP_ID',
         'auth:facebook:secret'=> 'YOUR_APP_SECRET',
         'auth:facebook:redirect_uri'=> 'YOUR_REDIRECT_URI',
-        'auth:facebook:scope'=> 'email,user_birthday,user_location,user_hometown',
+        'auth:facebook:scope'=> 'email,user_location,user_hometown',
     );
 
     protected function _get_ready(){

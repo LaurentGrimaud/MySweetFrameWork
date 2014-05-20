@@ -63,10 +63,7 @@ class google extends mysfw\frame\dna{
     public function load_user(){
         if ($this->_client->getAccessToken()) {
             try{
-                $google_user = (new \Google_Service_OAuth2($this->_client))->userinfo->get();
-                $user['email']= $google_user->getEmail();
-                $user['given_name']= $google_user->getGivenName();
-                $user['family_name']= $google_user->getFamilyName();
+                return (new \Google_Service_OAuth2($this->_client))->userinfo->get();
             }catch(\Google_ServiceException $e){
                 $this->report_error($e);
                 unset($_SESSION['goauth']);
