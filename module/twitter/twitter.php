@@ -1,8 +1,8 @@
 <?php namespace t0t1\mysfw\module;
 use t0t1\mysfw;
 
-$this->_learn('aliens\lemos\http');
-$this->_learn('aliens\lemos\oauth_client');
+$this->_learn('aliens\twitteroauth\twitteroauth\OAuth');
+$this->_learn('aliens\twitteroauth\twitteroauth\twitteroauth');
 
 class twitter extends mysfw\frame\dna{
     protected $_client= null;
@@ -14,41 +14,27 @@ class twitter extends mysfw\frame\dna{
     );
 
     protected function _get_ready(){
-        $this->_client = new \oauth_client_class;
-        $this->_client->debug = 1;
-        $this->_client->debug_http = 1;
-        $this->_client->server = 'Twitter';
-        $this->_client->redirect_uri = $this->inform('auth:twitter:oauth_callback');
-        $this->_client->client_id = $this->inform('auth:twitter:key');
-        $this->_client->client_secret = $this->inform('auth:twitter:secret');
+        $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret')); // Use config.php client credentials
     }
 
     public function authenticate($code){
-        if(($success = $this->_client->Initialize())){
-            if(($success = $this->_client->Process())){
-                if(strlen($this->_client->access_token)){
-                    $success = $this->_client->CallAPI(
-                        'https://api.twitter.com/1.1/account/verify_credentials.json', 
-                        'GET', array(), array('FailOnAccessError'=>true), $user);
-                    if($success = $this->_client->Finalize($success)){
-                        $this->_user= $user;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret'), $_SESSION['twitter:oauth_token'],$_SESSION['twitter:oauth_token_secret']);
+        $token_credentials = $this->_client->getAccessToken($code);
+        $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret'), $token_credentials['oauth_token'],$token_credentials['oauth_token_secret']);
+        return true;
     }
 
     public function get_auth_url(){
-        return '/twitter-connect.php';
+        $temporary_credentials = $this->_client->getRequestToken($this->inform('auth:twitter:oauth_callback'));
+        $_SESSION['twitter:oauth_token'] = $temporary_credentials['oauth_token'];
+        $_SESSION['twitter:oauth_token_secret'] = $temporary_credentials['oauth_token_secret'];
+        return $this->_client->getAuthorizeURL($temporary_credentials);
     }
 
     public function logout(){
-        $this->_client->ResetAccessToken();
     }
 
     public function load_user(){
-        return $this->_user;
+        return $this->_client->get('account/verify_credentials');
     }
 }
