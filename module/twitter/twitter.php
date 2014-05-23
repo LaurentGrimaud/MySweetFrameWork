@@ -10,6 +10,8 @@ class twitter extends mysfw\frame\dna{
     protected $_defaults= array(
         'auth:twitter:secret'=>"CLIENT_SECRET",
         'auth:twitter:key'=>"CLIENT_KEY",
+        'auth:twitter:acces_token'=> "ACCESS_TOKEN",
+        'auth:twitter:acces_token_secret'=> "ACCESS_TOKEN_SECRET",
         'auth:twitter:oauth_callback'=> "",
     );
 
