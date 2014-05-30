@@ -21,6 +21,19 @@ class filter extends mysfw\frame\dna{
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
+    public function filter_url( $url){
+        return filter_var($url, FILTER_VALIDATE_URL);
+    }
+
+    public function not_empty( $mixed){
+        if( is_array($mixed)){
+            $no_empty_valued_array = array();
+            foreach( $mixed as $value) if($value) $no_empty_valued_array[]= $value;
+            return $no_empty_valued_array;
+        }
+        return ( $mixed)?:false;
+    }
+
     public function filter_string( $string){
         return filter_var($string, FILTER_SANITIZE_STRING);
     }
