@@ -11,8 +11,8 @@
 
   protected $_defaults = [
    'root' => '',
-   'report_dir' => '../reports/',
-   'report_file_name' => 'default.report'
+   'reporter:dir' => '../reports/',
+   'reporter:filename' => 'default.report'
     ];
 
   protected function _is_path_absolute($path) {
@@ -27,7 +27,7 @@
   public function set_file($file){$this->_file = $file;}
 
   protected function _get_ready() {
-   $this->_file = $this->build_file($this->inform('report_dir'), $this->inform('root'), $this->inform('report_file_name'));
+   $this->_file = $this->build_file($this->inform('reporter:dir'), $this->inform('root'), $this->inform('reporter:filename'));
    if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `$report`");
   }
 
