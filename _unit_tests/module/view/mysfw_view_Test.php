@@ -1,20 +1,27 @@
 <?php
+ use t0t1\mysfw\module;
+ use t0t1\mysfw\frame;
 /**
  * XXX mysfw_view::reveal() tests to be completed
  */
 
- require_once '_unit_tests/substructure/mysfw_core_Test.php';
+ // XXX temp
+ require_once '_unit_tests/unit_testing_init.php';
+ $ut_initializer = new unit_testing_initializer();
+ $ut_initializer->load('frame/contract/view.php');
+ $ut_initializer->load('module/view/view.php');
 
- require_once 'substructure/mysfw_dna.interface.php';
- require_once 'substructure/mysfw_view.interface.php';
- require_once 'substructure/mysfw_core.class.php';
 
- require_once 'modules/view/view.class.php';
-
- class mysfw_view_Test extends mysfw_core_Test {
+ class mysfw_view_Test extends PHPUnit_Framework_TestCase {
 
   public function setUp() {
-   $this->x = new  mysfw_view;
+   $this->x = new  module\view;
+   $mocked_popper = $this->getMock('t0t1\mysfw\frame\contract\popper');
+   $mocked_configurator = $this->getMock('t0t1\mysfw\frame\contract\configurator');
+  // $this->init_configurator($mocked_configurator);
+   $this->x->set_popper($mocked_popper);
+   $this->x->set_configurator($mocked_configurator);
+   $this->x->get_ready();
   }
 
   public function test_init() {
@@ -60,12 +67,11 @@
 
 
   /**
-   * @expectedException PHPUnit_Framework_Error
+   * @expectedException PHPUnit_Framework_Error_Warning
+   * @expectedMessage include(non/existing/tmpl.tmpl.php): failed to open stream: No such file or directory 
    */
   public function test_error_on_non_existing_tmpl() {
    $this->x->reveal('non/existing/tmpl');
   }
 
  }
-
-?>

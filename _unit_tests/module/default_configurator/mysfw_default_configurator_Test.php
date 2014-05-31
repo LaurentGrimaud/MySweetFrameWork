@@ -1,17 +1,19 @@
 <?php
- /** XXX what about object intialisation (get_ready()) ? **/
- require_once '_unit_tests/substructure/mysfw_core_Test.php';
+ /** XXX what about object initialisation (get_ready()) ? **/
+ use t0t1\mysfw\module;
+ use t0t1\mysfw\frame;
 
- require_once 'substructure/mysfw_dna.interface.php';
- require_once 'substructure/mysfw_configurator.interface.php';
- require_once 'substructure/mysfw_core.class.php';
+ // XXX temp
+ require_once '_unit_tests/unit_testing_init.php';
+ $ut_initializer = new unit_testing_initializer();
 
- require_once 'modules/default_configurator/mysfw_default_configurator.class.php';
+ // XXX liste des dépendances
+ // $ut_initializer->load('frame/contract/dna.php');
 
- class mysfw_default_configurator_Test extends mysfw_core_Test {
+ class configurator_Test extends PHPUnit_Framework_TestCase {
 
   public function setUp() {
-   $this->x = new  mysfw_default_configurator;
+   $this->x = new  module\configurator;
    $this->x->get_ready();
   }
 

@@ -2,7 +2,7 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for /t0t1/mysfw</title>
+  <title>Dashboard for /t0t1/mysfw/module</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
@@ -17,7 +17,8 @@
     <div class="row">
      <div class="span12">
       <ul class="breadcrumb">
-        <li><a href="index.html">/t0t1/mysfw</a></li>
+        <li><a href="index.html">/t0t1/mysfw</a> <span class="divider">/</span></li>
+        <li><a href="module.html">module</a></li>
         <li class="active">(Dashboard)</li>
 
       </ul>
@@ -41,7 +42,6 @@
      <h2>Top Project Risks</h2>
      <ul>
               <li><a href="module_operator_operator.php.html#35">operator</a> (1648)</li>
-              <li><a href="frame_popper.php.html#11">popper</a> (420)</li>
               <li><a href="module_configurator_configurator.php.html#11">configurator</a> (42)</li>
 
      </ul>
@@ -49,16 +49,16 @@
     <div class="span6">
      <h2>Least Tested Methods</h2>
      <ul>
+              <li><a href="module_operator_operator.php.html#210">operator::_get_uid_injection</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#211">operator::_uid_injectable</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#214">operator::_reset_new</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#209">operator::_accept_uid_injection</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#207">operator::_is_uided</a> (0%)</li>
               <li><a href="module_operator_operator.php.html#205">operator::_set_uided</a> (0%)</li>
               <li><a href="module_operator_operator.php.html#206">operator::_unset_uided</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#207">operator::_is_uided</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#209">operator::_accept_uid_injection</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#203">operator::get_new</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#200">operator::_set_values</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#181">operator::get</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#189">operator::set</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#192">operator::get_values</a> (0%)</li>
-              <li><a href="module_operator_operator.php.html#193">operator::set_values</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#217">operator::_set_uid</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#224">operator::set_uid</a> (0%)</li>
+              <li><a href="module_operator_operator.php.html#283">operator::erase</a> (0%)</li>
 
      </ul>
     </div>
@@ -96,7 +96,7 @@ $(document).ready(function() {
    min: 0
   },
   series: [{
-   data: [2,0,0,1,0,0,0,0,0,0,0,1]
+   data: [1,0,0,1,0,0,0,0,0,0,0,0]
   }],
  });
 
@@ -124,7 +124,7 @@ $(document).ready(function() {
    }
   },
   series: [{
-   data: [[100,1,"<a href=\"frame_exception_dna.php.html#9\">dna<\/a>"],[0,20,"<a href=\"frame_popper.php.html#11\">popper<\/a>"],[0,6,"<a href=\"module_configurator_configurator.php.html#11\">configurator<\/a>"],[23,59,"<a href=\"module_operator_operator.php.html#35\">operator<\/a>"]],
+   data: [[0,6,"<a href=\"module_configurator_configurator.php.html#11\">configurator<\/a>"],[23,59,"<a href=\"module_operator_operator.php.html#35\">operator<\/a>"]],
    marker: {
     symbol: 'diamond'
    }
