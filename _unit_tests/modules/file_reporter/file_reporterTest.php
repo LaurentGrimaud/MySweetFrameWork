@@ -3,30 +3,10 @@
  use t0t1\mysfw\frame;
 
  // XXX temp
-
- class test_init {
-  protected function _learn() {
-  }
-
-  public function __construct() {
-   // XXX liste des dépendances
-   require_once 'frame/contract/dna.php';
-   require_once 'frame/contract/popper.php';
-   require_once 'frame/contract/configurator.php';
-   require_once 'frame/contract/reporter.php';
-
-   require_once 'frame/exception/dna.php';
-   require_once 'frame/dna.php';
-   require_once 'frame/popper.php';
-
-   require_once 'module/configurator/configurator.php';
-
-   require_once 'module/file_reporter/file_reporter.php';
-  }
- }
-
-$xxx = new test_init();
-
+ require_once '_unit_tests/unit_testing_init.php';
+ $ut_initializer = new unit_testing_initializer();
+ $ut_initializer->load('module/configurator/configurator.php');
+ $ut_initializer->load('module/file_reporter/file_reporter.php');
 
  class file_reporterTest extends PHPUnit_Framework_TestCase {
   protected $_x;
@@ -55,16 +35,7 @@ $xxx = new test_init();
    //$this->_x->get_ready();
   }
 
-  public function reports_data() {
-   return [
-    ['my dir/', '/my root/', 'my file.truc', '/my root/my dir/my file.truc'],
-    ['/my absolute dir/', '/my root/', 'my beautiful file.truc', '/my absolute dir/my beautiful file.truc'],
-    ['../my relative dir/', '/my root/', 'my incredible file.truc', '/my root/../my relative dir/my incredible file.truc'],
-    ];
-  }
-
-  /** @dataProvider reports_data **/
-  public function test_report_file($dir, $root, $file, $result) {
-   $this->assertEquals($result, $this->_x->build_file($dir, $root, $file));
+  public function test_true() {
+   $this->assertTrue(false);
   }
 }

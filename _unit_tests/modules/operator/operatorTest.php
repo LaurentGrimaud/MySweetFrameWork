@@ -3,32 +3,12 @@
  use t0t1\mysfw\frame;
 
  // XXX temp
-
- class test_init {
-  protected function _learn() {
-  }
-
-  public function __construct() {
-   // XXX liste des dépendances
-   require_once 'frame/contract/dna.php';
-   require_once 'frame/contract/popper.php';
-   require_once 'frame/contract/configurator.php';
-   require_once 'frame/contract/data_storage.php';
-
-   require_once 'frame/exception/dna.php';
-   require_once 'frame/dna.php';
-   require_once 'frame/popper.php';
-
-   require_once 'module/configurator/configurator.php';
-
-   require_once 'module/operator/exception/no_entry.php';
-   require_once 'module/operator/exception/too_many_entries.php';
-   require_once 'module/operator/operator.php';
-  }
- }
-
-$xxx = new test_init();
-
+ require_once '_unit_tests/unit_testing_init.php';
+ $ut_initializer = new unit_testing_initializer();
+ $ut_initializer->load('frame/contract/data_storage.php');
+ $ut_initializer->load('module/operator/operator.php');
+ $ut_initializer->load('module/operator/exception/too_many_entries.php');
+ $ut_initializer->load('module/operator/exception/no_entry.php');
 
  class operatorTest extends PHPUnit_Framework_TestCase {
   protected $_x;
@@ -55,7 +35,7 @@ $xxx = new test_init();
 
   /**
    * @expectedException t0t1\mysfw\frame\exception\dna
-   * @expectedExceptionMessage No definition available
+   * @expectedExceptionMessage No definitions available
    */
   public function test_undefined_operator() {
    $this->_x->morph('an undefined operator');
@@ -190,7 +170,7 @@ $xxx = new test_init();
   }
 
 
-  public function test_simple_recall() {
+  public function test_recall_on_uid() {
    $operator_name = "a nice operator";
    $operator_values = ['_id_' => 1234, 'name' => 'Roger'];
    $this->init_operator($operator_name);
@@ -247,6 +227,22 @@ $xxx = new test_init();
    $this->_x->identify('_id_', 1234)->recall();
   }
 
+  public function test_recall_with_alternative_uid() {
+   $operator_name = "a nice operator";
+   $operator_values = ['_id_' => 567, 'name' => 'Roger', 'login' => 'CoolaMan', 'pass' => 'LoveMum'];
+   $this->init_operator($operator_name);
+   $this->_x->morph($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('retrieve')
+	   ->with($operator_name, ['login' => 'CoolaMan', 'pass' => 'LoveMum'], null)
+	   ->will($this->returnValue([0 => $operator_values]));
+   $this->_x->identify('login', 'CoolaMan')->identify('pass', 'LoveMum')->recall();
+   $this->assertEquals($this->_x->get_values(), $operator_values);
+  }
+
+
+
   public function test_simple_erase() {
    $operator_name = "a nice operator";
    $this->init_operator($operator_name);
@@ -293,6 +289,16 @@ $xxx = new test_init();
    $status = "Is alternatively uided ? false\nIs primary uided ? false\n";
    $this->assertEquals($status, $this->_x->status());
   }
+
+  /******* Chainability tests - @XXX To be extended ! ******/
+
+  public function test_identify_chainability() {
+   $operator_name = "a nice operator";
+   $this->init_operator($operator_name);
+   $this->_x->morph($operator_name);
+   $this->assertSame($this->_x->identify('login', 'CoolaMan'), $this->_x);
+  }
+
 
 
  }
