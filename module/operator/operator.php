@@ -79,28 +79,30 @@
    * Configure the object uid strategy according to the operator type
    * Determine if uid injection from data storage is allowed
    *
+   * @throw t0t1\mysfw\frame\exception\dna if no definitions available for the given operator
    * @return this current object
    *
    * XXX draft
    */
   protected function _define_uid() {
-   $step_to_identification = 0;
    $customer_defs = $this->inform('operators:custom_definitions');
-   $defs = @$customer_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
-   if(!$defs) throw $this->except("No definition available for `{$this->_underlaying_type}` operator");
+   $defs = $this->_find_definitions();
    $this->_uid_def = array_keys($defs);
-   foreach($defs as $p => $v){ // XXX temp, not always correct !
-    $this->_set($p, $v);
-    if(is_null($v)){
-     $step_to_identification++;
-     $missing_property = $p;
-    }
-   }
-   $this->_uid_parts=$defs; // XXX draft
-   if($step_to_identification == 1){
-    $this->_accept_uid_injection($missing_property);
-   }
-   return $this;  // XXX draft
+   if(count($this->_uid_def) == 1) $this->_accept_uid_injection($this->_uid_def[0]);
+   return $this;
+  }
+
+
+  /**
+   * Find the current operator definitions 
+   *
+   * @return array the operator definitions 
+   * ie: ['_id' => null]
+   */
+  protected function _find_definitions() {
+   $defs = @$customer_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
+   if(!$defs) throw $this->except("No definitions available for `{$this->_underlaying_type}` operator");
+   return $defs;
   }
 
   // Automatic initialisation method
@@ -169,9 +171,7 @@
    * @return $this
    */
   protected function _check_a_uided() {
-   $this->_a_uided = false;
-   if(!$this->_criteria) return $this;
-   $this->_a_uided = true;
+   $this->_a_uided = (boolean)$this->_criteria;
    return $this;
   }
 
