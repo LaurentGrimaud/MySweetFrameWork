@@ -6,6 +6,7 @@
 
  class file_reporter extends frame\dna implements frame\contract\reporter, frame\contract\dna {
   private $_fd;
+  private $_file;
   private $_level_ceil = 3;
 
   protected $_defaults = [
@@ -14,9 +15,20 @@
    'report_file_name' => 'default.report'
     ];
 
+  protected function _is_path_absolute($path) {
+   return @$path[0] === DIRECTORY_SEPARATOR;
+  }
+
+  public function build_file($report_dir, $root, $file) {
+   return ($this->_is_path_absolute($report_dir) ? "" : $root).$report_dir.$file;
+  }
+
+  public function get_file(){return $this->_file;}
+  public function set_file($file){$this->_file = $file;}
+
   protected function _get_ready() {
-   $report = $this->inform('root').$this->inform('report_dir').$this->inform('report_file_name');
-   if(! $this->_fd = \fopen($report, 'a')) throw $this->except("Failed to open report file `$report`");
+   $this->_file = $this->build_file($this->inform('report_dir'), $this->inform('root'), $this->inform('report_file_name'));
+   if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `$report`");
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
