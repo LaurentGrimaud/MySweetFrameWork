@@ -18,6 +18,7 @@
    * Privatized constructor, preventing external instanciation
    * 
    * @param $root the path for the project (using mysfw)
+   * @param $home the path for mysfw
    */
   final private function __construct($root, $home) {
    $this->set_home($home); // XXX useful ?

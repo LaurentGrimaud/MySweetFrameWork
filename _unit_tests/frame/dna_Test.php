@@ -1,19 +1,19 @@
 <?php
 
- require_once 'substructure/mysfw_dna.interface.php';
- require_once 'substructure/mysfw_reporter.interface.php';
- require_once 'substructure/mysfw_popper.interface.php';
+ require_once 'frame/contract/dna.php';
+ require_once 'frame/contract/reporter.php';
+ require_once 'frame/contract/popper.php';
 
- require_once 'substructure/mysfw_core.class.php';
+ require_once 'frame/dna.php';
 
  /** Just to test the underlaying abstract class ... **/
- class mysfw_core_instance extends mysfw_core {
+ class core_instance extends t0t1\mysfw\frame\dna {
  }
 
- class mysfw_core_Test extends PHPUnit_Framework_TestCase {
+ class core_Test extends PHPUnit_Framework_TestCase {
 
   public function setUp(){
-   $this->x = new mysfw_core_instance;
+   $this->x = new core_instance;
   }
 
   final public function test_define_failure_when_configurator_not_set() {
@@ -35,12 +35,12 @@
   }
 
   final public function test_correct_type_popper_injection() {
-   $p = $this->getMock('mysfw_popper');
+   $p = $this->getMockBuilder('t0t1\mysfw\frame\popper')->disableOriginalConstructor()->getMock();
    $this->x->set_popper($p);
   }
 
   /**
-   * @expectedException mysfw\exception
+   * @expectedException t0t1\mysfw\frame\exception\dna
    */
   final public function test_inform_no_configurator() {
    $this->x->inform('xxx');
