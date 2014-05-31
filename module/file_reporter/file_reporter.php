@@ -15,19 +15,11 @@
    'reporter:filename' => 'default.report'
     ];
 
-  protected function _is_path_absolute($path) {
-   return @$path[0] === DIRECTORY_SEPARATOR;
-  }
-
-  public function build_file($report_dir, $root, $file) {
-   return ($this->_is_path_absolute($report_dir) ? "" : $root).$report_dir.$file;
-  }
-
   public function get_file(){return $this->_file;}
   public function set_file($file){$this->_file = $file;}
 
   protected function _get_ready() {
-   $this->_file = $this->build_file($this->inform('reporter:dir'), $this->inform('root'), $this->inform('reporter:filename'));
+   $this->_file = $this->get_popper()->pop('file_utility')->project_full_path($this->inform('reporter:dir'), $this->inform('reporter:filename'));
    if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `$report`");
   }
 
