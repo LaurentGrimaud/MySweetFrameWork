@@ -1,6 +1,6 @@
 <?php
 // require_once 'vfsStream/vfsStream.php';
- require_once 'popper.class.php';
+ require_once 'frame/popper.php';
 
  class mysfw_default_popper_Test extends PHPUnit_Framework_TestCase {
 

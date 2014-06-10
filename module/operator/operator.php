@@ -60,7 +60,7 @@
   /**
    * Configure the current object to act as the given type
    *
-   * @throw myswf\exception if no definitions available for the given operator
+   * @throw t0t1\mysfw\frame\exception\dna if no definitions available for the given operator
    * @return this current object
    *
    * XXX draft, refactor needed
@@ -79,28 +79,30 @@
    * Configure the object uid strategy according to the operator type
    * Determine if uid injection from data storage is allowed
    *
-   * @return $this
+   * @throw t0t1\mysfw\frame\exception\dna if no definitions available for the given operator
+   * @return this current object
    *
    * XXX draft
    */
   protected function _define_uid() {
-   $step_to_identification = 0;
    $customer_defs = $this->inform('operators:custom_definitions');
+   $defs = $this->_find_definitions();
+   $this->_uid_def = array_keys($defs);
+   if(count($this->_uid_def) == 1) $this->_accept_uid_injection($this->_uid_def[0]);
+   return $this;
+  }
+
+
+  /**
+   * Find the current operator definitions 
+   *
+   * @return array the operator definitions 
+   * ie: ['_id' => null]
+   */
+  protected function _find_definitions() {
    $defs = @$customer_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
    if(!$defs) throw $this->except("No definitions available for `{$this->_underlaying_type}` operator");
-   $this->_uid_def = array_keys($defs);
-   foreach($defs as $p => $v){ // XXX temp, not always correct !
-    $this->_set($p, $v);
-    if(is_null($v)){
-     $step_to_identification++;
-     $missing_property = $p;
-    }
-   }
-   $this->_uid_parts=$defs; // XXX draft
-   if($step_to_identification == 1){
-    $this->_accept_uid_injection($missing_property);
-   }
-   return $this;  // XXX draft
+   return $defs;
   }
 
   // Automatic initialisation method
@@ -152,7 +154,6 @@
    $this->_p_uided = false;
    if(!$this->_uid_def) return $this;
    if(!$this->_criteria) return $this;
-
    foreach($this->_uid_def as $_uid_part){
     if(!(@$this->_criteria[$_uid_part])) return $this;
    }
@@ -169,9 +170,7 @@
    * @return $this
    */
   protected function _check_a_uided() {
-   $this->_a_uided = false;
-   if(!$this->_criteria) return $this;
-   $this->_a_uided = true;
+   $this->_a_uided = (boolean)$this->_criteria;
    return $this;
   }
 
@@ -231,7 +230,7 @@
   public function create() {   
    $this->_check_uided();
    if($this->_is_uided())
-    throw $this->except("`create` action requested on UIDed `operator` object (type is {$this->_underlaying_type})");
+    throw $this->except("`create` action requested on UIDed `operator` object (type is `{$this->_underlaying_type}`)");
    if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->get_uid(), $this->_new))
     throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
    $this->_reset_new()->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
@@ -248,10 +247,12 @@
   public function update(){
    $this->_check_uided();
    if($this->_is_uided()){
-    $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new);
+    if(! $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new)){
+     throw $this->except("`change` action failed in underlaying data storage");
+    }
     return $this->_reset_new();
    }
-   throw $this->except("`update` action requested on unidentified `operator` object (type is {$this->_underlaying_type})");
+   throw $this->except("`update` action requested on unidentified `operator` object (type is `{$this->_underlaying_type}`)");
   }
 
   /**
@@ -263,7 +264,7 @@
   public function recall() {
    $this->_check_uided();
 //   print $this->status();
-    if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is {$this->_underlaying_type})");
+    if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is `{$this->_underlaying_type}`)");
    $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
    switch(count($values)) {
     case 0:
@@ -283,6 +284,7 @@
    * @XXX Chainability is only here for interface homogeneity, but is useless, right ?
    */
   public function erase() {
+   $this->_check_uided();
    if(! $this->_is_uided()) throw $this->except("Couldn't erase unUIDed object");
 
    $r = $this->get_data_storage()->delete($this->_underlaying_type, $this->_criteria);

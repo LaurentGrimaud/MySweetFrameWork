@@ -8,7 +8,7 @@
 
   <testsuites>
     <testsuite name="All mysfw">
-      <directory>_unit_tests</directory>
+      <directory>_unit_tests/module</directory>
     </testsuite>
   </testsuites>
 
