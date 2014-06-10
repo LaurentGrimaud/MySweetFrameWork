@@ -59,6 +59,10 @@ class facebook extends mysfw\frame\dna{
         return $this->_handler->getLoginUrl(array('redirect_uri'=>$this->inform('auth:facebook:redirect_uri'),'scope'=>$this->inform('auth:facebook:scope')));
     }
 
+    public function fql($params){
+        return $this->_facebook_auth->api($params);
+    }
+
     public function logout(){
         return $this->_handler->destroySession();
     }

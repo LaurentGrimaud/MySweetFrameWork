@@ -24,7 +24,7 @@
    }
    $this->get_popper()->pop($this->inform("view:response"))->reveal();
    */
-   include $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php'; // XXX 
+   if(file_exists($this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php')) include $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php'; // XXX 
   }
  }
 ?>
