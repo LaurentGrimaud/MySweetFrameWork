@@ -22,7 +22,8 @@
    * XXX bad balance between base_controller and generic_controller
    */
   public function dispatch(request $request) {
-   if($controller = $request->get_query($this->inform('dispatcher:parameter'))){
+   $filter = $this->get_popper()->pop('filter');
+   if($controller = $filter->apply($request->get_query($this->inform('dispatcher:parameter')),array(array($filter,'filter_string')))){
     $this->report_debug("Found specified controller `$controller`");
    }else{
     $controller = $this->inform('dispatcher:default');

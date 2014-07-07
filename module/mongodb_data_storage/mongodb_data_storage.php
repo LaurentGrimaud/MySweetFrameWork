@@ -257,9 +257,18 @@
     $this->report_error("Failed to build uid - Aborting");
     return false;
    }
-
+   if( ! $uid instanceof \MongoId){
+    try{
+        $uid= new \MongoId($uid);
+    }catch(\MongoException $e){
+        if($e->getCode()=='19'){
+            $this->report_error('invalid id ' . $uid . ' : ' . $e->getMessage());
+        }
+        return false;
+    }
+   }
    try {
-    $res = $c->remove(array("_id" => new \MongoId($uid)), $this->_collection_options);
+    $res = $c->remove(array("_id" => $uid), $this->_collection_options);
 
     if($res === false || @$res['err']) {
      $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
