@@ -16,15 +16,14 @@
   public function set_all($_) {$this->_values = (array)$_;}
   public function get_all() {return $this->_values;}
 
-  public function reveal($t) {
-   // XXX loo temp: should use another mechanism but configurator to bring http status code to response object
-   /*
-   if($c = $this->get('status_code')){
-    $this->define('response.http_status_code', $c);
-   }
-   $this->get_popper()->pop($this->inform("view:response"))->reveal();
+  /**
+   * Process to the given template
+   * @var $t string the template's name
+   *
+   * @throw frame\exception\dna on include error
    */
-   if(file_exists($this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php')) include $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php'; // XXX 
+  public function reveal($t) {
+   $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
+   if(! @include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
   }
  }
-?>
