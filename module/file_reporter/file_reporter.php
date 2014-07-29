@@ -20,7 +20,7 @@
 
   protected function _get_ready() {
    $this->_file = $this->get_popper()->pop('file_utility')->project_full_path($this->inform('reporter:dir'), $this->inform('reporter:filename'));
-   if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `$report`");
+   if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
