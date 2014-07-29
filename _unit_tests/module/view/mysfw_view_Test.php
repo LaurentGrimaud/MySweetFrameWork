@@ -67,8 +67,8 @@
 
 
   /**
-   * @expectedException PHPUnit_Framework_Error_Warning
-   * @expectedMessage include(non/existing/tmpl.tmpl.php): failed to open stream: No such file or directory 
+   * @expectedException t0t1\mysfw\frame\exception\dna
+   * @expectedMessage Failed to include template `non/existing/tmpl.tmpl.php`
    */
   public function test_error_on_non_existing_tmpl() {
    $this->x->reveal('non/existing/tmpl');
