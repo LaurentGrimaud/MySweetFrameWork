@@ -14,6 +14,8 @@ class twitter extends mysfw\frame\dna{
         'auth:twitter:acces_token_secret'=> "ACCESS_TOKEN_SECRET",
         'auth:twitter:oauth_callback'=> "",
     );
+    protected $_search_url = 'https://api.twitter.com/1.1/search/tweets.json';
+    protected $_post_url = 'https://api.twitter.com/1.1/statuses/update.json';
 
     protected function _get_ready(){
         $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret')); // Use config.php client credentials
@@ -38,5 +40,51 @@ class twitter extends mysfw\frame\dna{
 
     public function load_user(){
         return $this->_client->get('account/verify_credentials');
+    }
+    
+    public function get_tweets_by_hashtag( $hashtag, $since_id = null, $until_date = null){
+        return $this->_get_tweets( $hashtag, $since_id, $until_date);
+    }
+    
+    public function post_tweet( $tweet_text, $origin_tweet_id = null, $twitter_user_name = null){
+        if( $origin_tweet_id && ! $twitter_user_name){
+            return false;
+        }
+        // start connection
+        $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret'), $this->inform('auth:twitter:acces_token'), $this->inform('auth:twitter:acces_token_secret'));
+        
+        //send message
+        $paramx = array();
+        $paramx['status'] = '';
+        if( $twitter_user_name){
+            $paramx['status'] .= ' @' . $twitter_user_name;
+        }
+        $paramx['status'] .= $tweet_text;
+        if( $origin_tweet_id){
+            $paramx['in_reply_to_status_id'] = $origin_tweet_id;
+        }    
+        return $this->_client->post($this->_post_url, $paramx);    
+    }
+    
+    protected function _get_tweets( $param, $since_id = null, $until_date = null){
+       if( $until_date){
+           // verification date format
+           $format ="Y-m-d"; 
+           if( false === \DateTime::createFromFormat($format,$until_date)){
+            return false;
+           }
+       }
+       // twitter api authentication read_only method
+       $this->_client = new \TwitterOAuth($this->inform('auth:twitter:key'), $this->inform('auth:twitter:secret'), $this->inform('auth:twitter:acces_token'), $this->inform('auth:twitter:acces_token_secret'));
+       $url = $this->_search_url . '?q=' . urlencode($param);
+       if( $since_id){
+        $url .= '&since_id=' . $since_id;
+       }
+       if( $until_date){
+        $url .= '&until=' . $until_date;
+       }
+       $url .= '&count=3';
+       return $this->_client->get($url);
+   
     }
 }
