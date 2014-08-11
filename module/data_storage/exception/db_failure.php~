@@ -1,0 +1,6 @@
+<?php
+
+namespace t0t1\mysfw\module\data_storage;
+use t0t1\mysfw\frame;
+
+class db_failure extends frame\exception\dna {}
