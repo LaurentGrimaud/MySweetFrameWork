@@ -428,16 +428,22 @@
   ** wTimeoutMS : milliseconds write action limit duration, only if w > 1, default value for MongoClient : 10000  (replace wtimeout option)
   */
   private function _build_connection_options(){
-    $supported_options = ['w', 'j', 'justOne', 'fsync', 'socketTimeoutMS', 'wTimeoutMS'];
     $this->_connection_options = [];
-    $options =  $this->inform('mongo:options');
-    if ( !empty( $options)){
-        foreach( $options as $key=>$value){
-            if( in_array( $key, $supported_options)){
-                $this->_connection_options[$key] = $value;
-             }
-             $this->report_debug('Skipping unsupported option : ' . $key);
+    if (class_exists('\MongoClient')) {
+        $supported_options = ['w', 'j', 'justOne', 'fsync', 'socketTimeoutMS', 'wTimeoutMS'];
+        $options =  $this->inform('mongo:options');
+        if ( !empty( $options)){
+            foreach( $options as $key=>$value){
+                if( in_array( $key, $supported_options)){
+                    $this->_connection_options[$key] = $value;
+                 }
+                 $this->report_debug('Skipping unsupported option : ' . $key);
+            }
         }
+    }
+    else{
+        // Mongo options
+        $this->_connection_options['safe'] = true;
     }
   }
  }
