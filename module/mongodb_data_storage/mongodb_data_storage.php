@@ -100,7 +100,7 @@
     }
     else{
         $m = new \Mongo( $connection_string);
-    } 
+    }
     return $m->selectCollection($this->inform('mongo:db'), $type); // XXX Conf should be taken from configurator object
    }
    catch( \MongoConnectionException $e){
@@ -202,7 +202,7 @@
     $doc_o = $c->save($data_to_insert);
     $uid = (string)(@$data_to_insert['_id']);
     if( empty( $uid)){
-        $uid = $doc_o['_id']->{'$id'};
+        $uid = $doc_o['_id'];
     }
     $this->report_debug("`$type` item set, with uid $uid");
     return $uid;
@@ -237,7 +237,7 @@
     $doc_o = $c->save($values);
     $uid = (string)(@$values['_id']);
     if( empty( $uid)){
-        $uid = $doc_o['_id']->{'$id'};
+        $uid = $doc_o['_id'];
     }
     $this->report_debug("`$type` item set, with uid $uid");
     return $uid;
@@ -291,18 +291,6 @@
    }
    if(isset( $values['_id'])) $values_id= $values['_id'];
    unset($values['_id']);
-   if( ! $uid instanceof \MongoId){
-       try{
-        $uid= new \MongoId($uid);
-       }catch(\MongoException $e){
-            if($e->getCode()=='19'){
-                $this->report_error('invalid id ' . $uid . ' : ' . $e->getMessage());
-                throw $this->except('invalid id ' . $uid . ' : ' . $e->getMessage(), 'invalid_parameters');
-            }
-            $this->report_error('invalid id ' . $uid . ' : ' . $e->getMessage());
-            throw $this->except('Failed to build MongoId uid : ' . $e->getMessage(), 'data_storage_exception');
-        }
-   }
    $this->report_debug(print_r($values, true));
    try {
     if($res = $c->update(array("_id" => $uid), array('$set' => $values))) {
@@ -348,18 +336,6 @@
    if(! $uid = $this->_criteria_talk($type, $crit)){
     $this->report_error("Failed to build uid - Aborting");
     throw $this->except('Failed to build uid', 'data_storage_exception');
-   }
-   if( ! $uid instanceof \MongoId){
-    try{
-        $uid= new \MongoId($uid);
-    }catch(\MongoException $e){
-        if($e->getCode()=='19'){
-            $this->report_error('invalid id ' . $uid . ' : ' . $e->getMessage());
-            throw $this->except('invalid id ' . $uid . ' : ' . $e->getMessage(), 'invalid_parameters');
-        }
-        $this->report_error('invalid id ' . $uid . ' : ' . $e->getMessage());
-        throw $this->except('Failed to build MongoId uid : ' . $e->getMessage(), 'data_storage_exception');
-    }
    }
    try {
     $res = $c->remove(array("_id" => $uid), $this->_collection_options);
