@@ -198,6 +198,9 @@
     $this->_build_connection_options();
    }
    $data_to_insert = (array)$values;
+   if( array_key_exists( '_id', $data_to_insert) && empty( $data_to_insert['_id'])){
+    throw $this->except("We tried to save un document with empty _id property !!", "data_storage_exception");
+   }
    try {
     $doc_o = $c->save($data_to_insert);
     $uid = (string)(@$data_to_insert['_id']);
@@ -233,6 +236,9 @@
     $this->_build_connection_options();
    }
    $values = (array)$values;
+   if( array_key_exists( '_id', $values) && empty( $values['_id'])){
+    throw $this->except("We tried to save un document with empty _id property !!", "data_storage_exception");
+   }
    try {
     $doc_o = $c->save($values);
     $uid = (string)(@$values['_id']);
