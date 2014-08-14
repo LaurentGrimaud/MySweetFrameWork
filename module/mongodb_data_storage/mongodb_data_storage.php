@@ -202,7 +202,7 @@
     throw $this->except("We tried to save un document with empty _id property !!", "data_storage_exception");
    }
    try {
-    $doc_o = $c->save($data_to_insert);
+    $doc_o = $c->insert($data_to_insert);
     $uid = @$data_to_insert['_id'];
     if( empty( $uid)){
         $uid = $doc_o['_id'];
