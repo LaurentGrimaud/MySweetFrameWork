@@ -203,7 +203,7 @@
    }
    try {
     $doc_o = $c->save($data_to_insert);
-    $uid = (string)(@$data_to_insert['_id']);
+    $uid = @$data_to_insert['_id'];
     if( empty( $uid)){
         $uid = $doc_o['_id'];
     }
