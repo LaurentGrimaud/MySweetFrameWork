@@ -92,7 +92,7 @@
   
 
   // XXX temp - draft - Needs to be in data storage interface
-  public function get_connection() {
+  public function get_connection( $type) {
    try {
     $connection_string = $this->_build_connection_string();
     if (class_exists('\MongoClient')) {
@@ -100,7 +100,7 @@
     }
     else{
         $m = new \Mongo( $connection_string);
-    }
+    } 
     return $m->selectCollection($this->inform('mongo:db'), $type); // XXX Conf should be taken from configurator object
    }
    catch( \MongoConnectionException $e){
