@@ -84,7 +84,7 @@
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'connection_failure');
    }
-   catch(exception $e){
+   catch( \Exception $e){
     $this->report_error("Failed to connect to database or collection, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'db_failure');
    } 
@@ -107,7 +107,7 @@
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'connection_failure');
    }
-   catch(exception $e){
+   catch( \Exception $e){
     $this->report_error("Failed to connect to database or collection, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'db_failure');
    } 
@@ -223,7 +223,7 @@
         throw $this->except($e->getMessage(), 'data_storage_exception');
     }
    }
-   catch( exception $e){
+   catch( \Exception $e){
         throw $this->except($e->getMessage(), 'data_storage_exception');
     }   
   }
@@ -261,7 +261,7 @@
         throw $this->except($e->getMessage(), 'data_storage_exception');
     }
    }
-   catch( exception $e){
+   catch( \Exception $e){
         throw $this->except($e->getMessage(), 'data_storage_exception');
     }   
   }
@@ -319,9 +319,8 @@
     $this->report_error("Failed to update item of type $type and uid $uid from MongoDB");
     return false;
     //should throw data_storage exception ?
-   }catch( exception $e){
-    $this->report_error("Exception thrown, message is: ".$e->getMessage());
-    throw $this->except($e->getMessage(), 'data_storage_exception');
+   }catch( \MongoException $e){
+    $this->_exception_management( $e);
    }
   }
 
@@ -365,10 +364,9 @@
     $this->report_error("Something strange just happened: {$res['n']} items of $type and uid $uid removed from MongoDB");
     throw $this->except("More than one document removed for uid : " . $uid, "too_many_entries");
 
-   }catch(exception $e){
-    $this->report_error("Exception thrown, message is: ".$e->getMessage());
-    throw $this->except("Failed to remove item of type $type and uid $uid from MongoDB : " . $e->getMessage(), "data_storage_exception");
-   } 
+   }catch( \MongoException $e){
+    $this->_exception_management( $e);
+   }
   }
   
   private function _exception_management( \MongoException $e){
