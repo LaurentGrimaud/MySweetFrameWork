@@ -8,7 +8,7 @@ class cookie extends mysfw\frame\dna{
         'cookie:path'=> null, 
         'cookie:domain'=> null,
         'cookie:secure'=> false,
-        'cookie:http_only'=> false
+        'cookie:http_only'=> false,
     );
 
     public function set($name, $value, $expire=null, $path=null, $domain=null, $secure=null, $http_only=null){
@@ -17,7 +17,7 @@ class cookie extends mysfw\frame\dna{
         $domain = ($domain===null)?$this->inform('cookie:domain'):$domain;
         $secure = ($secure===null)?$this->inform('cookie:secure'):$secure;
         $http_only = ($http_only===null)?$this->inform('cookie:http_only'):$http_only;
-        if( ! setcookie($name, $value, $expire, $path, $domain, $secure, $http_only)){
+        if( ! @setcookie($name, $value, $expire, $path, $domain, $secure, $http_only)){
             $this->report_error('Failed to set cookie with values : ' . json_encode(array('name'=>$name, 'value'=>$value, 'expire'=>$expire, 'path'=>$path, 'domain'=>$domain, 'secure'=>$secure, 'http_only'=>$http_only)));
             //XXX throw an exception ?
         }
@@ -37,14 +37,14 @@ class cookie extends mysfw\frame\dna{
         return $this;
     }
 
-    public function are_accepted(){
+    public function are_accepted(){ //XXX use object session
         $use_cookie = ini_get('session.use_cookies');
         @ini_set('session.use_cookies', 1);
-        $a = session_id();
+        $a = @session_id();
         $started = ( is_string( $a ) && strlen( $a ));
         if( !$started ){
             @session_start();
-            $a = session_id();
+            $a = @session_id();
         }
         $a_data = (isset( $_SESSION ))?$_SESSION:array();
         @session_destroy();
@@ -53,11 +53,6 @@ class cookie extends mysfw\frame\dna{
         $b = @session_id();
         if( !$started ) @session_write_close();
         if( !$use_cookie ) @ini_set('session.use_cookies', 0 );
-        if($a === $b){
-            ini_set( 'session.use_cookies', 1 ); 
-            @session_start();
-            return true;
-        }
-        return false;
+        return ($a === $b);
     }
 }
