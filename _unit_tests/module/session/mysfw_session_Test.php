@@ -66,6 +66,8 @@
 
   /**
    * @depends test_start
+   * @expectedException Exception
+   * @expectedMessage Failed to delete session cookie with values : {"lifetime":0,"path":"\/","domain":"","secure":false,"httponly":false,"name":"PHPSESSID","time":1409515449,"value":""}
    */
     public function test_destroy($v){
         $v->set('gni', 'gno')->destroy();
@@ -77,11 +79,14 @@
    * @depends test_start
    */
     public function test_is_active($v){
+        $v->start();
         $this->assertTrue($v->is_active());
         return $v;
     }
 
   /**
+   * @expectedException Exception
+   * @expectedMessage Failed to delete session cookie with values : {"lifetime":0,"path":"\/","domain":"","secure":false,"httponly":false,"name":"PHPSESSID","time":1409515679,"value":""}
    * @depends test_init
    */
     public function test_is_active_return_false($v){
