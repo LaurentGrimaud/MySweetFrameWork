@@ -19,7 +19,7 @@ class cookie extends mysfw\frame\dna{
         $http_only = ($http_only===null)?$this->inform('cookie:http_only'):$http_only;
         if( ! @setcookie($name, $value, $expire, $path, $domain, $secure, $http_only)){
             $this->report_error('Failed to set cookie with values : ' . json_encode(array('name'=>$name, 'value'=>$value, 'expire'=>$expire, 'path'=>$path, 'domain'=>$domain, 'secure'=>$secure, 'http_only'=>$http_only)));
-            //XXX throw an exception ?
+            throw new \Exception('Failed to set cookie with values : ' . json_encode(array('name'=>$name, 'value'=>$value, 'expire'=>$expire, 'path'=>$path, 'domain'=>$domain, 'secure'=>$secure, 'http_only'=>$http_only)));
         }
         return $this;
     }
@@ -32,7 +32,7 @@ class cookie extends mysfw\frame\dna{
     public function delete($name){
         if(!setcookie($name,"")){
             $this->report_error('Failed to unset cookie with values : ' . json_encode(array('name'=>$name)));
-            //XXX throw an exception ?
+            throw new \Exception('Failed to unset cookie with values : ' . json_encode(array('name'=>$name)));
         }
         return $this;
     }
