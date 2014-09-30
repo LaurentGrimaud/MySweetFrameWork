@@ -64,7 +64,7 @@ class twitter extends mysfw\frame\dna{
         if( $origin_tweet_id){
             $paramx['in_reply_to_status_id'] = $origin_tweet_id;
         }    
-        return $client->post($this->this->inform('twitter:post:url', $paramx);    
+        return $client->post($this->inform('twitter:post:url', $paramx));    
     }
     
     protected function _get_tweets( $param, $since_id = null, $until_date = null, $nb = null){
