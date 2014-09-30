@@ -67,28 +67,4 @@ class request extends mysfw\frame\dna{
     public function accepts_json(){
         return ( false !== strpos($this->_filter->apply($this->get_server('HTTP_ACCEPT'),array('trim')),'application/json'));
     }
-    public function allows_cookies(){
-        $use_cookie = ini_get('session.use_cookies');
-        @ini_set('session.use_cookies', 1);
-        $a = session_id();
-        $started = ( is_string( $a ) && strlen( $a ));
-        if( !$started )
-        {
-            @session_start();
-            $a = session_id();
-        }
-        $a_data = (isset( $_SESSION ))?$_SESSION:array();
-        @session_destroy();
-        @session_start();
-        $_SESSION = $a_data;
-        $b = @session_id();
-        if( !$started ) @session_write_close();
-        if( !$use_cookie ) @ini_set('session.use_cookies', 0 );
-        if($a === $b){
-            ini_set( 'session.use_cookies', 1 ); 
-            @session_start();
-            return true;
-        }
-        return false;
-    }
 }
