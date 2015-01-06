@@ -46,7 +46,7 @@
    'too_many_entries'=>1,
     ];
    
-   private function _build_connection_string(){
+   protected function _build_connection_string(){ // XXX TEMP Should be private
     $connection_string = "";
     if( $this->inform('mongo:host') || $this->inform('mongo:user') || $this->inform('mongo:pass') || $this->inform('mongo:port')){
         $connection_string = "mongodb://";
@@ -211,17 +211,17 @@
     return $uid;
 
    }
-   catch( \MongoException $e){
-    $this->_exception_management( $e);
-   }
    catch( \MongoCursorException $e){
     if( $e->getCode() == "11000"){
-        $this->report_error("duplicate key : " . $uid);
+        //$this->report_error("duplicate key : " . $uid);
         throw $this->except($e->getMessage(), 'duplicate_key');
     }
     else{
         throw $this->except($e->getMessage(), 'data_storage_exception');
     }
+   }
+   catch( \MongoException $e){
+    $this->_exception_management( $e);
    }
    catch( \Exception $e){
         throw $this->except($e->getMessage(), 'data_storage_exception');

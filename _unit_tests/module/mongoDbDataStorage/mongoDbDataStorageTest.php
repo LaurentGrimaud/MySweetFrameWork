@@ -3,19 +3,19 @@
  use t0t1\mysfw\frame;
 
  // XXX temp
- require_once '../../unit_testing_init.php';
+ require_once '_unit_tests/unit_testing_init.php';
  $ut_initializer = new unit_testing_initializer();
- $ut_initializer->load('t0t1/mysfw/frame/contract/data_storage.php');
- $ut_initializer->load('t0t1/mysfw/module/mongodb_data_storage/mongodb_data_storage.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/too_many_entries.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/no_entry.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/db_failure.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/duplicate_key.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/connection_failure.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/data_storage_exception.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/invalid_parameters.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/no_entry.php');
- $ut_initializer->load('t0t1/mysfw/module/data_storage/exception/wrong_key.php');
+ $ut_initializer->load('frame/contract/data_storage.php');
+ $ut_initializer->load('module/mongodb_data_storage/mongodb_data_storage.php');
+ $ut_initializer->load('module/data_storage/exception/too_many_entries.php');
+ $ut_initializer->load('module/data_storage/exception/no_entry.php');
+ $ut_initializer->load('module/data_storage/exception/db_failure.php');
+ $ut_initializer->load('module/data_storage/exception/duplicate_key.php');
+ $ut_initializer->load('module/data_storage/exception/connection_failure.php');
+ $ut_initializer->load('module/data_storage/exception/data_storage_exception.php');
+ $ut_initializer->load('module/data_storage/exception/invalid_parameters.php');
+ $ut_initializer->load('module/data_storage/exception/no_entry.php');
+ $ut_initializer->load('module/data_storage/exception/wrong_key.php');
 
  class mongoDbDataStorageTest extends PHPUnit_Framework_TestCase {
   protected $_x;
@@ -35,7 +35,7 @@
   
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\connection_failure exception
+   * @expectedException \t0t1\mysfw\module\data_storage\exception\connection_failure
    */
   public function test_wrong_connection_data(){
     $configurator = $this->_x->get_configurator();
@@ -256,7 +256,7 @@
   }
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\wrong_parameters exception
+   * @expectedException t0t1\mysfw\module\data_storage\exception\data_storage_exception
    */
   public function test_add_with_wrong_uid(){
     $configurator = $this->_x->get_configurator();
@@ -298,7 +298,7 @@
   }
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\duplicate_key exception
+   * @expectedException t0t1\mysfw\module\data_storage\exception\duplicate_key
    */
   public function test_add_with_duplicate_key(){
     $configurator = $this->_x->get_configurator();
@@ -374,7 +374,7 @@
   }
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\data_storage_exception
+   * @expectedException t0t1\mysfw\module\data_storage\exception\data_storage_exception
    */
   public function test_change_without_uid(){
     $configurator = $this->_x->get_configurator();
@@ -451,7 +451,7 @@
   }
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\no_entry exception
+   * @expectedException t0t1\mysfw\module\data_storage\exception\no_entry
    */
   public function test_change_with_unknown_uid(){
     $configurator = $this->_x->get_configurator();
@@ -677,7 +677,7 @@
   }
   
   /**
-   * @expectedException t0t1\mysfw\module/data_storage\no_entry exception
+   * @expectedException t0t1\mysfw\module\data_storage\exception\no_entry
    */
     public function test_delete_with_unknown_uid(){
     $configurator = $this->_x->get_configurator();
