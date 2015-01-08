@@ -85,7 +85,6 @@
    * XXX draft
    */
   protected function _define_uid() {
-   $customer_defs = $this->inform('operators:custom_definitions');
    $defs = $this->_find_definitions();
    $this->_uid_def = array_keys($defs);
    if(count($this->_uid_def) == 1) $this->_accept_uid_injection($this->_uid_def[0]);
@@ -100,7 +99,8 @@
    * ie: ['_id' => null]
    */
   protected function _find_definitions() {
-   $defs = @$customer_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
+   $custom_defs = $this->inform('operators:custom_definitions');
+   $defs = @$custom_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
    if(!$defs) throw $this->except("No definitions available for `{$this->_underlaying_type}` operator");
    return $defs;
   }
@@ -307,7 +307,8 @@
    $res .= '`values` are: '.print_r($this->_values, true);
    $res .= '`criteria` are: '.print_r($this->_criteria, true);
    $res .= '`new` values are: '.print_r($this->_new, true);
-   $res .= 'uid_parts are: '.print_r($this->_uid_parts, true);
+   $res .= 'UID parts are: '.print_r($this->_uid_parts, true);
+   $res .= 'UID def is: '.print_r($this->_uid_def, true);
    return $res;
   }
 

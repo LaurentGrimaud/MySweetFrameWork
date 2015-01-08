@@ -33,6 +33,38 @@
    $this->_x->get_ready();
   }
 
+
+  public function test_custom_definitions() {
+   $this->_x->get_configurator()
+    ->expects($this->any())
+    ->method('inform')
+    ->with('operators:custom_definitions')
+    ->will($this->returnValue(['my custom operator' => ['my custom id' => null]]));
+
+   $this->_x->morph('my custom operator');
+
+   $status = "Is primary uided ? false
+Is alternatively uided ? false
+`values` are: Array
+(
+)
+`criteria` are: Array
+(
+)
+`new` values are: Array
+(
+)
+UID parts are: Array
+(
+)
+UID def is: Array
+(
+    [0] => my custom id
+)
+";
+   $this->assertEquals($status, $this->_x->status());
+  }
+
   /**
    * @expectedException t0t1\mysfw\frame\exception\dna
    * @expectedExceptionMessage No definitions available
@@ -297,8 +329,12 @@ Is alternatively uided ? false
 `new` values are: Array
 (
 )
-uid_parts are: Array
+UID parts are: Array
 (
+)
+UID def is: Array
+(
+    [0] => _id_
 )
 ";
    $this->assertEquals($status, $this->_x->status());
