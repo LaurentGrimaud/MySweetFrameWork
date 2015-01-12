@@ -239,16 +239,22 @@
 
   /**
    * Updates the object's data in underlaying data storage
+   *
+   * @var boolean $uptodate_is_error toggle error raise if data already up-to-date in underlaying data storage
    * 
    * @return $this
    *
    * @throw myswf\exception on error
    */
-  public function update(){
+  public function update($uptodate_is_error = true){
    $this->_check_uided();
    if($this->_is_uided()){
-    if(! $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new)){
+    $res = $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new);
+    if(false === $res){
      throw $this->except("`change` action failed in underlaying data storage");
+    }
+    if(0 === $res && $uptodate_is_error){
+     throw $this->except("`change` action changed nothing in underlaying data storage");
     }
     return $this->_reset_new();
    }

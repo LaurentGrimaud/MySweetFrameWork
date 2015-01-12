@@ -201,6 +201,35 @@ UID def is: Array
    $this->assertEquals($this->_x->get_new(), []);
   }
 
+  /**
+   * @expectedException t0t1\mysfw\frame\exception\dna
+   * @expectedExceptionMessage `change` action changed nothing in underlaying data storage
+   */
+  public function test_update_with_data_already_uptodate_and_uptodate_is_error() {
+   $operator_name = "a nice operator";
+   $this->init_operator($operator_name);
+   $this->_x->morph($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('change')
+	   ->will($this->returnValue(0));
+   $this->_x->identify('_id_', 1234)->set('name', 'Roger')->update(true);
+   $this->assertEquals($this->_x->get_new(), []);
+  }
+
+  public function test_update_with_data_already_uptodate_and_uptodate_is_not_error() {
+   $operator_name = "a nice operator";
+   $this->init_operator($operator_name);
+   $this->_x->morph($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('change')
+	   ->will($this->returnValue(0));
+   $this->_x->identify('_id_', 1234)->set('name', 'Roger')->update(false);
+   $this->assertEquals($this->_x->get_new(), []);
+  }
+
+
 
   public function test_recall_on_uid() {
    $operator_name = "a nice operator";
