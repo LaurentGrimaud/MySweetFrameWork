@@ -45,6 +45,46 @@
   final public function test_inform_no_configurator() {
    $this->x->inform('xxx');
   }
+
+  final public function test_pop_interface(){
+   $module_name = "WunderbarModule";
+   $returned_object = (object)["property" => "value"];
+   $p = $this->getMockBuilder('t0t1\mysfw\frame\popper')->disableOriginalConstructor()->getMock();
+   $p->expects($this->any())
+    ->method('pop')
+    ->with($module_name)
+    ->will($this->returnValue($returned_object));
+   $this->x->set_popper($p);
+   $this->assertSame($this->x->pop($module_name), $returned_object);
+  }
+
+  final public function test_pop_interface_with_conf_context(){
+   $module_name = "ShöneModule";
+   $conf_context = "tricky";
+   $returned_object = (object)["property" => "value"];
+   $p = $this->getMockBuilder('t0t1\mysfw\frame\popper')->disableOriginalConstructor()->getMock();
+   $p->expects($this->any())
+    ->method('pop')
+    ->with($module_name, $conf_context)
+    ->will($this->returnValue($returned_object));
+   $this->x->set_popper($p);
+   $this->assertSame($this->x->pop($module_name, $conf_context), $returned_object);
+  }
+
+  final public function test_indicate_interface(){
+   $module_name = "ModuleDeMesReves";
+   $returned_object = (object)["property" => "LA valeur"];
+   $p = $this->getMockBuilder('t0t1\mysfw\frame\popper')->disableOriginalConstructor()->getMock();
+   $p->expects($this->any())
+    ->method('indicate')
+    ->with($module_name)
+    ->will($this->returnValue($returned_object));
+   $this->x->set_popper($p);
+   $this->assertSame($this->x->indicate($module_name), $returned_object);
+  }
+
+
+
  }
 
 ?>

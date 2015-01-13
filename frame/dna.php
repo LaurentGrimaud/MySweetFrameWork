@@ -37,6 +37,10 @@
    return $this;
   }
 
+  /** popper interface **/
+  final public function pop($classname, $conf_context = null) {return $this->get_popper()->pop($classname, $conf_context);}
+  final public function indicate($name) {return $this->get_popper()->indicate($name);}
+
 
   /** Utilities **/
   public function report_debug($msg){return $this->_report("debug", $msg);}
