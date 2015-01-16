@@ -25,7 +25,7 @@
   /** Overrides the generic behaviour implemented in dna **/
   public function define($c, $v, $cc = '_default_', $p = 'project'){
    if(isset($this->_repository[$p][$cc][$c])){
-    $this->except("Configuration entry ($p, $cc, $c) already exists");
+    throw $this->except("Configuration entry ($p, $cc, $c) already exists");
    }
    $this->_repository[$p][$cc][$c] = $v;
    return $this;
