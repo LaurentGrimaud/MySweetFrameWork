@@ -21,7 +21,6 @@
    'mysql:db'   => 'mysfw',
    ];
 
-
   /** XXX TEMP **/
   public function sql_retrieve($statement) {
    if(! $sql = $this->inform($this->_statement_prefix.':'.$statement)) throw $this->except("No statement `$statement` found");

@@ -7,6 +7,13 @@
   * 3. Defines an auto-initialise mechanism, called by the popper
   * 4. Provides configuration access, by interfacing a configurator object
   * 5. Provides exception handling facility (factory method except())
+  *
+  *
+  * WIP about configuration
+  *  Needs:
+  *   1. each module has its own default configuration
+  *   2. each module could have its custom configuration
+  *   3. ... ? 
   **/
 
  namespace t0t1\mysfw\frame;
@@ -17,6 +24,9 @@
   private $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
   protected $_conf_context = null; // configuration context, as a string
+  protected $_custom_conf = null; // custom configuration
+  protected $_conf = [];     /** Object configuration repository **/
+
 
   /** Imposed behaviors **/
   final public function set_popper(contract\popper $_) {$this->_p = $_; return $this;}
@@ -30,6 +40,9 @@
 
   final public function set_configuration_context($_ = null) {$this->_conf_context = $_;return $this;}
   final public function get_configuration_context(){return $this->_conf_context;}
+
+  final public function set_custom_conf($_ = null) {$this->_custom_conf = $_;return $this;}
+  final public function get_custom_conf(){return $this->_custom_conf;}
 
   final public function get_ready(){
    $this->_defaults();
@@ -48,14 +61,14 @@
   public function report_warning($msg){return $this->_report("warning", $msg);}
   public function report_error($msg){return $this->_report("error", $msg);}
 
-  public function inform($c){
+  public function inform($c, $cc = '_default', $p = null){
    if(! $_c = $this->get_configurator()) throw $this->except("No configurator defined");
-   return $_c->inform($c, $this->get_configuration_context());
+   return $_c->inform($c, $cc, $p);
   }
 
-  public function define($c, $v){
-   if(! $_c = $this->get_configurator()) return null;
-   return $_c->define($c, $v, $this->get_configuration_context());
+  public function define($c, $v, $cc = '_default', $p = null){
+   if(! $_c = $this->get_configurator()) return null; // XXX TO BE CHECKED
+   return $_c->define($c, $v, $cc, $p);
   }
 
   /**
@@ -77,7 +90,7 @@
 
 
   /**
-   * Should be overriden to follown specific initialisation requirements
+   * Should be overriden to follow specific initialisation requirements
    */
   protected function _get_ready() {
    $this->report_warning("This is the default (empty) implementation of _get_ready() method, seems that this object lacks specific implementation");
@@ -104,12 +117,33 @@
    * and set default value if needed
    **/
   final protected function _defaults(){
-   if(! $this->_defaults) return;
+   if(! $this->_defaults) return; /** No conf to handle **/
+
    foreach($this->_defaults as $conf => $default_value){
-    if(! self::inform($conf)) self::define($conf, $default_value);
+    if(isset($this->_custom_conf[$conf])){
+     self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), get_class($this)); // XXX TEMP potential override!
+     $this->_conf[$conf] = $this->_custom_conf[$conf]; // XXX TEMP DRAFT
+    }else{
+     if(! self::inform($conf, $this->get_configuration_context(), get_class($this))){
+      self::define($conf, $default_value, $this->get_configuration_context(), get_class($this));
+     }
+     $this->_conf[$conf] = $this->inform($conf, $this->get_configuration_context(), get_class($this)); // XXX TEMP DRAFT
+    }
    }
   }
 
- }
+// XXX DRAFT
+  final public function dump_all_conf_data(){
+   return $this->dump_conf();
+  }
 
-?>
+// XXX DRAFT
+  final public function dump_defaults() {
+   return "Current defaults:\n".print_r($this->_defaults, true);
+  }
+
+// XXX DRAFT
+  final public function dump_conf() {
+return "Current conf:\n".print_r($this->_conf, true);
+  }
+ }
