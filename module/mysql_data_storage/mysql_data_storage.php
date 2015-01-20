@@ -13,13 +13,13 @@
 
  class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
   protected $_statement_prefix = 'sql_statements';
-  protected $_defaults = [
-   'mysql:host' => 'localhost',
-   'mysql:port' => 3306,
-   'mysql:user' => 'mysfw',
-   'mysql:pass' => 'mysfw',
-   'mysql:db'   => 'mysfw',
-   ];
+  protected $_defaults = ['mysql' => [
+   'host' => 'localhost',
+   'port' => 3306,
+   'user' => 'mysfw',
+   'pass' => 'mysfw',
+   'db'   => 'mysfw',
+   ]];
 
   /** XXX TEMP **/
   public function sql_retrieve($statement) {

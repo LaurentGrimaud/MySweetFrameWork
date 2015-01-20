@@ -118,16 +118,24 @@
    **/
   final protected function _defaults(){
    if(! $this->_defaults) return; /** No conf to handle **/
+   $cc_prefix = '';
 
-   foreach($this->_defaults as $conf => $default_value){
-    if(isset($this->_custom_conf[$conf])){
-     self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), get_class($this)); // XXX TEMP potential override!
-     $this->_conf[$conf] = $this->_custom_conf[$conf]; // XXX TEMP DRAFT
-    }else{
-     if(! self::inform($conf, $this->get_configuration_context(), get_class($this))){
-      self::define($conf, $default_value, $this->get_configuration_context(), get_class($this));
+   if($this->get_configuration_context() != '_default_'){
+    $cc_prefix = $this->get_configuration_context().":";
+   }
+
+   foreach($this->_defaults as $prefix => $prefix_values){ // XXX TEMP loop ?!?
+    foreach($prefix_values as $conf => $default_value){
+     $conf = "$prefix:$conf";
+     if(isset($this->_custom_conf[$conf])){
+      self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), $prefix); // XXX TEMP potential override!
+      $this->_conf[$conf] = $this->_custom_conf[$conf]; // XXX TEMP DRAFT
+     }else{
+      if(! self::inform($cc_prefix.$conf)){
+       self::define($cc_prefix.$conf, $default_value);
+      }
+      $this->_conf[$conf] = self::inform($cc_prefix.$conf); // XXX TEMP DRAFT
      }
-     $this->_conf[$conf] = $this->inform($conf, $this->get_configuration_context(), get_class($this)); // XXX TEMP DRAFT
     }
    }
   }
