@@ -7,7 +7,7 @@ class filter extends mysfw\frame\dna{
         $value,
         array $filters= null
     ){
-        if( is_callable($value)) $value = call_user_func($value);
+        if( $value instanceof \Closure and is_callable($value)) $value = call_user_func($value);
         if( is_array($value)) return $value; //XXX recursively validate array
         if( $filters){
             foreach($filters as $filter){
