@@ -102,19 +102,6 @@
     self::http_status_code_gateway_timeout=>                 "Gateway Timeout",
     );
 
-  // List of supported http response headers, see rfc2616#6.2
-  protected static $_supported_http_response_headers= array(
-    'Accept-Ranges',
-    'Age',
-    'ETag',
-    'Location',
-    'Proxy-Authenticate',
-    'Retry-After',
-    'Server',
-    'Vary',
-    'WWW-Authenticate',
-    );
-
   protected static $_extra_headers = array(
     self::http_status_code_unauthorized => array(
      'WWW-Authenticate' => 'Basic realm="My Realm"'
@@ -124,14 +111,13 @@
   // Response= Status-Line *(( general-header | response-header | entity-header ) CRLF) CRLF
   protected $_http_response_headers= array();
 
-  public function get($k) {return @$this->_v->get($k);}
+  public function get($k) {return $this->_v->get($k);}
   public function set($k, $v) {$this->_v->set($k, $v);return $this;}
   public function set_all($_) {$this->_v->set_all($_);}
   public function get_all() {return $this->_v->get_all();}
 
 
   public function set_http_response_header($_http_response_header_field, $_http_response_header_value){
-   if(!in_array($_http_response_header_field, self::$_supported_http_response_headers)) return false;
    $this->_http_response_headers[$_http_response_header_field]= $_http_response_header_value;
    return $this;
   }
@@ -167,7 +153,7 @@
     \header($status_line, true, $status_code);
     $this->report_debug("Sent status line: `{$status_line}` for status code: `" . $status_code . "`.");
     // Build extra headers
-    if(@self::$_extra_headers[$status_code]) {
+    if(isset(self::$_extra_headers[$status_code])) {
      foreach(self::$_extra_headers[$status_code] as $header => $value) {
       $this->set_http_response_header($header, $value);
      }
