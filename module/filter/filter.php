@@ -11,7 +11,11 @@ class filter extends mysfw\frame\dna{
         if( is_array($value)) return $value; //XXX recursively validate array
         if( $filters){
             foreach($filters as $filter){
-                if(is_callable($filter)) $value = call_user_func($filter,$value);
+                if(is_callable($filter)){
+                    $value = call_user_func($filter,$value);
+                } else if( method_exists($this,$filter)){
+                    $value = $this->$filter($value);
+                }
             }
         }
         return $value;
@@ -36,5 +40,8 @@ class filter extends mysfw\frame\dna{
 
     public function filter_string( $string){
         return filter_var($string, FILTER_SANITIZE_STRING);
+    }
+    public function filter_date_little_endian( $date){
+        return date('d/m/Y',strtotime($date));
     }
 }

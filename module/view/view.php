@@ -6,6 +6,7 @@
 
  class view extends frame\dna implements frame\contract\view, frame\contract\dna {
   private $_values;
+  protected $_filter= false;
   protected $_defaults = array(
     'view:tmpl_dir' => '../include/tmpl/',
     'view:response' => 'mysfw_http_response'
@@ -15,6 +16,14 @@
   public function set($k, $v) {$this->_values[$k] = $v;}
   public function set_all($_) {$this->_values = (array)$_;}
   public function get_all() {return $this->_values;}
+  public function output($k,array $callbacks=null) {
+    if( ! $callbacks) $callbacks= array('htmlspecialchars');
+    return $this->_filter->apply($k,$callbacks);
+  }
+
+  protected function _get_ready(){
+   $this->_filter= $this->pop('filter');
+  }
 
   /**
    * Process to the given template
