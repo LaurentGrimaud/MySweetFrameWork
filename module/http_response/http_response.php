@@ -29,6 +29,7 @@
   const http_status_code_successful=                      200;
   const http_status_code_created=                         201;
   const http_status_code_accepted=                        202;
+  const http_status_code_updated=                         204;
 
   //Redirection 3xx
   const http_status_code_moved_permanently=               301;
@@ -67,6 +68,7 @@
     self::http_status_code_successful=>                      "OK",
     self::http_status_code_created=>                         "Created",
     self::http_status_code_accepted=>                        "Accepted",
+    self::http_status_code_updated=>                         "No content",
 
     //Redirection 3xx
     self::http_status_code_moved_permanently=>               "Moved Permanently",

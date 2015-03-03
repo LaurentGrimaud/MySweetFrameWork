@@ -24,6 +24,9 @@ class request extends mysfw\frame\dna{
         $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
         $this->_filter = $this->get_popper()->pop('filter');
     }
+    public function get_raw_input(){
+        return file_get_contents("php://input");
+    }
     public function get_query($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_query;
         if(isset($this->_query[$k])){
