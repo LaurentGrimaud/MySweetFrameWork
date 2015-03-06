@@ -36,6 +36,22 @@
 
    $sql = "SELECT * FROM $type ";
    if($crit) $sql .= $this->_criteria_talk($c, $crit);
+   if($metacrit){
+    if(isset($metacrit['s']) and is_array($metacrit['s'])){
+      $order_by= null;
+      foreach( $metacrit['s'] as $field=>$sort){
+        switch($sort){
+         case -1:
+           $order_by= sprintf('%s DESC',$field );
+         break;
+         case 1:
+           $order_by= sprintf('%s ASC',$field );
+         break;
+        }
+      }
+      if( $order_by) $sql= sprintf('%s ORDER BY %s',$sql,$order_by);
+    }
+   }
    return $this->_query_and_fetch($sql, $c);
   }
 
