@@ -33,15 +33,16 @@
  $this->_learn('module\operator\exception\too_many_entries');
 
  class operator extends frame\dna implements frame\contract\dna {
-  private $_p_uided = false;  // Uniquely identified via primary key ?
-  private $_a_uided = false;  // Uniquely identified via alternate key ?
-  private $_uid_def;          // array (flat) of uid parts
+  private $_p_uided = false;	   // Uniquely identified via primary key ?
+  private $_a_uided = false;	   // Uniquely identified via alternate key ?
+  private $_uid_def;		   // array (flat) of uid parts
   private $_underlaying_type;
-  private $_values;           // array of properties
-  private $_new;              // array of properties potentially changed
-  private $_uid_parts;        // set of uid components value in an object
-  private $_criteria;         // array of criteria to use in identification
-  private $_data_storage;     // mysfw data storage to use
+  private $_values;		   // array of properties
+  private $_new;		   // array of properties potentially changed
+  private $_uid_parts;		   // set of uid components value in an object
+  private $_criteria;		   // array of criteria to use in identification
+  private $_data_storage;	   // mysfw data storage to use
+  private $_last_operation = null; // last successful operation
   private $_uid_injection = null;
 
   protected $_defaults = [
@@ -201,6 +202,9 @@
   // XXX usefull ?
   public function get_new(){return $this->_new;}
 
+  protected function _set_last_operation($_){$this->_last_operation = $_;return $this;}
+  public function get_last_operation(){return $this->_last_operation = $_;}
+
   protected function _set_uided() {$this->_p_uided = true;return $this;}
   protected function _unset_uided() {$this->_p_uided = false;return $this;}
   protected function _is_uided() {return ($this->_p_uided || $this->_a_uided);}
@@ -234,6 +238,7 @@
    if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->get_uid(), $this->_new))
     throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
    $this->_reset_new()->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
+   $this->_set_last_operation('create');
    return $this;
   }
 
@@ -256,6 +261,7 @@
     if(0 === $res && $uptodate_is_error){
      throw $this->except("`change` action changed nothing in underlaying data storage");
     }
+    $this->_set_last_operation('update');
     return $this->_reset_new();
    }
    throw $this->except("`update` action requested on unidentified `operator` object (type is `{$this->_underlaying_type}`)");
@@ -276,6 +282,7 @@
     case 0:
      throw $this->except("No matching entry found in data storage", 'no_entry');
     case 1:
+     $this->_set_last_operation('recall');
      return $this->_set_values($values[0]);
 
     default:
@@ -298,6 +305,7 @@
    if($r === 0) throw $this->except("No data to delete in underlaying data storage"); // XXX Exception or return code ?
 
    $this->report_debug("Mapped data are now deleted from underlaying data storage");
+   $this->_set_last_operation('erase');
    return $this;
   }
 
