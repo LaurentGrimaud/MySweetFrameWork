@@ -203,7 +203,7 @@
   public function get_new(){return $this->_new;}
 
   protected function _set_last_operation($_){$this->_last_operation = $_;return $this;}
-  public function get_last_operation(){return $this->_last_operation = $_;}
+  public function get_last_operation(){return $this->_last_operation;}
 
   protected function _set_uided() {$this->_p_uided = true;return $this;}
   protected function _unset_uided() {$this->_p_uided = false;return $this;}
