@@ -2,11 +2,19 @@
 use t0t1\mysfw;
 
 class filter extends mysfw\frame\dna{
+    protected $_defaults= array(
+        'filter:defaults'=> array('trim','strip_tags')
+    );
+
+    protected function _get_ready(){
+        $this->_default_filters= $this->inform('filter:defaults');
+    }
 
     public function apply(
         $value,
         array $filters= null
     ){
+        if($filters===null) $filters= $this->_default_filters;
         if( $value instanceof \Closure and is_callable($value)) $value = call_user_func($value);
         if( is_array($value)) return $value; //XXX recursively validate array
         if( $filters){

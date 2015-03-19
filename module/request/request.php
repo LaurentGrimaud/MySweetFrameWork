@@ -29,45 +29,61 @@ class request extends mysfw\frame\dna{
     }
     public function get_query($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_query;
-        if(isset($this->_query[$k])){
-            if( $filters) return $this->_filter->apply($this->_query[$k],$filters);
-            return $this->_query[$k];
+        if($this->has_query($k)){
+            return $this->_filter->apply($this->_query[$k],$filters);
         }
-        return null;
+        return false;
+    }
+
+    public function has_query($k){
+        return array_key_exists($k,$this->_query);
     }
 
     public function get_post($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_post;
-        if(isset($this->_post[$k])){
-            if( $filters) return $this->_filter->apply($this->_post[$k],$filters);
-            return $this->_post[$k];
+        if($this->has_post($k)){
+            return $this->_filter->apply($this->_post[$k],$filters);
         }
-        return null;
+        return false;
+    }
+
+    public function has_post($k){
+        return array_key_exists($k,$this->_post);
     }
 
     public function get_server($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_server;
-        if(isset($this->_server[$k])){
-            if( $filters) return $this->_filter->apply($this->_server[$k],$filters);
-            return $this->_server[$k];
+        if($this->has_server($k)){
+            return $this->_filter->apply($this->_server[$k],$filters);
         }
-        return null;
+        return false;
+    }
+
+    public function has_server($k){
+        return array_key_exists($k,$this->_server);
     }
 
     public function get_files($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_files;
-        if(isset($this->_files[$k])){
-            if( $filters) return $this->_filter->apply($this->_files[$k],$filters);
-            return $this->_files[$k];
+        if($this->has_file($k)){
+            return $this->_filter->apply($this->_files[$k],$filters);
         }
-        return null;
+        return false;
+    }
+
+    public function has_file($k){
+        return array_key_exists($k,$this->_files);
     }
 
     public function is_post(){
-        return ($this->_filter->apply($this->get_server('REQUEST_METHOD'),array('trim'))=='POST');
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='POST';
+    }
+
+    public function is_put(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='PUT';
     }
 
     public function accepts_json(){
-        return ( false !== strpos($this->_filter->apply($this->get_server('HTTP_ACCEPT'),array('trim')),'application/json'));
+        return ( false !== strpos($this->get_server('HTTP_ACCEPT',array('trim')),'application/json'));
     }
 }
