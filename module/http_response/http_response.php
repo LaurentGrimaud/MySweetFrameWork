@@ -41,6 +41,7 @@
   //Client Error 4xx
   const http_status_code_bad_request=                     400;
   const http_status_code_unauthorized=                    401;
+  const http_status_code_payment_required=                402;
   const http_status_code_forbidden=                       403;
   const http_status_code_not_found=                       404;
   const http_status_code_method_not_allowed=              405;
@@ -80,6 +81,7 @@
     //Client Error 4xx
     self::http_status_code_bad_request=>                     "Bad request",
     self::http_status_code_unauthorized=>                    "Unauthorized",
+    self::http_status_code_payment_required=>                "Payment Required",
     self::http_status_code_forbidden=>                       "Forbidden",
     self::http_status_code_not_found=>                       "Not Found",
     self::http_status_code_method_not_allowed=>              "Method Not Allowed",
@@ -115,6 +117,7 @@
 
   public function get($k) {return $this->_v->get($k);}
   public function set($k, $v) {$this->_v->set($k, $v);return $this;}
+  public function push($k, array $v) {$this->_v->push($k, $v);return $this;}
   public function set_all($_) {$this->_v->set_all($_);}
   public function get_all() {return $this->_v->get_all();}
 
