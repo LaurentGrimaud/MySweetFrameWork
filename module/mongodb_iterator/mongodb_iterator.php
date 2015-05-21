@@ -12,7 +12,7 @@ class mongodb_iterator extends frame\dna implements frame\contract\resource_iter
         'invalid_parameters' =>     1,
     );
 
-    private $_resource, $_operator, $_operator_under_laying_type= false;
+    private $_resource, $_operator_under_laying_type= false;
 
     public function __toString(){
         return json_encode(array('class'=>__CLASS__,'operator_type'=>$this->_operator_under_laying_type,'total'=>$this->count(),'returned'=>$this->count(true)));
@@ -26,7 +26,6 @@ class mongodb_iterator extends frame\dna implements frame\contract\resource_iter
         }
         $this->_resource=                   $resource;
         $this->_operator_under_laying_type= $operator_type;
-        $this->_operator=                   $this->pop('operator')->morph($this->_operator_under_laying_type);
         return $this;
     }
 
@@ -42,7 +41,10 @@ class mongodb_iterator extends frame\dna implements frame\contract\resource_iter
     public function current(){
         //XXX if I only could retrieve uid composition from operator, I could check if this key exists and identify the operator
         //caveat you should always use foreach to get current
-        return $this->_operator->set_values($this->_resource->current());
+        return (array)$this->_resource->current(); //XXX
+        return $this->pop('operator')
+                ->morph($this->_operator_under_laying_type)
+                ->set_values($this->_resource->current());
     }
 
     public function shift(){
