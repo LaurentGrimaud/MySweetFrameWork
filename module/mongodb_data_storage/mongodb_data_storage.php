@@ -185,9 +185,9 @@
          }
          $this->report_debug(print_r($metacrit, true));
    }
-   $results = iterator_to_array($data, false);
-   $this->report_debug(count($results)." `$type` item(s) retrieved");
-   return $results;
+   $iterator = $this->pop('mongodb_iterator')->wrap($data, $type);
+   $this->report_debug($iterator->count()." `$type` item(s) retrieved");
+   return $iterator;
   }
 
 
