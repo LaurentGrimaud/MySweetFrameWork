@@ -18,6 +18,7 @@
 
   protected function _set($k, $v){if(!$this->_v) $this->_prepare_view();$this->_v->set($k, $v);return $this;}
   protected function _get($_){if(!$this->_v) $this->_prepare_view();return $this->_v->get($_);}
+  protected function _push($k, array $v){if(!$this->_v) $this->_prepare_view();$this->_v->push($k, $v);return $this;}
   
   protected function _set_all($_){$this->_v->set_all($_);return $this;}
 

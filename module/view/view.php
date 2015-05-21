@@ -14,6 +14,12 @@
 
   public function get($k) {return isset($this->_values[$k]) ? $this->_values[$k] : $this->inform($k);}
   public function set($k, $v) {$this->_values[$k] = $v;}
+  public function push($k, array $v) {
+    if( ! isset($this->_values[$k])) $this->_values[$k]= array();
+    if( ! is_array($this->_values[$k])) $this->_values[$k]= (array)$this->_values[$k];
+    $this->_values[$k]= array_merge($this->_values[$k],$v);
+    return $this;
+  }
   public function set_all($_) {$this->_values = (array)$_;}
   public function get_all() {return $this->_values;}
   public function output($k,array $callbacks=null) {
