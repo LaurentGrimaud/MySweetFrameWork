@@ -45,12 +45,13 @@
    'no_entry' => 1,
    'too_many_entries'=>1,
     ];
-   
-   protected function _build_connection_string(){ // XXX TEMP Should be private
-    $connection_string = "";
-    if( $this->inform('mongo:host') || $this->inform('mongo:user') || $this->inform('mongo:pass') || $this->inform('mongo:port')){
-        $connection_string = "mongodb://";
+
+    protected $_pool= false;
+    protected function _get_ready(){
+        $this->_pool= $this->pop('stream_pool');
     }
+   protected function _build_connection_string($collection){
+    $connection_string = "mongodb://";
     if( $this->inform('mongo:user') && $this->inform('mongo:pass')){
         $connection_string .= $this->inform('mongo:user') . ':' . $this->inform('mongo:pass') . '@';
     }
@@ -58,27 +59,21 @@
         $connection_string .= $this->inform('mongo:host');
     }
     else{
-        if( $this->inform('mongo:port')){
-            $connection_string .= 'localhost';
-         }
+        $connection_string .= 'localhost';
     }
     if( $this->inform('mongo:port')){
         $connection_string .= ':' . $this->inform('mongo:port');
     }
-    return $connection_string;
+    if($this->inform('mongo:db')){
+        $connection= sprintf('%s/%s/%s',$connection_string,$this->inform('mongo:db'),$collection);
+    }
+    return $connection;
    }
 
   // XXX temp - draft
   private function _get_connection($type){
    try {
-    $connection_string = $this->_build_connection_string();
-    if (class_exists('\MongoClient')) {
-        $m = new \MongoClient( $connection_string);
-    }
-    else{
-        $m = new \Mongo( $connection_string);
-    }
-    return $m->selectCollection($this->inform('mongo:db'), $type); // XXX Conf should be taken from configurator object
+    return $this->_pool->get($this->_build_connection_string($type));
    }
    catch( \MongoConnectionException $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
@@ -93,24 +88,7 @@
 
   // XXX temp - draft - Needs to be in data storage interface
   public function get_connection( $type) {
-   try {
-    $connection_string = $this->_build_connection_string();
-    if (class_exists('\MongoClient')) {
-        $m = new \MongoClient( $connection_string);
-    }
-    else{
-        $m = new \Mongo( $connection_string);
-    }
-    return $m->selectCollection($this->inform('mongo:db'), $type); // XXX Conf should be taken from configurator object
-   }
-   catch( \MongoConnectionException $e){
-    $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
-    throw $this->except($e->getMessage(), 'connection_failure');
-   }
-   catch( \Exception $e){
-    $this->report_error("Failed to connect to database or collection, message is: ".$e->getMessage());
-    throw $this->except($e->getMessage(), 'db_failure');
-   } 
+    return $this->_get_connection( $type);
   }
 
 
