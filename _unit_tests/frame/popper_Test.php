@@ -17,7 +17,7 @@
   }
 
   public function setUp(){
-   $this->x = t0t1\mysfw\frame\popper::itself(__DIR__.DIRECTORY_SEPARATOR."../fake_project_root/www", '/t0t1/mysfw/');
+   $this->x = t0t1\mysfw\frame\popper::itself(__DIR__.DIRECTORY_SEPARATOR."../fake_project_root/www", __DIR__.'/../..');
   }
 
   public function test_singletonisation(){

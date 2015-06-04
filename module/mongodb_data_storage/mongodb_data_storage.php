@@ -27,7 +27,8 @@
 
  class mongodb_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
-    "mongo:db" => "mysfw_demo"
+    "mongo:db" => "mysfw_demo",
+    "mongo:iterator"=> "mongodb_iterator"
    );
   protected $_collection_options = array(
     //"safe" => true => deprecated w=1 replace safe option
@@ -45,6 +46,16 @@
    'no_entry' => 1,
    'too_many_entries'=>1,
     ];
+
+    protected $_iterator= false;
+
+    protected function _get_ready(){
+        $this->_iterator= $this->pop($this->inform('mongo:iterator')); //XXX not phpunit compatible
+    }
+
+    public function set_iterator(frame\contract\resource_iterator $iterator){
+        $this->_iterator= $iterator;
+    }
    
    protected function _build_connection_string(){ // XXX TEMP Should be private
     $connection_string = "";
@@ -185,9 +196,9 @@
          }
          $this->report_debug(print_r($metacrit, true));
    }
-   $results = iterator_to_array($data, false);
-   $this->report_debug(count($results)." `$type` item(s) retrieved");
-   return $results;
+   $iterator = $this->_iterator->wrap($data, $type);
+   $this->report_debug($iterator->count()." `$type` item(s) retrieved");
+   return $iterator;
   }
 
 
