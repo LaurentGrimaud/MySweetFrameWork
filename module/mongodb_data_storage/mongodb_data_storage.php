@@ -27,7 +27,8 @@
 
  class mongodb_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_defaults = array(
-    "mongo:db" => "mysfw_demo"
+    "mongo:db" => "mysfw_demo",
+    'pool'=> 'stream_pool'
    );
   protected $_collection_options = array(
     //"safe" => true => deprecated w=1 replace safe option
@@ -47,8 +48,13 @@
     ];
 
     protected $_pool= false;
+
+    public function set_pool(stream_pool $pool){
+        $this->_pool= $pool;
+    }
+
     protected function _get_ready(){
-        $this->_pool= $this->pop('stream_pool');
+        $this->_pool= $this->pop($this->inform('pool'));
     }
    protected function _build_connection_string($collection){
     $connection_string = "mongodb://";
@@ -65,17 +71,19 @@
         $connection_string .= ':' . $this->inform('mongo:port');
     }
     if($this->inform('mongo:db')){
-        $connection= sprintf('%s/%s/%s',$connection_string,$this->inform('mongo:db'),$collection);
+        $connection_string= sprintf('%s/%s/%s',$connection_string,$this->inform('mongo:db'),$collection);
     }
-    return $connection;
+    return $connection_string;
    }
 
   // XXX temp - draft
   private function _get_connection($type){
    try {
     return $this->_pool->get($this->_build_connection_string($type));
-   }
-   catch( \MongoConnectionException $e){
+   } catch(stream_pool\exception\invalid_parameters $e){
+    $this->report_error("Failed to connect to MongoDB because of an invalid dsn, message is: ".$e->getMessage());
+    throw $this->except($e->getMessage(), 'connection_failure');
+   }catch( \MongoConnectionException $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'connection_failure');
    }

@@ -4,6 +4,13 @@ use t0t1\mysfw\frame;
 
 $this->_learn('module\stream_pool\exception\invalid_parameters');
 
+ /**
+  * Handle connections to streams
+  *
+  * Open, re-use or close connections depending on stream type
+  * @todo As the number of handled stream type will increase it whould be wiser to delegate to specialized objects ( mongodb_stream_pool, mysql_stream_pool ... )
+  */
+
 class stream_pool extends frame\dna implements frame\contract\dna{
 
     protected $_mns = '\t0t1\mysfw\module\stream_pool'; //XXX used by dna:except()
@@ -11,8 +18,24 @@ class stream_pool extends frame\dna implements frame\contract\dna{
         'invalid_parameters' =>     1,
     );
 
+ /**
+  * Pool of streams
+  *
+  * @access private
+  * @var array
+  */
     protected $_pool= array();
 
+
+ /**
+  * Get a connection to the stream described by the URI passed as argument
+  *
+  * Reuse an opened and idle connections referenced in $_pool property prior to open a new one.
+  *
+  * @todo review and enhance the process of closing idle and unused conections
+  * @param URI $dsn stream connection string ( ~dsn )
+  * @return resource
+  */
     public function get($dsn){
         if( isset($this->_pool[$dsn])){
             foreach($this->_pool[$dsn] as $i=>$resource){ // tidying
@@ -31,6 +54,13 @@ class stream_pool extends frame\dna implements frame\contract\dna{
         // fallthrough, accessed if there is no available resource
         return $this->connect($dsn);
     }
+
+ /**
+  * Create a new connection to the stream described by the URI passed as argument
+  *
+  * @param URI $dsn stream connection string ( ~dsn )
+  * @return resource
+  */
 
     public function connect($dsn){
         $this->report_debug(sprintf('Connecting to %s',$dsn));
@@ -55,9 +85,19 @@ class stream_pool extends frame\dna implements frame\contract\dna{
         return $connection;
     }
 
+ /**
+  * Create a new mongo connection to the stream described by the URI passed as argument
+  *
+  * @access protected
+  * @todo Could be delegated to a mongodb_stream_pool object
+  * @param URI $dsn stream connection string ( ~dsn )
+  * @return \MongoCursor
+  */
+
     protected function _mongo_connect($dsn){
         $mongodb_dsn= $dsn;
-        list($db,$collection)= explode('/',trim(parse_url($mongodb_dsn, PHP_URL_PATH),'/'));
+        $db=$collection= null;
+        @list($db,$collection)= explode('/',trim(parse_url($mongodb_dsn, PHP_URL_PATH),'/'));
         if( ! $db ){
             $err= sprintf('Invalid dsn: failed to extract database from %s',$dsn);
             $this->report_error($err);
