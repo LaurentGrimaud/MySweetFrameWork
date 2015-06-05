@@ -42,11 +42,8 @@ class stream_pool extends frame\dna implements frame\contract\dna{
                 $resource_type= get_class($resource);
                 $this->report_debug(sprintf('Tested resource type is %s for dsn %s', $resource_type,$dsn));
                 switch($resource_type){
-                    case 'MongoCursor':
-                        if($resource->dead() and ! $resource->hasNext()){
-                            $this->report_debug(sprintf('Assuming cursor #%s to %s has been exhausted, re-using it', $i, $dsn));
-                            return $resource;
-                        }
+                    case 'MongoClient':
+                        return $resource;
                     break;
                 }
             }
@@ -91,24 +88,11 @@ class stream_pool extends frame\dna implements frame\contract\dna{
   * @access protected
   * @todo Could be delegated to a mongodb_stream_pool object
   * @param URI $dsn stream connection string ( ~dsn )
-  * @return \MongoCursor
+  * @return \MongoClient
   */
 
     protected function _mongo_connect($dsn){
-        $mongodb_dsn= $dsn;
-        $db=$collection= null;
-        @list($db,$collection)= explode('/',trim(parse_url($mongodb_dsn, PHP_URL_PATH),'/'));
-        if( ! $db ){
-            $err= sprintf('Invalid dsn: failed to extract database from %s',$dsn);
-            $this->report_error($err);
-            throw $this->except($err, 'invalid_parameters');
-        }
-        if( ! $collection ){
-            $err= sprintf('Invalid dsn: failed to extract collection from %s',$dsn);
-            $this->report_error($err);
-            throw $this->except($err, 'invalid_parameters');
-        }
-        $this->report_debug(sprintf('Assuming db is %s and collection is %s, attemping to connect to mongo',$db,$collection));
-        return (new \MongoClient( $dsn))->selectCollection($db,$collection);
+        $this->report_debug(sprintf('Attemping to connect to mongo'));
+        return new \MongoClient( $dsn);
     }
 }

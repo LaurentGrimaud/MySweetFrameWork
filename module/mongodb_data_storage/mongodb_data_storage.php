@@ -56,7 +56,7 @@
     protected function _get_ready(){
         $this->_pool= $this->pop($this->inform('pool'));
     }
-   protected function _build_connection_string($collection){
+   protected function _build_connection_string(){
     $connection_string = "mongodb://";
     if( $this->inform('mongo:user') && $this->inform('mongo:pass')){
         $connection_string .= $this->inform('mongo:user') . ':' . $this->inform('mongo:pass') . '@';
@@ -71,32 +71,36 @@
         $connection_string .= ':' . $this->inform('mongo:port');
     }
     if($this->inform('mongo:db')){
-        $connection_string= sprintf('%s/%s/%s',$connection_string,$this->inform('mongo:db'),$collection);
+        $connection_string= sprintf('%s/%s',$connection_string,$this->inform('mongo:db'));
     }
     return $connection_string;
    }
 
   // XXX temp - draft
-  private function _get_connection($type){
+  private function _get_connection(){
    try {
-    return $this->_pool->get($this->_build_connection_string($type));
+    return $this->_pool->get($this->_build_connection_string());
    } catch(stream_pool\exception\invalid_parameters $e){
     $this->report_error("Failed to connect to MongoDB because of an invalid dsn, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'connection_failure');
-   }catch( \MongoConnectionException $e){
+   }catch( \Exception $e){
     $this->report_error("Failed to connect to MongoDB, message is: ".$e->getMessage());
     throw $this->except($e->getMessage(), 'connection_failure');
    }
-   catch( \Exception $e){
-    $this->report_error("Failed to connect to database or collection, message is: ".$e->getMessage());
-    throw $this->except($e->getMessage(), 'db_failure');
-   } 
   }
   
+  private function _get_collection($type){
+   try {
+    return $this->_get_connection()->selectCollection($this->inform('mongo:db'),$type);
+   }catch( \Exception $e){
+    $this->report_error("Failed to connect to MongoDB database or collection, message is: ".$e->getMessage());
+    throw $this->except($e->getMessage(), 'db_failure');
+   }
+  }
 
   // XXX temp - draft - Needs to be in data storage interface
-  public function get_connection( $type) {
-    return $this->_get_connection( $type);
+  public function get_connection() {
+    return $this->_get_connection();
   }
 
 
@@ -147,7 +151,7 @@
    */
   public function retrieve($type, $crit = null, $metacrit = null) {
     $this->report_info('`retrieve` action requested');
-    $c = $this->_get_connection($type);
+    $c = $this->_get_collection($type);
     if( empty( $this->_connection_options)){
         $this->_build_connection_options();
     }
@@ -179,7 +183,7 @@
 
   public function add($type, $crit, $values){
    $this->report_info('`add` action requested');
-   $c = $this->_get_connection($type);
+   $c = $this->_get_collection($type);
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
    }
@@ -217,7 +221,7 @@
 
  // XXX duplicate of add 
   private function _save($type, $crit, $values) {
-   $c = $this->_get_connection($type);
+   $c = $this->_get_collection($type);
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
    }
@@ -273,7 +277,7 @@
   // New implementation, using MongoCollection::update()
   public function change($type, $crit, $values){
    $this->report_info('`change` action requested');
-   $c = $this->_get_connection($type);
+   $c = $this->_get_collection($type);
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
    }
@@ -320,7 +324,7 @@
    **/
   public function delete($type, $crit){
    $this->report_info('`delete` action requested');
-   $c = $this->_get_connection($type);
+   $c = $this->_get_collection($type);
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
     }

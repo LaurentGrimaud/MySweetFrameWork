@@ -102,6 +102,10 @@ class mongoDbDataStorageTest extends PHPUnit_Framework_TestCase {
                  ->method('inform')
                  ->with('mongo:db')
                  ->will($this->returnValue('phpunit_tests'));
+        $configurator->expects($this->at(5))
+                 ->method('inform')
+                 ->with('mongo:db')
+                 ->will($this->returnValue('phpunit_tests'));
     }
 
     /**
@@ -127,9 +131,29 @@ class mongoDbDataStorageTest extends PHPUnit_Framework_TestCase {
 
 
     public function test_successfull_connection(){
-        $this->reset();
-        $obj = $this->_x->get_connection('users');
-        $this->assertTrue($obj instanceof \MongoCollection);
+        $configurator= $this->_x->get_configurator();
+        $configurator->expects($this->at(0))
+                 ->method('inform')
+                 ->with('mongo:user')
+                 ->will($this->returnValue(''));
+        $configurator->expects($this->at(1))
+                 ->method('inform')
+                 ->with('mongo:host')
+                 ->will($this->returnValue(''));
+        $configurator->expects($this->at(2))
+                 ->method('inform')
+                 ->with('mongo:port')
+                 ->will($this->returnValue(''));
+        $configurator->expects($this->at(3))
+                 ->method('inform')
+                 ->with('mongo:db')
+                 ->will($this->returnValue('phpunit_tests'));
+        $configurator->expects($this->at(4))
+                 ->method('inform')
+                 ->with('mongo:db')
+                 ->will($this->returnValue('phpunit_tests'));
+        $obj = $this->_x->get_connection();
+        $this->assertTrue($obj instanceof \MongoClient);
     }
 
     /**
