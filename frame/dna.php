@@ -106,7 +106,7 @@
   final protected function _defaults(){
    if(! $this->_defaults) return;
    foreach($this->_defaults as $conf => $default_value){
-    if(! self::inform($conf)) self::define($conf, $default_value);
+    if(null === self::inform($conf)) self::define($conf, $default_value);
    }
   }
 
