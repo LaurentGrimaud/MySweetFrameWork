@@ -368,6 +368,32 @@
     $this->_exception_management( $e);
    }
   }
+
+  // XXX temp - Needs refactoring
+  public function count($type, $crit = null) {
+   try{
+    $this->report_info('`count` action requested');
+    if(! $c = $this->_get_connection($type)){
+     $this->report_error("Failed to get MongoDB connection");
+     return false;
+    }
+
+    if(! $crit) {
+     $crit = array();
+    }
+
+    if(false === $data = $c->count($crit)){
+     $this->report_warning("Failed to count data (type $type)");
+     return null;
+    }
+
+    return $data;
+
+   }catch(exception $e){
+    $this->report_error("Exception thrown, message is: ".$e->getMessage());
+    throw $e;
+   }
+  }
   
   private function _exception_management( \MongoException $e){
     switch ($e->getCode()){
