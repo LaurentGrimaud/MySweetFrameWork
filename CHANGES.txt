@@ -1,0 +1,3 @@
+2015-10-01 11:02:13+02:00
+ * Configuration's item reporter:dir was renamed reporter:directory - Configuration's code may need an update
+ * file_reporter now handles report level, via reporter:ceil_level configuration's item
