@@ -1,5 +1,5 @@
 <?php
-$popper = call_user_func(require '/t0t1/mysfw/init.php', __DIR__);
+$popper = call_user_func(require 'init.php', __DIR__);
 
 $popper->register('data_storage', 'mysql_data_storage');
 $c = $popper->indicate('configurator');
@@ -47,11 +47,34 @@ $user->set('name', $user->get('name').'*')->update();
 
 echo "\n6. Update from scratch\n";
 $user = $popper->pop('operator')->morph('user');
-$user->identify('nick', 'l00')->set('email', 'hahahah@hohohoho.net')->update();
+$user->identify('nick', 'l00')->set('email', 'hahahah@'.time().'.net')->update();
 var_dump($user->get_values());
 
 
+/*** XXX BUG
 echo "\n7. UID change\n";
-echo "My id is {$user->get('id')}\n";
+$user = $popper->pop('operator')
+               ->morph('user')
+               ->identify('id', 1)
+               ->recall();
+$old_id = $user->get('id');
+echo "My id is $old_id\n";
 $user->set('id', $user->get('id')+100000)->update();
 echo "My id is now {$user->get('id')}\n";
+
+var_dump($user->status());
+$user->set('id', $old_id);
+var_dump($user->status());
+$user->update();
+echo "And now my id is back to {$user->get('id')}\n";
+**/
+
+
+
+echo "\n8. upsert\n";
+$user = $popper->pop('operator')
+               ->morph('user')
+               ->identify('id', time())
+	       ->set('name', 'So, I don\'t exist, uh ?')
+               ->upsert();
+var_dump($user->status());
