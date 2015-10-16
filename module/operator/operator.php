@@ -16,6 +16,8 @@
   * @XXX uid injectability depends on data storage being used, among others
   * @XXX uid should me more complicated than a single field
   * @XXX lacks a get_uid() to retrieve the value of the injected uid ?
+  * @XXX what if not morphed ?
+  * @XXX needs indate() method, partner of upsert() one ?
   *
   * For the "new" operators:
   *  uid and fields for identification are not the same, sometimes...
@@ -32,6 +34,7 @@
 
  $this->_learn('module\operator\exception\no_entry');
  $this->_learn('module\operator\exception\too_many_entries');
+ $this->_learn('module\operator\exception\duplicate_key'); // XXX temp name ?
 
  class operator extends frame\dna implements frame\contract\dna {
   private $_p_uided = false;	   // Uniquely identified via primary key ?
@@ -45,7 +48,7 @@
   private $_data_storage;	   // mysfw data storage to use
   private $_last_operation = null; // last successful operation
   private $_uid_injection = null;
-  private $_orphan = false;      // if true, the operator has (almost) certainly no matching entry in the data storage
+  private $_orphan = true;        // if true, the operator has (almost) certainly no matching entry in the data storage
   private $_uid_to_be_changed = false; // if true, one or more uid part should be changed on data storage
 
   protected $_defaults = [
@@ -118,6 +121,8 @@
   public function get_data_storage() {return $this->_data_storage;}
   public function set_data_storage($_) {$this->_data_storage = $_;}
 
+  public function is_orphan() {return $this->_orphan;}
+
   /**
    * Set the criteria values, the ones being used to identify the correct entry
    * in the underlaying data storage
@@ -188,10 +193,17 @@
 
   /**
    * Generic setter for operator property
+   * Trigger identify if given property is part of p-uidentification
+   *
+   * @return $this
    */
   public function set($property, $value){
    $this->_new[$property] = $value;
-   $this->_uid_to_be_changed &= (in_array($property, $this->_uid_def));
+   // XXX to be checked
+   if($this->_uid_def && in_array($property, $this->_uid_def)) {
+    $this->_uid_to_be_changed = true;
+    //$this->_identify($property, $value);
+   }
    return $this->_set($property,$value);
   }
   protected function _set($property, $value){$this->_values[$property] = $value; return $this;}
@@ -220,8 +232,6 @@
   protected function _get_uid_injection(){return $this->_uid_injection;}
   protected function _uid_injectable(){return ! is_null($this->_uid_injection);}
 
-  protected function _is_orphan() {return $this->_orphan;}
-
   protected function _reset_new(){$this->_new=[];return $this;}
 
   // XXX to be checked
@@ -235,6 +245,21 @@
  protected function _orphan() {$this->_orphan = true;}
  protected function _adopt() {$this->_orphan = false;}
 
+ protected function _check_criteria_for_values() {
+  if($this->_criteria)
+   foreach($this->_criteria as $k => $v)
+    $this->_set($k, $v);
+  return $this;
+ }
+
+ protected function _check_values_for_criteria() {
+  if($this->_values)
+   foreach($this->_values as $k => $v)
+    in_array($k, $this->_uid_def) && $this->_identify($k, $v);
+  return $this;
+ }
+
+
  public function set_uid($_){$this->_set_uid($_);$this->_new[$this->_get_uid_injection()] = $_;return $this;} // XXX temp and dangerous
  public function get_uid(){$r=[];foreach($this->_uid_def as $_)$r[$_] = $this->get($_);return $r;}
 
@@ -244,8 +269,11 @@
    */
   public function create() {   
    $this->_check_uided();
-   if($this->_is_uided() && !$this->_is_orphan())
-    throw $this->except("`create` action requested on UIDed `operator` object (type is `{$this->_underlaying_type}`)");
+   if($this->_is_uided())
+    if($this->is_orphan())
+     $this->_check_criteria_for_values();
+    else
+     throw $this->except("`create` action requested on UIDed `operator` object (type is `{$this->_underlaying_type}`)");
    if(!$uid = $this->get_data_storage()->add($this->_underlaying_type, $this->get_uid(), $this->_new))
     throw $this->except("No (or bad) uid value `$uid` returned by data storage add() action");
    $this->_reset_new()->_set_uid($uid); // XXX to check: no need to notice if uid is uninjectable for this operator object ?
@@ -265,18 +293,21 @@
    */
   public function update($uptodate_is_error = true){
    $this->_check_uided();
-   if($this->_is_uided()){
-    $res = $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new);
-    if(false === $res){
-     throw $this->except("`change` action failed in underlaying data storage");
-    }
-    if(0 === $res && $uptodate_is_error){
-     throw $this->except("`change` action changed nothing in underlaying data storage");
-    }
-    $this->_set_last_operation('update');
-    return $this->_reset_new();
+   if(! $this->_is_uided())
+    if($this->is_orphan()) 
+     throw $this->except("`update` action requested on unidentified `operator` object (type is `{$this->_underlaying_type}`)");
+    else
+     $this->_check_values_for_criteria();
+
+   $res = $this->get_data_storage()->change($this->_underlaying_type, $this->_criteria, $this->_new);
+   if(false === $res){
+    throw $this->except("`change` action failed in underlaying data storage");
    }
-   throw $this->except("`update` action requested on unidentified `operator` object (type is `{$this->_underlaying_type}`)");
+   if(0 === $res && $uptodate_is_error){
+    throw $this->except("`change` action changed nothing in underlaying data storage");
+   }
+   $this->_set_last_operation('update');
+   return $this->_reset_new();
   }
 
 
@@ -290,7 +321,7 @@
     $this->report_debug('upsert requested');
     $this->update();
     $this->report_debug('upsert was in fact update');
-   }catch(frame\exception\dna $e){
+   }catch(operator\exception\no_entry $e){
     $this->report_debug('No entry found at `update`, time to `create`');
     $this->_orphan();
     $this->create();
@@ -298,6 +329,25 @@
    }
    return $this;
   }
+
+  /* Try to create the matching entry in underlaying data storage
+   * If such entry already exists, update it
+   *
+   * @throw myswf\exception on error
+   */
+  public function indate() {
+   try {
+    $this->report_debug('indate requested');
+    $this->create();
+    $this->report_debug('indate was in fact create');
+   }catch(operator\exception\duplicate_key $e){ // XXX requires data_storages correct implementation
+    $this->report_debug('entry already exists, time to update');
+    $this->update();
+    $this->report_debug('indate was in fact update');
+   }
+   return $this;
+  }
+
 
   /**
    * Object's data are retrieved from underlaying data storage
@@ -361,9 +411,8 @@
    $res .= '`new` values are: '.print_r($this->_new, true);
    $res .= 'UID parts are: '.print_r($this->_uid_parts, true);
    $res .= 'UID def is: '.print_r($this->_uid_def, true);
-   $res .= 'is '.($this->_orphan ? '':'NOT '). 'an orphan';
+   $res .= 'Is '.($this->_orphan ? '':'NOT '). 'an orphan';
    return $res;
   }
 
  }
-

@@ -8,6 +8,7 @@
  $ut_initializer->load('frame/contract/data_storage.php');
  $ut_initializer->load('module/operator/operator.php');
  $ut_initializer->load('module/operator/exception/too_many_entries.php');
+ $ut_initializer->load('module/operator/exception/duplicate_key.php');
  $ut_initializer->load('module/operator/exception/no_entry.php');
 
  class operatorTest extends PHPUnit_Framework_TestCase {
@@ -20,6 +21,7 @@
     ->will($this->returnValue(['_id_' => null]));
   }
 
+  // build an operator like it was just pop'ed
   public function setUp() {
    $this->_x = new module\operator;
    $mocked_popper = $this->getMock('t0t1\mysfw\frame\contract\popper');
@@ -61,7 +63,7 @@ UID def is: Array
 (
     [0] => my custom id
 )
-";
+Is an orphan";
    $this->assertEquals($status, $this->_x->status());
   }
 
@@ -130,7 +132,7 @@ UID def is: Array
    $operator_name = "a nice operator";
    $this->init_operator($operator_name);
    $this->_x->morph($operator_name);
-   $mocked_data_storage = $this->_x->get_data_storage();
+ //  $mocked_data_storage = $this->_x->get_data_storage();
    $this->_x->identify('_id_', 1234)->create();
   }
 
@@ -365,9 +367,84 @@ UID def is: Array
 (
     [0] => _id_
 )
-";
+Is an orphan";
    $this->assertEquals($status, $this->_x->status());
   }
+
+  public function test_upsert_is_update() {
+   $operator_name = "a nice operator";
+   $uid = 9876;
+   $property = "undisclosed property";
+   $value = "some random value";
+   $this->init_operator($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('change')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value])
+	   ->will($this->returnValue(true)); // XXX data storages need refactor
+
+   $this->_x->morph($operator_name);
+   $this->_x->identify('_id_', $uid)->set($property, $value)->upsert();
+  }
+
+  public function test_upsert_is_insert() {
+   $operator_name = "a nice operator";
+   $uid = 9876;
+   $property = "undisclosed property";
+   $value = "some random value";
+   $message = "some random exception message";
+   $this->init_operator($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('change')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value])
+	   ->will($this->throwException(new module\operator\exception\no_entry($message)));
+   $mocked_data_storage->expects($this->once())
+	   ->method('add')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value])
+	   ->will($this->returnValue($uid));
+
+   $this->_x->morph($operator_name);
+   $this->_x->identify('_id_', $uid)->set($property, $value)->upsert();
+  }
+
+  public function test_indate_is_create() {
+   $operator_name = "a nice operator";
+   $uid = 9876;
+   $property = "undisclosed property";
+   $value = "some random value";
+   $this->init_operator($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('add')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value, '_id_' => $uid])
+	   ->will($this->returnValue($uid)); // XXX data storages need refactor
+
+   $this->_x->morph($operator_name);
+   $this->_x->set('_id_', $uid)->set($property, $value)->indate();
+  }
+
+ public function test_indate_is_update() {
+   $operator_name = "a nice operator";
+   $uid = 9876;
+   $property = "undisclosed property";
+   $value = "some random value";
+   $message = "some random exception message";
+   $this->init_operator($operator_name);
+   $mocked_data_storage = $this->_x->get_data_storage();
+   $mocked_data_storage->expects($this->once())
+	   ->method('add')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value, '_id_' => $uid])
+	   ->will($this->throwException(new module\operator\exception\duplicate_key($message)));
+   $mocked_data_storage->expects($this->once())
+	   ->method('change')
+	   ->with($operator_name, ['_id_' => $uid], [$property => $value])
+	   ->will($this->returnValue(true)); // XXX data storages need refactor
+
+   $this->_x->morph($operator_name);
+   $this->_x->set('_id_', $uid)->set($property, $value)->indate();
+  }
+
 
   /******* Chainability tests - @XXX To be extended ! ******/
 
