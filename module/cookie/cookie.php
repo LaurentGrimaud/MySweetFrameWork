@@ -1,6 +1,8 @@
 <?php namespace t0t1\mysfw\module;
 use t0t1\mysfw;
 
+// XXX Unused and refactor needed
+
 class cookie extends mysfw\frame\dna{
 
     protected $_defaults= array(
