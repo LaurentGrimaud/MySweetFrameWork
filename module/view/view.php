@@ -13,14 +13,14 @@
     );
 
   public function get($k) {return isset($this->_values[$k]) ? $this->_values[$k] : $this->inform($k);}
-  public function set($k, $v) {$this->_values[$k] = $v;}
+  public function set($k, $v) {$this->_values[$k] = $v;return $this;}
   public function push($k, array $v) {
     if( ! isset($this->_values[$k])) $this->_values[$k]= array();
     if( ! is_array($this->_values[$k])) $this->_values[$k]= (array)$this->_values[$k];
     $this->_values[$k]= array_merge($this->_values[$k],$v);
     return $this;
   }
-  public function set_all($_) {$this->_values = (array)$_;}
+  public function set_all($_) {$this->_values = (array)$_;return $this;}
   public function get_all() {return $this->_values;}
   public function output($k,array $callbacks=null) {
     if( ! $callbacks) $callbacks= array('htmlspecialchars');
@@ -39,6 +39,6 @@
    */
   public function reveal($t) {
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
-   if(! @include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
+   if(! include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
   }
  }
