@@ -29,10 +29,11 @@
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
+ $this->_learn('frame\contract\operator');
  $this->_learn('module\operator\exception\no_entry');
  $this->_learn('module\operator\exception\too_many_entries');
 
- class operator extends frame\dna implements frame\contract\dna {
+ class operator extends frame\dna implements frame\contract\operator, frame\contract\dna {
   private $_p_uided = false;	   // Uniquely identified via primary key ?
   private $_a_uided = false;	   // Uniquely identified via alternate key ?
   private $_uid_def;		   // array (flat) of uid parts

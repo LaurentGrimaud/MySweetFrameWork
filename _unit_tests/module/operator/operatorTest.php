@@ -6,6 +6,7 @@
  require_once '_unit_tests/unit_testing_init.php';
  $ut_initializer = new unit_testing_initializer();
  $ut_initializer->load('frame/contract/data_storage.php');
+ $ut_initializer->load('frame/contract/operator.php');
  $ut_initializer->load('module/operator/operator.php');
  $ut_initializer->load('module/operator/exception/too_many_entries.php');
  $ut_initializer->load('module/operator/exception/no_entry.php');
