@@ -16,6 +16,8 @@
     'response.http_status_code' => 200,
     'response.http_version'     => 'HTTP/1.1',
     'response.view'             => 'view', // Name of the underlaying MySFW view object to use
+    'response:charset'          => 'UTF-8',
+    'response:mime-type'        => 'text/html'
     );
 
   /** 
@@ -176,6 +178,7 @@
   }
 
   protected function _get_ready() {
+   $this->set_http_response_header('Content-Type', $this->inform('response:mime-type').'; charset='.$this->inform('response:charset'));
    $this->report_debug("Will create underlaying view object of type ".$this->inform('response.view'));
    $this->_v = $this->get_popper()->pop($this->inform('response.view')); // Wich mysfw view object to use ?
   }
