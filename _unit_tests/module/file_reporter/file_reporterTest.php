@@ -32,10 +32,10 @@
    $mocked_file_utility = $this->getMock('t0t1\mysfw\frame\contract\file_utility');
    $mocked_file_utility->expects($this->any())
 	   ->method('project_full_path')
-	   ->will($this->returnValue('/non-existent dir/file.prout'));
+	   ->willReturn('/non-existent dir/file.prout');
    $mocked_popper->expects($this->any())
 	   ->method('pop')
-	   ->will($this->returnValueMap([['file_utility', $mocked_file_utility]]));
+	   ->will($this->returnValueMap([['file_utility', null, $mocked_file_utility]]));
    $this->init_configurator($mocked_configurator);
    $this->_x->set_popper($mocked_popper);
    $this->_x->set_configurator($mocked_configurator);
@@ -47,7 +47,8 @@
    * @expectedExceptionMessage Failed to open report file `/non-existent dir/file.prout`
    **/
   public function test_exception_file_not_found() {
-   @$this->_x->get_ready();
+   $this->_x->get_ready();
+return;
    $this->assertEquals($this->_x->get_file(), '/non-existent dir/file.prout');
   }
 }
