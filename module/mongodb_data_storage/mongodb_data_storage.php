@@ -135,6 +135,8 @@
     return false;
    }
 
+   return (array)$crit; // XXX temp, quick workaround
+
    $crit = (array)$crit;
 
    if(count($crit) !== 1){
@@ -291,7 +293,7 @@
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
    }
-   if(! $uid = $this->_criteria_talk($type, $crit)){
+   if(! $mcrit = $this->_criteria_talk($type, $crit)){
     $this->report_error("Failed to build uid - Aborting");
     throw $this->except('Failed to build uid', 'data_storage_exception');
    }
@@ -299,20 +301,20 @@
    unset($values['_id']);
    $this->report_debug(print_r($values, true));
    try {
-    if($res = $c->update(array("_id" => $uid), array('$set' => $values))) {
+    if($res = $c->update($mcrit, array('$set' => $values))) {
      if( $res['n'] == 0){
         if( $res['updatedExisting'] === true){
-            $this->report_error("Database error during update for uid : " . $uid);
+            $this->report_error("Database error during update for uid : " . print_r($mcrit, true));
             throw $this->except('Database error during update : ' . $res['err'], 'data_storage_exception');
         }
         else{
-            $this->report_error("No entry found for uid : " . $uid);
-            throw $this->except('No entry found for uid : ' . $uid, 'no_entry');
+            $this->report_error("No entry found for uid : " . print_r($mcrit, true));
+            throw $this->except('No entry found for uid : ' . print_r($mcrit, true), 'no_entry');
         }
      }
      if(isset( $values_id)) $values['_id'] = $values_id;
      $this->report_debug(print_r($res, true));
-     $this->report_debug("Item of type $type and uid $uid updated");
+     $this->report_debug("Item of type $type and uid ".print_r($mcrit, true)." updated");
      return true;
     }
 
@@ -338,12 +340,12 @@
    if( empty( $this->_connection_options)){
     $this->_build_connection_options();
     }
-   if(! $uid = $this->_criteria_talk($type, $crit)){
+   if(! $mcrit = $this->_criteria_talk($type, $crit)){
     $this->report_error("Failed to build uid - Aborting");
     throw $this->except('Failed to build uid', 'data_storage_exception');
    }
    try {
-    $res = $c->remove(array("_id" => $uid), $this->_collection_options);
+    $res = $c->remove($mcrit, $this->_collection_options);
 
     if($res === false || @$res['err']) {
      $this->report_error("Failed to remove item of type $type and uid $uid from MongoDB");
