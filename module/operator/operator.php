@@ -59,6 +59,9 @@
    'too_many_entries' => 1
     ];
 
+
+  public function get_type() {return $this->_underlaying_type;}
+
   /**
    * Configure the current object to act as the given type
    *

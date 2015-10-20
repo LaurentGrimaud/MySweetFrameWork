@@ -370,6 +370,17 @@ UID def is: Array
    $this->assertEquals($status, $this->_x->status());
   }
 
+  /** @dataProvider operator_type_provider **/
+  public function test_get_type($operator_name) {
+   $this->init_operator();
+   $this->_x->morph($operator_name);
+   $this->assertEquals($operator_name, $this->_x->get_type());
+  }
+
+  public function operator_type_provider() {
+   return [['an operator'],['an other operator'], ['the very last operator']];
+  }
+
   /******* Chainability tests - @XXX To be extended ! ******/
 
   public function test_identify_chainability() {
