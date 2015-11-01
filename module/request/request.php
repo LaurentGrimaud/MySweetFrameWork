@@ -86,4 +86,14 @@ class request extends mysfw\frame\dna{
     public function accepts_json(){
         return ( false !== strpos($this->get_server('HTTP_ACCEPT',array('trim')),'application/json'));
     }
+
+    // XXX draft
+    public function set($nature, $name, $value) {
+     switch($nature) {
+      case 'query':
+       $this->report_debug("Setting `$nature` parameter `$name` to `$value`");
+       $this->_query[$name] = $value;
+       return $this;
+     }
+    }
 }
