@@ -1,5 +1,10 @@
 <?php
 
+ /*
+  * XXX Draft
+  * XXX Unit tests missing
+  */
+
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 

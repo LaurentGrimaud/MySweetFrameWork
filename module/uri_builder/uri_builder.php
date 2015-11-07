@@ -3,7 +3,8 @@
  /**
   * XXX Draft
   *
-  * @missing configuration checks during get_ready()
+  * XXX Misses configuration checks during get_ready()
+  * XXX Misses unit tests
   */
 
  namespace t0t1\mysfw\module;
