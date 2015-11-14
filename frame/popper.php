@@ -13,6 +13,8 @@
   private $_home;
   private $_register = array(); // XXX here, or in configurator ... ?
 
+  public $_stats = []; /// XXX temp
+
 
   /**
    * Privatized constructor, preventing external instanciation
@@ -61,7 +63,8 @@
     $o->set_reporter($this->indicate('reporter'));
    }catch(exception\dna $e){ } // No reporter is OK
 
-
+   @$this->_stats[$classname]++;
+ 
    return $o->get_ready();
   }
 
