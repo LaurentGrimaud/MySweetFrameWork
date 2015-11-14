@@ -12,6 +12,7 @@
  $this->_learn("frame\contract\data_storage");
 
  class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
+  protected $_m;
   protected $_statement_prefix = 'sql_statements';
   protected $_defaults = [
    'mysql:host' => 'localhost',
@@ -21,6 +22,9 @@
    'mysql:db'   => 'mysfw',
    ];
 
+
+  protected function _get_ready() {
+  }
 
   /** XXX TEMP **/
   public function sql_retrieve($statement) {
@@ -94,7 +98,7 @@
    $this->report_info('`delete` action requested');
    $c = $this->_connect();
 
-   $sql = "DELETE from $type {$this->_criteria_talk($c, $crit)}";
+   $sql = "DELETE FROM $type {$this->_criteria_talk($c, $crit)}";
 
    $this->_query($c, $sql);
 
@@ -103,11 +107,13 @@
 
   // XXX temp
   private function _connect() {
-   $c = new \mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
-   if($c->connect_errno) {
-    throw $this->except("Failed to connect to mysql data storage. Message was: ".$c->connect_error);
+   if(! $this->_m) {
+    $this->_m = new \mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
+    if($this->_m->connect_errno) {
+     throw $this->except("Failed to connect to mysql data storage. Message was: ".$this->_m->connect_error);
+    }
    }
-   return $c;
+   return $this->_m;
   }
 
   /**
@@ -128,7 +134,7 @@
    $s = '';
    foreach($o as $k => $v){
     if(null === $v) {
-     $sql .= "$s$k = null";
+     $sql .= "$s$k = NULL";
     }else{
      $sql .= "$s$k = '{$c->real_escape_string($v)}'";
     }
@@ -142,7 +148,7 @@
    $s = '';
    foreach($o as $k => $v){
     if(null === $v) {
-     $sql .= "$s$k is null";
+     $sql .= "$s$k IS NULL";
     }else{
      $sql .= "$s$k = '{$c->real_escape_string($v)}'";
     }
