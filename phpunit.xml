@@ -17,7 +17,6 @@
       <exclude>_unit_tests/module/cookie</exclude>
       <exclude>_unit_tests/module/session</exclude>
       <exclude>_unit_tests/module/mongoDbDataStorage</exclude>
-      <exclude>_unit_tests/module/file_reporter</exclude>
       <exclude>_unit_tests/module/view</exclude>
     </testsuite>
   </testsuites>
