@@ -2,6 +2,10 @@
  use t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
+
+//XXX To be completed
+// require_once 'vfsStream/vfsStream.php';
+
  // XXX temp
  require_once '_unit_tests/unit_testing_init.php';
  $ut_initializer = new unit_testing_initializer();
@@ -29,7 +33,7 @@
    $this->_x = new module\file_reporter;
    $mocked_popper = $this->getMock('t0t1\mysfw\frame\contract\popper');
    $mocked_configurator = $this->getMock('t0t1\mysfw\frame\contract\configurator');
-   $mocked_file_utility = $this->getMock('t0t1\mysfw\frame\contract\file_utility');
+   $mocked_file_utility = $this->getMock('t0t1\mysfw\frame\contract\file_utility', ['project_full_path','full_path','is_path_absolute']);
    $mocked_file_utility->expects($this->any())
 	   ->method('project_full_path')
 	   ->willReturn('/non-existent dir/file.prout');
@@ -48,7 +52,11 @@
    **/
   public function test_exception_file_not_found() {
    $this->_x->get_ready();
-return;
    $this->assertEquals($this->_x->get_file(), '/non-existent dir/file.prout');
   }
+
+  public function test_consecutive_eid_are_different() {
+   $this->assertNotEquals($this->_x->build_eid(), $this->_x->build_eid());
+  }
+
 }

@@ -27,7 +27,7 @@
   public function get_eid() {return $this->_eid;}
 
   public function build_eid() {
-   return (10000*microtime(true)).'-'.getmypid();
+   return uniqid().'-'.getmypid();
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
