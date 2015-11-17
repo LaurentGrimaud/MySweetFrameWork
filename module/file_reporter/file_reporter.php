@@ -7,6 +7,7 @@
  class file_reporter extends frame\dna implements frame\contract\reporter, frame\contract\dna {
   private $_fd;
   private $_file;
+  private $_eid;   // Execution Identifier
 
   protected $_defaults = [
    'reporter:directory'  => '../reports/',
@@ -19,7 +20,14 @@
 
   protected function _get_ready() {
    $this->_file = $this->pop('file_utility')->project_full_path($this->inform('reporter:directory'), $this->inform('reporter:filename'));
-   if(! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
+   if(! is_writable($this->_file) || ! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
+   $this->_eid = $this->build_eid();
+  }
+
+  public function get_eid() {return $this->_eid;}
+
+  public function build_eid() {
+   return (10000*microtime(true)).'-'.getmypid();
   }
 
   /** Overrides of the generic behaviour implemented in mysfw_core **/
@@ -33,6 +41,6 @@
 
    if(! $this->_fd) return false;
 
-   return \fwrite($this->_fd, '['.date('r')."] [level $level] $msg\n");
+   return \fwrite($this->_fd, '['.date('r')."] [".$this->get_eid()."] [level $level] $msg\n");
   }
  }
