@@ -1,4 +1,6 @@
-reports
 *.swp
 *.swo
 *.un~
+.buildpath
+.project
+.settings

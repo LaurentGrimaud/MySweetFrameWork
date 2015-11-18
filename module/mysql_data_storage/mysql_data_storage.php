@@ -15,11 +15,12 @@
   protected $_m;
   protected $_statement_prefix = 'sql_statements';
   protected $_defaults = [
-   'mysql:host' => 'localhost',
-   'mysql:port' => 3306,
-   'mysql:user' => 'mysfw',
-   'mysql:pass' => 'mysfw',
-   'mysql:db'   => 'mysfw',
+   'mysql:host'     => 'localhost',
+   'mysql:port'     => 3306,
+   'mysql:user'     => 'mysfw',
+   'mysql:pass'     => 'mysfw',
+   'mysql:db'       => 'mysfw',
+   'mysql:charset'  => 'utf8'
    ];
 
 
@@ -113,6 +114,7 @@
      throw $this->except("Failed to connect to mysql data storage. Message was: ".$this->_m->connect_error);
     }
    }
+   $this->_m->set_charset($this->inform('mysql:charset'));
    return $this->_m;
   }
 
