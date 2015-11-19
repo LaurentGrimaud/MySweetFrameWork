@@ -38,7 +38,7 @@
   public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
-   if ($fields !== null && is_array($fields)) {
+   if ($fields !== null && is_array($fields) && count($fields)) {
     $sql = 'SELECT ' . join(',', $fields) . " FROM $type ";
    } else {
     $sql = "SELECT * FROM $type ";
