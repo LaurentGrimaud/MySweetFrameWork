@@ -35,11 +35,14 @@
   }
 
   // XXX Refactor needed
-  public function retrieve($type, $crit = null, $metacrit = null) {
+  public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
-
-   $sql = "SELECT * FROM $type ";
+   if ($fields !== null && is_array($fields)) {
+    $sql = 'SELECT ' . join(',', $fields) . " FROM $type ";
+   } else {
+    $sql = "SELECT * FROM $type ";
+   }
    if($crit) $sql .= $this->_criteria_talk($c, $crit);
    if($metacrit){
     if(isset($metacrit['s']) and is_array($metacrit['s'])){

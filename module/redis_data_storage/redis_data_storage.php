@@ -74,7 +74,7 @@
   }
 
 
-  public function retrieve($type, $crit = null, $metacrit = null) {
+  public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
    if(! $c = $this->_get_connection()){
     $this->report_error("Failed to get redis connection");
