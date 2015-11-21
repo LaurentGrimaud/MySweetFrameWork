@@ -1,5 +1,11 @@
 <?php
- //XXX bad name ?
+ /**
+  * Abstract class providing the shell for the specific logic
+  *  for a given entity (concept) 
+  *
+  * XXX Draft
+  * XXX Bad name ?
+  */
 
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
