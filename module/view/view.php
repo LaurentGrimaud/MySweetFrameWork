@@ -31,6 +31,9 @@
    $this->_filter= $this->pop('filter');
   }
 
+  // XXX Draft
+  public function e($k){echo $this->get($k);}
+
   /**
    * Process to the given template
    * @var $t string the template's name
@@ -38,6 +41,7 @@
    * @throw frame\exception\dna on include error
    */
   public function reveal($t) {
+   $e = [$this, "e"];
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
    if(! include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
   }
