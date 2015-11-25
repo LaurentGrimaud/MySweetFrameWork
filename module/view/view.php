@@ -5,6 +5,7 @@
  $this->_learn('frame\contract\view');
 
  class view extends frame\dna implements frame\contract\view, frame\contract\dna {
+  private $_level = 0;
   private $_values;
   protected $_filter= false;
   protected $_defaults = array(
@@ -41,8 +42,14 @@
    * @throw frame\exception\dna on include error
    */
   public function reveal($t) {
+   $this->_level++;
    $e = [$this, "e"];
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
+   if($this->_level == 1)
+    ob_start(); 
    if(! include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
+   if($this->_level == 1)
+    ob_end_flush();
+   $this->_level--;
   }
  }
