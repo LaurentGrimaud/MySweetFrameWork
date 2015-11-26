@@ -166,4 +166,13 @@
   private function _learn($it) {
    require_once($this->_build_file_name($it));
   }
+
+  private function _build_custom_module_file_name($f) {
+   return $this->indicate('configurator')->inform('extension_dir') . DIRECTORY_SEPARATOR . "module" . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $f) . ".php";
+  }
+
+  private function _learn_custom($it) {
+   require_once($this->_build_custom_module_file_name($it));
+  }
+
  }
