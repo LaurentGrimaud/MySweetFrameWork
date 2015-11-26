@@ -24,7 +24,7 @@
 
   /** Overrides the generic behaviour implemented in dna **/
   public function define($c, $v){
-   if(isset($this->_repositor[$c])){
+   if(isset($this->_repository[$c])){
     throw $this->except("Configuration entry ($p, $cc, $c) already exists");
    }
    $this->_repository[$c] = $v;
@@ -32,6 +32,8 @@
   }
 
   public function inform($c){
-   return @$this->_repository[$c];
+   if(isset($this->_repository[$c]))
+    return $this->_repository[$c];
+   return null;
   }
  }
