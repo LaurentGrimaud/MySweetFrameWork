@@ -63,7 +63,7 @@
     $o->set_reporter($this->indicate('reporter'));
    }catch(exception\dna $e){ } // No reporter is OK
 
-   @$this->_stats[$classname]++;
+   $this->_stats[$classname] = isset($this->_stats[$classname]) ? $this->_stats[$classname] + 1 : 1;
  
    return $o->get_ready();
   }
