@@ -8,7 +8,7 @@
 
  class data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
 
-  public function retrieve($type, $crit) {
+  public function retrieve($type, $crit, $metacrit = null, $fields = null) {
    for($i=0;$i<5;$i++){
     $gna = (object)array("id" => $i);
     foreach($crit as $k=>$v) $gna->$k = $v;
