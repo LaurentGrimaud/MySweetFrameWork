@@ -117,7 +117,7 @@
    * @throws exception\dna if nothing found in register
   */
   public function indicate($name, $register_if_missing = false) {
-   if(! @$this->_register[$name]){
+   if(! isset($this->_register[$name])){
     if(! $register_if_missing) {
      throw new exception\dna("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
     }
