@@ -125,9 +125,9 @@
    }
 
    foreach($this->_defaults as $conf => $default_value){
-    list($prefix, $label) = explode(':', $conf);
+    $prefix = explode(':', $conf); // XXX temp
     if(isset($this->_custom_conf[$conf])){
-     self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), $prefix); // XXX TEMP potential override!
+     self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), $prefix[0]); // XXX TEMP potential override!
      $this->_conf[$conf] = $this->_custom_conf[$conf]; // XXX TEMP DRAFT
     }else{
      if(! self::inform($cc_prefix.$conf)){

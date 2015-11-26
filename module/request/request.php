@@ -11,10 +11,10 @@ class request extends mysfw\frame\dna{
     protected $_filter= null;
 
     protected $_defaults= array(
-        'INPUT_GET'=> array(),
-        'INPUT_POST'=> array(),
-        'INPUT_SERVER'=> array(),
-        'INPUT_FILES'=> array()
+        'request:INPUT_GET'=> array(),
+        'request:INPUT_POST'=> array(),
+        'request:INPUT_SERVER'=> array(),
+        'request:INPUT_FILES'=> array()
     );
 
     protected function _get_ready(){
