@@ -12,7 +12,7 @@
   private $_repository; 
 
   protected function _get_ready(){
-   $this->_repository = (object) null;
+   $this->_repository = [];
   }
 
   /**
@@ -23,6 +23,15 @@
   }
 
   /** Overrides the generic behaviour implemented in dna **/
-  public function define($c, $v, $cc = null){$_c = $cc? "$cc.$c" : $c;$this->_repository->$_c = $v;return $this;}
-  public function inform($c, $cc = null){$_c = $cc ? "$cc.$c" : $c; return @$this->_repository->$_c;}
+  public function define($c, $v){
+   if(isset($this->_repositor[$c])){
+    throw $this->except("Configuration entry ($p, $cc, $c) already exists");
+   }
+   $this->_repository[$c] = $v;
+   return $this;
+  }
+
+  public function inform($c){
+   return @$this->_repository[$c];
+  }
  }

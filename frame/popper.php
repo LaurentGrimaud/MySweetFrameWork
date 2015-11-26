@@ -49,13 +49,13 @@
    * 
    * @return an instance of the requested class
   **/
-  public function pop($classname, $conf_context = null) {
+  public function pop($classname, $conf_context = '_default_', $custom_conf = null) {
    $full_name = "\\t0t1\\mysfw\\module\\$classname"; // XXX static and absolute namespace
    if(! class_exists($full_name)){
     $this->swallow($classname);
    }
    $o = new $full_name;
-   $o->set_popper($this)->set_configuration_context($conf_context);
+   $o->set_popper($this)->set_configuration_context($conf_context)->set_custom_conf($custom_conf);
    try {
     $o->set_configurator($this->indicate('configurator'));
    } catch(exception\dna $e) { } // No configurator is OK
