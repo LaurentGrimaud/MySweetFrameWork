@@ -49,13 +49,13 @@
    * 
    * @return an instance of the requested class
   **/
-  public function pop($classname, $conf_context = null) {
+  public function pop($classname, $conf_context = '_default_', $custom_conf = null) {
    $full_name = "\\t0t1\\mysfw\\module\\$classname"; // XXX static and absolute namespace
    if(! class_exists($full_name)){
     $this->swallow($classname);
    }
    $o = new $full_name;
-   $o->set_popper($this)->set_configuration_context($conf_context);
+   $o->set_popper($this)->set_configuration_context($conf_context)->set_custom_conf($custom_conf);
    try {
     $o->set_configurator($this->indicate('configurator'));
    } catch(exception\dna $e) { } // No configurator is OK
@@ -63,7 +63,7 @@
     $o->set_reporter($this->indicate('reporter'));
    }catch(exception\dna $e){ } // No reporter is OK
 
-   @$this->_stats[$classname]++;
+   $this->_stats[$classname] = isset($this->_stats[$classname]) ? $this->_stats[$classname] + 1 : 1;
  
    return $o->get_ready();
   }
@@ -116,8 +116,13 @@
    * @return object the register object
    * @throws exception\dna if nothing found in register
   */
-  public function indicate($name) {
-   if(! @$this->_register[$name]) throw new exception\dna("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
+  public function indicate($name, $register_if_missing = false) {
+   if(! isset($this->_register[$name])){
+    if(! $register_if_missing) {
+     throw new exception\dna("Nothing in register for name `$name`"); //XXX use of exceptions factory ?
+    }
+    return $this->register($name, $name);
+   }
    return $this->_register[$name];
   }
 

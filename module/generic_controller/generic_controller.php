@@ -8,10 +8,10 @@
 
  class generic_controller extends frame\dna implements frame\contract\controller, frame\contract\dna {
   private $_param;    // XXX
-  private $_v;    // Object implementing mysfw_view
-  private $_tmpl; // Template to be used by the view
+  private $_v;        // Object implementing view contract
+  private $_tmpl;     // Template to be used by the view
   protected $_defaults = array(
-    'generic_controller:view' => 'http_response',                // Name of the view to be used by the controller
+    'generic_controller:view'        => 'http_response',      // Name of the view to be used by the controller
     'generic_controller:control_dir' => '../include/control/' // Directory to search for controls implementations
     );
 
@@ -29,7 +29,9 @@
    $this->_v = $this->get_popper()->pop($this->inform('generic_controller:view'));
   }
   
+  // XXX external set should be forbidden
   public function set($k, $v){return $this->_set($k, $v);}
+
   public function set_param($param){$this->_param = $param;$this->_set_tmpl($param);return $this;}
   public function get_view(){return $this->_v;}
 
@@ -44,5 +46,3 @@
   }
 
  }
-
-?>

@@ -15,21 +15,25 @@
  $this->_learn('frame\contract\configurator');
 
  class versioned_configurator extends frame\dna implements frame\contract\configurator, frame\contract\dna {
-  protected $_defaults = [
-   'versioned_configurator:configurator_to_pop' => 'configurator',
-   'versioned_configurator:role_to_replace'     => 'configurator']; 
+//  protected $_defaults = [
+//   'versioned_configurator:configurator_to_pop' => 'configurator',
+//   'versioned_configurator:role_to_replace'     => 'configurator']; 
+  protected $_defaults = ['versioned_configurator'=> [
+   'configurator_to_pop' => 'configurator',
+   'role_to_replace'     => 'configurator']]; 
+
   private $_versions; // Array of availables versions except the base one
   private $_to_use;   // The version to use
   private $_base;     // The base version, used as fallback for all versions
 
   protected function _get_ready(){
-   $role = $this->get_popper()->indicate('configurator')->inform('versioned_configurator:role_to_replace');
+   $role = $this->get_popper()->indicate('configurator')->inform('versioned_configurator:role_to_replace');// XXX TEMP
    $this->_to_use = $this->_base = $this->get_popper()->indicate($role);
    $this->get_popper()->register($role, $this);
   }
 
   public function add_version($name, $conf = null) {
-   $this->_versions[$name] = $conf ? : $this->get_popper()->pop($this->inform('versioned_configurator:configurator_to_pop'));
+   $this->_versions[$name] = $conf ? : $this->get_popper()->pop($this->inform('versioned_configurator:configurator_to_pop')); // XXX TEMP
    if(count($this->_versions) == 0) $this->_to_use = $this->_base = $this->get_version($name);
    return $this;
   }
@@ -50,21 +54,22 @@
    * XXX draft
    */
   public function dump() {
-   $r = "Default configuration:\n".$this->_base->dump();
+   $r = get_class()." - Default configuration:\n".$this->_base->dump();
    foreach($this->_versions as $name => $conf) {
-    $r .= "\n`$name` configuration version:\n".$conf->dump();
+    $r .= "\n`$name` configuration version (".get_class($conf)."):\n".$conf->dump();
    }
    return $r;
   }
 
   /** Overrides the generic behaviour implemented in dna **/
-  public function define($c, $v, $cc = null){
-   $this->_base->define($c, $v, $cc);
+
+  public function define($c, $v){ // XXX temp
+   $this->_base->define($c, $v);
    return $this; // XXX optim ? Could return $this->get_version($this->_to_use)
   }
 
-  public function inform($c, $cc = null){
-   if(null != ($_ = $this->_to_use->inform($c, $cc))) return $_; 
-   return $this->_base->inform($c, $cc);
+  public function inform($c){ // XXX temp
+   if(null != ($_ = $this->_to_use->inform($c))) return $_; 
+   return $this->_base->inform($c);
   }
  }

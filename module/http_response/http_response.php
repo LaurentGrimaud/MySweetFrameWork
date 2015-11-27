@@ -2,7 +2,7 @@
  /**
   * @example
   * $r= $popper->pop("http_response");
-  * $r->define("response.http_status_code", mysfw_http_response::http_status_code_created);
+  * $r->define("response:http_status_code", mysfw_http_response::http_status_code_created);
   */
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
@@ -13,9 +13,9 @@
  class http_response extends frame\dna implements frame\contract\view, frame\contract\response, frame\contract\dna {
   private $_v;                               // Object implementing mysfw_view interface
   protected $_defaults= array(
-    'response.http_status_code' => 200,
-    'response.http_version'     => 'HTTP/1.1',
-    'response.view'             => 'view', // Name of the underlaying MySFW view object to use
+    'response:http_status_code' => 200,
+    'response:http_version'     => 'HTTP/1.1',
+    'response:view'             => 'view', // Name of the underlaying MySFW view object to use
     'response:charset'          => 'UTF-8',
     'response:mime-type'        => 'text/html'
     );
@@ -153,10 +153,10 @@
     return;
    }
 
-   $status_code = $this->get('status_code') ? $this->get('status_code') : $this->inform('response.http_status_code');
+   $status_code = $this->get('status_code') ? $this->get('status_code') : $this->inform('response:http_status_code');
    if($status_code and self::$_http_reason_phrase[$status_code]){
     // Output status line
-    $status_line= $this->inform('response.http_version') . " $status_code " . self::$_http_reason_phrase[$status_code];
+    $status_line= $this->inform('response:http_version') . " $status_code " . self::$_http_reason_phrase[$status_code];
     \header($status_line, true, $status_code);
     $this->report_debug("Sent status line: `{$status_line}` for status code: `" . $status_code . "`.");
     // Build extra headers
@@ -179,7 +179,7 @@
 
   protected function _get_ready() {
    $this->set_http_response_header('Content-Type', $this->inform('response:mime-type').'; charset='.$this->inform('response:charset'));
-   $this->report_debug("Will create underlaying view object of type ".$this->inform('response.view'));
-   $this->_v = $this->get_popper()->pop($this->inform('response.view')); // Wich mysfw view object to use ?
+   $this->report_debug("Will create underlaying view object of type ".$this->inform('response:view'));
+   $this->_v = $this->get_popper()->pop($this->inform('response:view')); // Wich mysfw view object to use ?
   }
  }

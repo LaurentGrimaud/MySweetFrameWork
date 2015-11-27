@@ -54,7 +54,13 @@
      continue;
     }
     foreach($assistants[$i] as $sst) {
-     $new = $sst($res[$i]);
+     if('array' == gettype($sst)){
+      $this->report_debug("Assistant is a module: {$sst[0]}");
+      $m = $sst[1];
+      $new = $this->indicate($sst[0], true)->$m($res[$i]);
+     }else{
+      $new = $sst($res[$i]);
+     }
      $this->report_debug("Processed {$res[$i]} to $new");
      $res[$i] = $new;
     }
