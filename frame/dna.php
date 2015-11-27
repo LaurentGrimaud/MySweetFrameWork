@@ -51,7 +51,7 @@
   }
 
   /** popper interface **/
-  final public function pop($classname, $conf_context = null) {return $this->get_popper()->pop($classname, $conf_context);}
+  final public function pop($classname, $conf_context = '_default_', $custom_conf = null) {return $this->get_popper()->pop($classname, $conf_context, $custom_conf);}
   final public function indicate($name, $register_if_missing = false) {return $this->get_popper()->indicate($name, $register_if_missing);}
 
 
