@@ -24,10 +24,15 @@
    $this->x->define('other key', 'other value');
    $this->assertEquals('other value', $this->x->inform('other key'));
    $this->assertEquals('value', $this->x->inform('key'));
+  }
 
+  /**
+   * @expectedException t0t1\mysfw\frame\exception\dna
+   * @expectedExceptionMessage Configuration entry (_default_, key) already exists
+   */
+  public function test_define_is_immutable() {
+   $this->x->define('key', 'value');
    $this->x->define('key', 'other value');
-   $this->assertEquals('other value', $this->x->inform('key'));
-   $this->assertEquals('other value', $this->x->inform('other key'));
   }
 
  }

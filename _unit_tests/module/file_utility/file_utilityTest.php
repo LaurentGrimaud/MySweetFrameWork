@@ -34,7 +34,7 @@ $xxx = new test_init();
 
   public function init_configurator($configurator) {
    $map = [
-    ['root', null, '/my project root/'],
+    ['root', '_default_', '/my project root/'],
     ];
    
    $configurator

@@ -17,9 +17,9 @@
 
   public function init_configurator($configurator) {
    $map = [
-    ['report_dir', null, 'relative dir/'],
-    ['root', null, '/root/'],
-    ['report_file_name', null, 'report.log']
+    ['report_dir', '_default_', 'relative dir/'],
+    ['root', '_default_', '/root/'],
+    ['report_file_name', '_default_', 'report.log']
     ];
    
    $configurator
@@ -39,7 +39,7 @@
 	   ->willReturn('/non-existent dir/file.prout');
    $mocked_popper->expects($this->any())
 	   ->method('pop')
-	   ->will($this->returnValueMap([['file_utility', null, $mocked_file_utility]]));
+	   ->will($this->returnValueMap([['file_utility', '_default_', null, $mocked_file_utility]]));
    $this->init_configurator($mocked_configurator);
    $this->_x->set_popper($mocked_popper);
    $this->_x->set_configurator($mocked_configurator);

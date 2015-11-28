@@ -13,8 +13,8 @@ $c = $popper->indicate('configurator');
 $c->define('mysql:host', 'default.server.net');
 
 // Alternate and central configuration
-$c->define('alt1:mysql:host', 'alternate1.server.net');
-$c->define('alt2:mysql:host', 'alternate2.server.net');
+$c->define('mysql:host', 'alternate1.server.net', 'alt1');
+$c->define('mysql:host', 'alternate2.server.net', 'alt2');
 
 
 ##### End of global configuration
@@ -36,7 +36,7 @@ echo "****** Configurator after local configuration ******\n";
 echo $c->dump();
 
 
-// Local configuration
+// Local dynamic configuration
 $mdt_local_2 = $popper->pop('mysql_data_storage', 'haha', ['mysql:host' => 'bizou.net', 'mysql:user' => 'jean-marie']);
 
 echo "****** Configurator after second local configuration ******\n";
