@@ -4,7 +4,7 @@
   * Currently, five things:
   * 1. Gives knowledge and access to the popper object
   * 2. Provides logging capabilities, by interfacing to a reporter object 
-  * 3. Defines an auto-initialise mechanism, called by the popper
+  * 3. Defines an auto-initialise mechanism, called by the popper XXX no longer really true...
   * 4. Provides configuration access, by interfacing a configurator object
   * 5. Provides exception handling facility (factory method except())
   *
@@ -19,13 +19,13 @@
  namespace t0t1\mysfw\frame;
 
  abstract class dna implements contract\dna {
-  private $_p; // mysfw popper
-  private $_r; // mysfw reporter
-  private $_c; // mysfw configurator
+  private   $_p; // mysfw popper
+  private   $_r; // mysfw reporter
+  private   $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
   protected $_conf_context = null; // configuration context, as a string
   protected $_custom_conf = null; // custom configuration
-  protected $_conf = [];     /** Object configuration repository **/
+  protected $_conf = [];     /** Object final configuration repository **/
 
 
   /** Imposed behaviors **/
@@ -44,8 +44,12 @@
   final public function set_custom_conf($_ = null) {$this->_custom_conf = $_;return $this;}
   final public function get_custom_conf(){return $this->_custom_conf;}
 
+  final public function set_conf($_ = null) {$this->_conf = $_;return $this;}
+  final public function get_conf(){return $this->_conf;}
+
+  final public function get_defaults(){return $this->_defaults;}
+
   final public function get_ready(){
-   $this->_defaults();
    $this->_get_ready();
    return $this;
   }
@@ -112,26 +116,6 @@
    return '['.get_class($this)."] $msg";
   }
 
-  /**
-   * Retrieve configuration data declared 'needed' by the module
-   * and set default value if needed
-   **/
-  final protected function _defaults(){
-   if(! $this->_defaults) return; /** No conf to handle **/
-
-   $context = $this->get_configuration_context();
-
-   foreach($this->_defaults as $entry => $value){
-    if(isset($this->_custom_conf[$entry])){
-     self::define($entry, $this->_custom_conf[$entry], $context);
-    }else{
-     if(! self::inform($entry, $context)){
-      self::define($entry, $value, $context);
-     }
-    }
-    $this->_conf[$entry] = self::inform($entry, $context); // XXX TEMP DRAFT
-   }
-  }
 
 // XXX DRAFT
   final public function dump_all_conf_data(){
