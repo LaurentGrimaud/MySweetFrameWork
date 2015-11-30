@@ -37,4 +37,22 @@
     return $this->_repository[$cc][$c];
    return null;
   }
+
+  public function configure($module) {
+   if(! $defaults = $module->get_defaults()) return;
+   $context       = $module->get_configuration_context();
+   $custom_conf   = $module->get_custom_conf();
+   $conf          = [];
+   foreach($defaults as $entry => $value){
+    if(isset($custom_conf[$entry])){
+     self::define($entry, $custom_conf[$entry], $context);
+    }else{
+     if(! self::inform($entry, $context)){
+      self::define($entry, $value, $context);
+     }
+    }
+    $conf[$entry] = self::inform($entry, $context); // XXX TEMP DRAFT
+   }
+   $module->set_conf($conf);
+  }
  }
