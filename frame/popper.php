@@ -57,7 +57,8 @@
    $o = new $full_name;
    $o->set_popper($this)->set_configuration_context($conf_context)->set_custom_conf($custom_conf);
    try {
-    $o->set_configurator($this->indicate('configurator'));
+    $o->set_configurator($c = $this->indicate('configurator'));
+    $c->configure($o);
    } catch(exception\dna $e) { } // No configurator is OK
    try {
     $o->set_reporter($this->indicate('reporter'));
