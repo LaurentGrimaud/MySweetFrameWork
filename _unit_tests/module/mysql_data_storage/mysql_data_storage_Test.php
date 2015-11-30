@@ -34,7 +34,7 @@
    $this->_x->set_popper($mocked_popper);
    $this->_x->set_configurator($this->getMock('t0t1\mysfw\frame\contract\configurator'));
    $this->_x->get_ready();
-   $this->_x->set_mysqli($this->getMock('FakeMysqli', ['real_escape_string', 'query']));
+   $this->_x->set_mysqli($this->getMock('FakeMysqli', ['real_escape_string', 'query', 'set_charset']));
   }
 
 
@@ -147,6 +147,10 @@
    $mm = $this->_x->get_mysqli();
 
    $call = 0;
+   $mm->expects($this->at($call))
+                          ->method('set_charset') // XXX arg missing
+                          ->will($this->returnValue(true));
+   $call++;
    foreach($values as $k => $v) {
     $mm->expects($this->at($call))
                           ->method('real_escape_string')
@@ -187,6 +191,10 @@
    $mm = $this->_x->get_mysqli();
 
    $call = 0;
+   $mm->expects($this->at($call))
+                          ->method('set_charset')
+                          ->will($this->returnValue(true));
+   $call++;
    foreach($criteria as $k => $v) {
     $mm->expects($this->at($call))
                           ->method('real_escape_string')
@@ -218,8 +226,7 @@
    $this->_x->get_configurator()
     ->expects($this->any())
     ->method('inform')
-    ->with("sql_statements:$statement_name")
-    ->will($this->returnValue($statement));
+    ->will($this->returnValueMap([['mysql:charset', '_default_', 'iso-klingon-1'], ["sql_statements:$statement_name", '_default_', $statement]]));
 
    $mmr = $this->getMock('FakeMysqliResult', ['fetch_object']);
    $mmr->expects($this->at(0))->method('fetch_object')->with()->will($this->returnValue([0 => (object)[$property => $value]]));

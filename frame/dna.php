@@ -61,14 +61,14 @@
   public function report_warning($msg){return $this->_report("warning", $msg);}
   public function report_error($msg){return $this->_report("error", $msg);}
 
-  public function inform($c, $cc = '_default', $p = null){
+  public function inform($c, $cc = '_default_'){
    if(! $_c = $this->get_configurator()) throw $this->except("No configurator defined");
-   return $_c->inform($c, $cc, $p);
+   return $_c->inform($c, $cc);
   }
 
-  public function define($c, $v, $cc = '_default', $p = null){
+  public function define($c, $v, $cc = '_default_'){
    if(! $_c = $this->get_configurator()) return null; // XXX TO BE CHECKED
-   return $_c->define($c, $v, $cc, $p);
+   return $_c->define($c, $v, $cc);
   }
 
   /**
@@ -118,23 +118,18 @@
    **/
   final protected function _defaults(){
    if(! $this->_defaults) return; /** No conf to handle **/
-   $cc_prefix = '';
 
-   if($this->get_configuration_context() != '_default_'){
-    $cc_prefix = $this->get_configuration_context().":";
-   }
+   $context = $this->get_configuration_context();
 
-   foreach($this->_defaults as $conf => $default_value){
-    $prefix = explode(':', $conf); // XXX temp
-    if(isset($this->_custom_conf[$conf])){
-     self::define($conf, $this->_custom_conf[$conf], $this->get_configuration_context(), $prefix[0]); // XXX TEMP potential override!
-     $this->_conf[$conf] = $this->_custom_conf[$conf]; // XXX TEMP DRAFT
+   foreach($this->_defaults as $entry => $value){
+    if(isset($this->_custom_conf[$entry])){
+     self::define($entry, $this->_custom_conf[$entry], $context);
     }else{
-     if(! self::inform($cc_prefix.$conf)){
-      self::define($cc_prefix.$conf, $default_value);
+     if(! self::inform($entry, $context)){
+      self::define($entry, $value, $context);
      }
-     $this->_conf[$conf] = self::inform($cc_prefix.$conf); // XXX TEMP DRAFT
     }
+    $this->_conf[$entry] = self::inform($entry, $context); // XXX TEMP DRAFT
    }
   }
 

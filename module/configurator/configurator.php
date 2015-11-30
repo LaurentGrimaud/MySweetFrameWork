@@ -23,17 +23,18 @@
   }
 
   /** Overrides the generic behaviour implemented in dna **/
-  public function define($c, $v){
-   if(isset($this->_repository[$c])){
-    throw $this->except("Configuration entry ($p, $cc, $c) already exists");
+  public function define($c, $v, $cc = '_default_'){
+   if(isset($this->_repository[$cc][$c])){
+    throw $this->except("Configuration entry ($cc, $c) already exists");
    }
-   $this->_repository[$c] = $v;
+   $this->_repository[$cc][$c] = $v;
    return $this;
   }
 
-  public function inform($c){
-   if(isset($this->_repository[$c]))
-    return $this->_repository[$c];
+  // XXX _default_ ?
+  public function inform($c, $cc = '_default_'){
+   if(isset($this->_repository[$cc][$c]))
+    return $this->_repository[$cc][$c];
    return null;
   }
  }
