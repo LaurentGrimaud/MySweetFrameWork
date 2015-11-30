@@ -47,8 +47,9 @@
   private $_uid_injection = null;
 
   protected $_defaults = [
-   'operators:generic_definitions' => ['_id' => null],  // XXX draft generic definition
-   'operators:custom_definitions'  => [                 // XXX draft operator specific definitions
+   'operator:data_storage' => 'data_storage',          // default data storage
+   'operator:generic_definitions' => ['_id' => null],  // XXX draft generic definition
+   'operator:custom_definitions'  => [                 // XXX draft operator specific definitions
     'user' => ['id' => null]
     ]
    ];
@@ -104,8 +105,8 @@
    * ie: ['_id' => null]
    */
   protected function _find_definitions() {
-   $custom_defs = $this->inform('operators:custom_definitions');
-   $defs = @$custom_defs[$this->_underlaying_type] ? : $this->inform('operators:generic_definitions');
+   $custom_defs = $this->inform('operator:custom_definitions');
+   $defs = @$custom_defs[$this->_underlaying_type] ? : $this->inform('operator:generic_definitions');
    if(!$defs) throw $this->except("No definitions available for `{$this->_underlaying_type}` operator");
    return $defs;
   }
@@ -113,7 +114,7 @@
   // Automatic initialisation method
   // XXX draft
   protected function _get_ready() {
-   $this->set_data_storage($this->get_popper()->indicate('data_storage'));
+   $this->set_data_storage($this->get_popper()->indicate($this->inform('operator:data_storage')));
   }
 
   public function get_data_storage() {return $this->_data_storage;}

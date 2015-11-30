@@ -17,12 +17,16 @@
   protected $_op;              // mysfw operator object
   protected $_op_type;
   protected $_op_conf;
+  protected $_op_data_storage = 'data_storage'; // default data storage for operator
   protected $_defaults = [
    "concept:operator" => "operator"
   ];
 
   protected function _get_ready(){
-   $this->_op = $this->pop($this->inform('concept:operator'))->morph($this->_op_type);
+  $this->_op = $this->pop($this->inform('concept:operator'), $this->_op_type, [
+   'operator:data_storage' => $this->_op_data_storage
+  ])
+   ->morph($this->_op_type);
   }
 
   protected function _identify($k, $v){$this->_op->identify($k, $v);return $this;} // XXX to be checked
