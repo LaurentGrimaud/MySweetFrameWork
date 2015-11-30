@@ -146,6 +146,20 @@
    if($this->_v and $t) $this->_v->reveal($t);
   }
 
+  /*
+   * issue a redirect to given location
+   * @args : 
+   * uri rule defined in 'uri_builder:rules'
+   * rules arguments if any
+   */
+  public function redirect() {
+   $uri = $this->indicate('uri_builder', true);
+   $url = call_user_func_array([$uri, 'build'], func_get_args());
+   $this->report_info('redirecting to ' . $url);
+   $this->set('status_code', '301');
+   exit($this->set_http_response_header('Location', $url)->reveal());
+  }
+   
   private function _send_headers(){
    // Headers has already been sent, do nothing but log information about headers sent and sender
    if(headers_sent($file, $line)){
