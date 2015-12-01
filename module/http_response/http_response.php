@@ -148,13 +148,9 @@
 
   /*
    * issue a redirect to given location
-   * @args : 
-   * uri rule defined in 'uri_builder:rules'
-   * rules arguments if any
+   * @arg : url 
    */
-  public function redirect() {
-   $uri = $this->indicate('uri_builder', true);
-   $url = call_user_func_array([$uri, 'build'], func_get_args());
+  public function redirect($url) {
    $this->report_info('redirecting to ' . $url);
    $this->set('status_code', '301');
    exit($this->set_http_response_header('Location', $url)->reveal());
