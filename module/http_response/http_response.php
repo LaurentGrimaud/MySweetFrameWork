@@ -141,9 +141,9 @@
 
   public function get_http_response_headers(){return $this->_http_response_headers;}
 
-  public function reveal($t= null) {
+  public function reveal($t = null, $buffer = false) {
    $this->_send_headers();
-   if($this->_v and $t) $this->_v->reveal($t);
+   if($this->_v and $t) $this->_v->reveal($t, $buffer);
   }
 
   /*

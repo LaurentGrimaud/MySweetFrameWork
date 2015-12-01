@@ -40,9 +40,15 @@
    *
    * @throw frame\exception\dna on include error
    */
-  public function reveal($t) {
+  public function reveal($t, $buffer = false) {
    $e = [$this, "e"];
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
+   if($buffer) {
+    ob_start();
+   }
    if(! include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
+   if($buffer) {
+    return ob_get_clean();
+   }
   }
  }

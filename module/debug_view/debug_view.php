@@ -18,15 +18,15 @@
   public function get_all() {return $this->_v->get_all();}
 
   protected function _get_ready() {
-   $this->report_debug("Will create underlaying view object of type ".$this->inform('response:view'));
+   $this->report_debug("Will create underlaying view object of type ".$this->inform('debug_view:view'));
    $this->_v = $this->pop($this->inform('debug_view:view'));
   }
 
   public function reveal($t, $buffer = false) {
    $main_content = $this->_v->reveal($t, true);
    $debug_content = $this->_v->reveal('debug', true);
-   $content = preg_replace('/<\/body>/', $debug_content.'</body>', $main_content);
-   if($buffer) return $buffer;
-   echo $main_content;
+   $content = preg_replace('/<\/body/i', $debug_content.'</body', $main_content);
+   if($buffer) return $content;
+   echo $content;
   }
 }

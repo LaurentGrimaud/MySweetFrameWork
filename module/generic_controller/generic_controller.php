@@ -42,6 +42,8 @@
 
   public function control($p){
    // XXX default implementation
+   $this->report_debug("Will use control file `{$this->_param}`");
+   $this->report_debug("Template set to `{$this->_get_tmpl()}`");
    include $this->inform('generic_controller:control_dir').$this->_param.'.php'; // XXX 
   }
 
