@@ -25,8 +25,8 @@
   public function reveal($t, $buffer = false) {
    $main_content = $this->_v->reveal($t, true);
    $debug_content = $this->_v->reveal('debug', true);
-   $content = preg_replace('/<\/body>/i', $debug_content.'</body>', $main_content);
-   if($buffer) return $main_content;
-   echo $main_content;
+   $content = preg_replace('/<\/body/i', $debug_content.'</body', $main_content);
+   if($buffer) return $content;
+   echo $content;
   }
 }
