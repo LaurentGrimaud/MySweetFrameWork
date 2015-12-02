@@ -23,7 +23,7 @@
   private   $_r; // mysfw reporter
   private   $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
-  protected $_conf_context = null; // configuration context, as a string
+  protected $_conf_context = '_default_'; // configuration context, as a string
   protected $_custom_conf = null; // custom configuration
   protected $_conf = [];     /** Object final configuration repository **/
 
@@ -65,9 +65,9 @@
   public function report_warning($msg){return $this->_report("warning", $msg);}
   public function report_error($msg){return $this->_report("error", $msg);}
 
-  public function inform($c, $cc = '_default_'){
+  public function inform($c, $cc = null){
    if(! $_c = $this->get_configurator()) throw $this->except("No configurator defined");
-   return $_c->inform($c, $cc);
+   return $_c->inform($c, $cc ? : $this->get_configuration_context());
   }
 
   public function define($c, $v, $cc = '_default_'){
@@ -129,6 +129,6 @@
 
 // XXX DRAFT
   final public function dump_conf() {
-return "Current conf:\n".print_r($this->_conf, true);
+   return "Current conf:\n".print_r($this->_conf, true);
   }
  }
