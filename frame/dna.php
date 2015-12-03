@@ -23,7 +23,7 @@
   private   $_r; // mysfw reporter
   private   $_c; // mysfw configurator
   protected $_defaults; // array of configurations entries needed by the modules, with its default value associated
-  protected $_conf_context = '_default_'; // configuration context, as a string
+  protected $_conf_context = '_default_'; // configuration context, as a string XXX temp
   protected $_custom_conf = null; // custom configuration
   protected $_conf = [];     /** Object final configuration repository **/
 
