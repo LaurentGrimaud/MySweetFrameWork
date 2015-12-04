@@ -49,7 +49,7 @@
    $res = [];
    for($i=0;$i < count($args); $i++) {
     $res[$i] = $args[$i];
-    if(! @$assistants[$i]){
+    if(!isset($assistants[$i])){
      $this->report_debug("No assistant found for #`$i` argument `{$args[$i]}`");
      continue;
     }
