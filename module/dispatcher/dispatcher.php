@@ -22,7 +22,7 @@
    * XXX bad balance between base_controller and generic_controller
    */
   public function dispatch(request $request) {
-   $filter = $this->get_popper()->pop('filter');
+   $filter = $this->pop('filter');
    if($controller = $filter->apply($request->get_query($this->inform('dispatcher:parameter')),array(array($filter,'filter_string')))){
     $this->report_debug("Found specified controller `$controller`");
    }else{
@@ -31,9 +31,9 @@
    }
 
    try {
-    $controller_o = $this->get_popper()->pop($controller.$this->inform('dispatcher:controller_suffix')); // First, try to find a controller object
+    $controller_o = $this->pop($controller.$this->inform('dispatcher:controller_suffix')); // First, try to find a controller object
    } catch(frame\exception\dna $e) { // Fallback to generic_controller
-    $controller_o = $this->get_popper()->pop($this->inform('dispatcher:controller'))->set_param($controller);
+    $controller_o = $this->pop($this->inform('dispatcher:controller'))->set_param($controller);
    }
 
    $controller_o->control_and_reveal($request);
