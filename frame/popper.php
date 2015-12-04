@@ -114,6 +114,8 @@
    * the matching object
    *
    * @param $name string the name of the register's entry to investigate
+   * @param $register_if_missing boolean if true and no object founds in
+   *  register, will try self:register() to create it and register it
    * @return object the register object
    * @throws exception\dna if nothing found in register
   */
