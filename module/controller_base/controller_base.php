@@ -28,7 +28,6 @@
   public function get_view(){if(! $this->_v) throw $this->except("Underlaying view does not exist"); return $this->_v;}
 
   public function control_and_reveal($p) {
-   if(!$this->_v) $this->_prepare_view();
    $this->control($p);
    $this->get_view()->reveal($this->_get_tmpl() ? : $this->_default_tmpl());
   }
