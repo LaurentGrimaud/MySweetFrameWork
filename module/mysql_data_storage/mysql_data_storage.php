@@ -33,7 +33,19 @@
    $c = $this->_connect();
    return $this->_query_and_fetch($sql, $c);
   }
+  
+  public function sql_count($sql) {
+   $c = $this->_connect();
+   $r = $this->_query($c, $sql);
+   $row = $r->fetch_row();
+   return $row[0];
+  }
 
+  public function sql_query($sql) {
+   $c = $this->_connect();
+   return $this->_query_and_fetch($sql, $c);
+  }
+  
   // XXX Refactor needed
   public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
