@@ -114,7 +114,7 @@
   // Automatic initialisation method
   // XXX draft
   protected function _get_ready() {
-   $this->set_data_storage($this->get_popper()->indicate($this->inform('operator:data_storage')));
+   $this->set_data_storage($this->indicate($this->inform('operator:data_storage')));
   }
 
   public function get_data_storage() {return $this->_data_storage;}
