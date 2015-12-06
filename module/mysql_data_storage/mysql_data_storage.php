@@ -16,12 +16,12 @@
   protected $_statement_prefix = 'sql_statements';
 
   protected $_defaults = [
-   'mysql:host'    => 'localhost',
-   'mysql:port'    => 3306,
-   'mysql:user'    => 'mysfw',
-   'mysql:pass'    => 'mysfw',
-   'mysql:db'      => 'mysfw',
-   'mysql:charset' => 'utf8'
+   'host'    => 'localhost',
+   'port'    => 3306,
+   'user'    => 'mysfw',
+   'pass'    => 'mysfw',
+   'db'      => 'mysfw',
+   'charset' => 'utf8'
    ];
 
   protected function _get_ready() {

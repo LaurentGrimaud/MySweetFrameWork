@@ -26,6 +26,7 @@
   protected $_conf_context = '_default_'; // configuration context, as a string XXX temp
   protected $_custom_conf = null; // custom configuration
   protected $_conf = [];     /** Object final configuration repository **/
+  private $_name; // mysfw short name
 
 
   /** Imposed behaviors **/
@@ -40,6 +41,9 @@
 
   final public function set_configuration_context($_ = null) {$this->_conf_context = $_;return $this;}
   final public function get_configuration_context(){return $this->_conf_context;}
+
+  final public function set_name($_ = null) {$this->_name = $_;return $this;}
+  final public function get_name(){return $this->_name;}
 
   final public function set_custom_conf($_ = null) {$this->_custom_conf = $_;return $this;}
   final public function get_custom_conf(){return $this->_custom_conf;}
@@ -65,14 +69,14 @@
   public function report_warning($msg){return $this->_report("warning", $msg);}
   public function report_error($msg){return $this->_report("error", $msg);}
 
-  public function inform($c, $cc = null){
+  public function inform($c, $cc = null, $module = null){
    if(! $_c = $this->get_configurator()) throw $this->except("No configurator defined");
-   return $_c->inform($c, $cc ? : $this->get_configuration_context());
+   return $_c->inform($c, $cc ? : $this->get_configuration_context(), $module ? : $this->get_name());
   }
 
-  public function define($c, $v, $cc = '_default_'){
+  public function define($c, $v, $cc = '_default_', $module = '_top_'){
    if(! $_c = $this->get_configurator()) return null; // XXX TO BE CHECKED
-   return $_c->define($c, $v, $cc);
+   return $_c->define($c, $v, $cc, $module);
   }
 
   /**

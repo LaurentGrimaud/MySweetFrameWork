@@ -10,16 +10,16 @@
   private $_eid;   // Execution Identifier
 
   protected $_defaults = [
-   'reporter:directory'  => '../reports/',
-   'reporter:filename'   => 'default.report',
-   'reporter:ceil_level' => 3
+   'directory'  => '../reports/',
+   'filename'   => 'default.report',
+   'ceil_level' => 3
     ];
 
   public function get_file(){return $this->_file;}
   public function set_file($file){$this->_file = $file;}
 
   protected function _get_ready() {
-   $this->_file = $this->pop('file_utility')->project_full_path($this->inform('reporter:directory'), $this->inform('reporter:filename'));
+   $this->_file = $this->pop('file_utility')->project_full_path($this->inform('directory'), $this->inform('filename'));
    if(! is_writable($this->_file) || ! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
    $this->_eid = $this->build_eid();
   }
@@ -37,7 +37,7 @@
   public function report_error($msg){return $this->_r($msg, 0);}
 
   private function _r($msg, $level) {
-   if($level > $this->inform('reporter:ceil_level')) return true;
+   if($level > $this->inform('ceil_level')) return true;
 
    if(! $this->_fd) return false;
 

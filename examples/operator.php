@@ -1,20 +1,25 @@
 <?php
 $popper = call_user_func(require '/t0t1/mysfw/init.php', __DIR__);
 
-$popper->register('data_storage', 'mysql_data_storage');
 $c = $popper->indicate('configurator');
-$c->define('mysql:host', 'localhost');
-$c->define('mysql:user', 'root');
-$c->define('mysql:pass', 't0t1');
-$c->define('operators:generic_definitions', ['id' => null]);
-$c->define('operators:custom_definitions', [
+$c->define('host', 'localhost', '_default_', 'mysql_data_storage');
+$c->define('user', 'root', '_default_', 'mysql_data_storage');
+$c->define('pass', 't0t1', '_default_', 'mysql_data_storage');
+
+$c->define('directory', './', '_default_', 'file_reporter');
+
+$c->define('generic_definitions', ['id' => null]);
+$c->define('custom_definitions', [
   'user' => ['id' => null]
 ]);
+
+$popper->register('data_storage', 'mysql_data_storage');
+
+echo $c->dump();
 
 $popper->register('reporter', 'file_reporter')->report_info('Ready to work !'); // We want our reporter to be a file_reporter
 $fr = $popper->indicate('reporter');
 
-//echo $c->dump();
 
 
 echo  "\n1. UID-based recall\n";
