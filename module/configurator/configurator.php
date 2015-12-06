@@ -15,6 +15,24 @@
    $this->_repository = [];
   }
 
+  public function module($name) {
+   return $this->_tmp_data('module', $name);
+  }
+
+  public function context($name) {
+   return $this->_tmp_data('context', $name);
+  }
+  
+  protected function _tmp_data($type, $value) {
+   if(! isset($this->_tmp_data))
+    $this->_tmp_data = [$type => $value];
+   else
+    $this->_tmp_data[$type] = $value;
+   return $this;
+  }
+
+
+
   /**
    * XXX draft
    */
@@ -23,7 +41,12 @@
   }
 
   /** Overrides the generic behaviour implemented in dna **/
-  public function define($c, $v, $cc = '_default_', $module = '_top_'){
+  public function define($c, $v, $cc = null, $module = null){
+   if(! $cc)
+    $cc = isset($this->_tmp_data['context']) ? $this->_tmp_data['context'] : '_default_';
+   if(! $module)
+    $module = isset($this->_tmp_data['module']) ? $this->_tmp_data['module'] : '_top_';
+   unset($this->_tmp_data);
    if(isset($this->_repository[$module][$cc][$c])){
     throw $this->except("Configuration entry ($cc, $c) already exists"); // XXX incorrect msg 
    }

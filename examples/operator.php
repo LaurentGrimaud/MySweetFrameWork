@@ -6,6 +6,14 @@ $c->define('host', 'localhost', '_default_', 'mysql_data_storage');
 $c->define('user', 'root', '_default_', 'mysql_data_storage');
 $c->define('pass', 't0t1', '_default_', 'mysql_data_storage');
 
+// XXX Clue #1
+$c->module('mysql_data_storageXXX')->define('host', 'localhost')
+                                   ->define('user', 'XXXroot');
+
+// XXX Clue #2
+$c->define('host', 'localhost', 'mysql_data_storage');
+
+
 $c->define('directory', './', '_default_', 'file_reporter');
 
 $c->define('generic_definitions', ['id' => null]);
