@@ -36,17 +36,26 @@
 
   /**
    * Process to the given template
+   * XXX Draft using closures
    * @var $t string the template's name
    *
    * @throw frame\exception\dna on include error
    */
-  public function reveal($t, $buffer = false) {
-   $e = [$this, "e"];
+  public function reveal($t, $buffer = false, $vars = null) {
+   if(is_null($vars)) $vars = $this->get_all();
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
+   $e = function($x) use ($vars) {echo $vars[$x];};
+   $g = function($x) use ($vars) {return $vars[$x];};
+   $i = function($t, $buffer = false, $vars = null) {$this->reveal($t, $buffer, $vars);};
    if($buffer) {
     ob_start();
    }
-   if(! include $tmpl_name) throw $this->except("Failed to include template `$tmpl_name`");
+   $exception = $this->except("Failed to include template `$tmpl_name`");
+   $f = function($e, $g, $i, $tmpl_name, $exception) {
+    if(! include $tmpl_name) throw $exception;
+   };
+   $f = $f->bindTo((object)[]);
+   $f($e, $g, $i, $tmpl_name, $exception);
    if($buffer) {
     return ob_get_clean();
    }
