@@ -41,6 +41,7 @@
 
    if(! $this->_fd) return false;
 
+   $msg = preg_replace('/[\s\n]+/', ' ', $msg); // one line log
    return \fwrite($this->_fd, '['.date('r')."] [".$this->get_eid()."] [level $level] $msg\n");
   }
  }
