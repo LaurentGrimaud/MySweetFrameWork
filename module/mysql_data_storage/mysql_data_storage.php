@@ -41,9 +41,9 @@
    return $row[0];
   }
 
-  public function sql_query($sql) {
+  public function sql_query($sql, $k= '*') {
    $c = $this->_connect();
-   return $this->_query_and_fetch($sql, $c);
+   return $this->_query_and_fetch($sql, $c, $k);
   }
 
   public function sql_query_on_key($sql, $k) {
