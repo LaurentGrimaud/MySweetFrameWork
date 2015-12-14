@@ -11,7 +11,7 @@
 
  $this->_learn("frame\contract\data_storage");
 
- class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna { 
+ class mysql_data_storage extends frame\dna implements frame\contract\data_storage, frame\contract\dna {
   protected $_m;
   protected $_statement_prefix = 'sql_statements';
 
@@ -33,7 +33,7 @@
    $c = $this->_connect();
    return $this->_query_and_fetch($sql, $c);
   }
-  
+
   public function sql_count($sql) {
    $c = $this->_connect();
    $r = $this->_query($c, $sql);
@@ -41,11 +41,16 @@
    return $row[0];
   }
 
-  public function sql_query($sql) {
+  public function sql_query($sql, $k= '*') {
    $c = $this->_connect();
-   return $this->_query_and_fetch($sql, $c);
+   return $this->_query_and_fetch($sql, $c, $k);
   }
-  
+
+  public function sql_query_on_key($sql, $k) {
+   $c = $this->_connect();
+   return $this->_query_and_fetch_on_key($sql, $c, $k);
+  }
+
   // XXX Refactor needed
   public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
@@ -75,16 +80,34 @@
    return $this->_query_and_fetch($sql, $c);
   }
 
-  protected function _query_and_fetch($sql, $c) {
+  protected function _query_and_fetch($sql, $c, $k = '*') {
    $r = $this->_query($c, $sql);
 
    $res = [];
-   while($row = $r->fetch_object()) {
-    $res[] = $row;
+   if ($k == '*') {
+    while($row = $r->fetch_object()) {
+     $res[] = $row;
+    }
+   } else {
+    while($row = $r->fetch_object()) {
+     $res[$row->$k] = $row;
+    }
    }
 
    return $res;
   }
+
+  protected function _query_and_fetch_on_key($sql, $c, $k) {
+   $r = $this->_query($c, $sql);
+
+   $res = [];
+   while($row = $r->fetch_object()) {
+    $res[$row->$k][] = $row;
+   }
+
+   return $res;
+  }
+
 
   // XXX to be implemented
   public function add($type, $crit, $mysfw_data_object){
