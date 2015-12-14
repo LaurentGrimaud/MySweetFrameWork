@@ -135,7 +135,12 @@
     return false;
    }
 
-   return (array)$crit; // XXX temp, quick workaround
+   foreach($crit as $k => $v) {
+    if($k == '_id') $v = new \MongoId($v);
+    $new_crit[$k] = $v;
+   }
+
+   return $new_crit; // XXX temp, quick workaround
 
    $crit = (array)$crit;
 
@@ -169,7 +174,11 @@
     }
     if(! $crit) {
      $crit = array();
+    }else{
+     $crit = $this->_criteria_talk($type, $crit);
     }
+
+    $this->report_debug("Retrieve criteria are: ".json_encode($crit));
     if(false === $data = $c->find($crit)){
         $this->report_warning("Failed to retrieve data (type $type)");
         return null;
