@@ -19,15 +19,22 @@
    $this->_v = $this->pop($this->inform('generic_controller:view'));
   }
 
-  public function control_and_reveal($p) {
-   $this->control($p);
+  public function control_and_reveal($request) {
+   $this->control($request);
    $this->_v->reveal($this->_get_tmpl());
   }
 
-  public function control($p){
-   $this->report_debug("Will use control file `{$this->_param}`");
+  public function control($request){
    $this->report_debug("Template set to `{$this->_get_tmpl()}`");
-   include $this->inform('generic_controller:control_dir').$this->_param.'.php'; // XXX 
+   $control_file = $this->inform('generic_controller:control_dir').$this->_param.'.php'; // XXX 
+
+   if(file_exists($control_file)) { // XXX test to weak ?
+    $this->report_debug("Will use control file `$control_file`");
+    include $control_file;
+   }else{
+    $this->report_info("No control file `$control_file` found - Proceeding to the view");
+   }
+   return;
   }
 
   public function set_param($param){$this->_param = $param;$this->_set_tmpl($param);return $this;}
