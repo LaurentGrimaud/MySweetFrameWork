@@ -27,7 +27,7 @@
      $this->report_debug("Rule `$rule` matches");
      $i=1;
      foreach($prm as $name => $value) {
-       $request->set('query', $name, ($value !== null ? $value : $matches[$i++])); 
+      $request->set('query', $name, ($value !== null ? $value : (isset($matches[$i++]) ? $matches[$i++] : null)));
      }
      return $this;
     }
