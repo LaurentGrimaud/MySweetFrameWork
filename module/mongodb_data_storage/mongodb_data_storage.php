@@ -296,7 +296,7 @@
   }
 
   // New implementation, using MongoCollection::update()
-  public function change($type, $crit, $values){
+  public function change($type, $crit, $values, $operator = '$set'){
    $this->report_info('`change` action requested');
    $c = $this->_get_connection($type);
    if( empty( $this->_connection_options)){
@@ -310,7 +310,7 @@
    unset($values['_id']);
    $this->report_debug(print_r($values, true));
    try {
-    if($res = $c->update($mcrit, array('$set' => $values))) {
+    if($res = $c->update($mcrit, array($operator => $values))) {
      if( $res['n'] == 0){
         if( $res['updatedExisting'] === true){
             $this->report_error("Database error during update for uid : " . print_r($mcrit, true));
