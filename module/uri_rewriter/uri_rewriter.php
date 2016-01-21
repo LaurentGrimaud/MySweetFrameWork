@@ -13,7 +13,6 @@
    'uri_rewriter:rules' => []
   ];
 
-
   // XXX Draft
   public function rewrite(request $request) {
    $server = $request->get_server();
@@ -27,7 +26,9 @@
      $this->report_debug("Rule `$rule` matches");
      $i=1;
      foreach($prm as $name => $value) {
-      $request->set('query', $name, ($value !== null ? $value : (isset($matches[$i]) ? $matches[$i++] : null)));
+      if ($value !== null || isset($matches[$i])) {
+       $request->set('query', $name, ($value !== null ? $value : $matches[$i++]));
+      }
      }
      return $this;
     }
