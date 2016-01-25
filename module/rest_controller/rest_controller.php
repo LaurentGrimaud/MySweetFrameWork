@@ -58,21 +58,41 @@
    return [current($defs[$entity]) => current($values)];
   }
 
+  protected function _build_criteria($entity, $request, $mandatory = true) {
+   $criteria = [];
+   if($entity_id = $this->_check_entity_id($request, $mandatory))
+    $criteria = $this->_check_definition($entity, [$entity_id]);
+   return $criteria; 
+  }
+
+  protected function _build_response($action, $results) {
+   $response = [];
+   $response['meta']['method'] = $action;
+   $response['doc'] = $results;
+   return $response;
+  }
+
   protected function _read($request) {
    $entity = $this->_check_entity($request);
-   $criteria = [];
-   if($entity_id = $this->_check_entity_id($request, false))
-    $criteria = $this->_check_definition($entity, [$entity_id]);
+   $criteria = $this->_build_criteria($entity, $request, false);
    $ds = $this->indicate($this->inform('rest:data_storage'));
-   $res = $ds->retrieve($entity, $criteria, ['l' => 100]);
-   $response = [];
-   $response['meta']['method'] = 'READ';
-   $response['doc'] = $res;
+   $res = $ds->retrieve($entity, $criteria, ['l' => 100]); // XXX temp - dumb limit
+   $response = $this->_build_response('READ', $res);
    return $this->_finalize($response);
   }
 
   protected function _finalize($response) {
    $this->set('response', $response);
+  }
+
+  protected function _update($request){
+   $entity = $this->_check_entity($request);
+   $criteria = $this->_build_criteria($entity, $request, false);
+   $values = json_decode($request->get_raw_input(), true); // XXX temp - get_raw_input() 
+   $ds = $this->indicate($this->inform('rest:data_storage'));
+   $res = $ds->change($entity, $criteria, $values);
+   $response = $this->_build_response('UPDATE', $res);
+   return $this->_finalize($response);
   }
 
   public function control($request) {
@@ -81,6 +101,7 @@
     case 'GET':
      return $this->_read($request);
     case 'PUT':
+     return $this->_update($request);
     case 'DELETE':
     case 'POST':
     default:
