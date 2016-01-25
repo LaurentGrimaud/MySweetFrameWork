@@ -76,7 +76,7 @@
    $entity = $this->_check_entity($request);
    $criteria = $this->_build_criteria($entity, $request, false);
    $ds = $this->indicate($this->inform('rest:data_storage'));
-   $res = $ds->retrieve($entity, $criteria, ['l' => 100]); // XXX temp - dumb limit
+   $res = $ds->retrieve($entity, $criteria, ['l' => 500]); // XXX temp - dumb limit
    $response = $this->_build_response('READ', $res);
    return $this->_finalize($response);
   }
