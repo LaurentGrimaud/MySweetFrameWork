@@ -7,7 +7,6 @@ class request extends mysfw\frame\dna{
     protected $_post= array();
     protected $_server= array();
     protected $_files= array();
-    protected $_method;
 
     protected $_filter= null;
 
@@ -15,8 +14,7 @@ class request extends mysfw\frame\dna{
         'request:INPUT_GET'=> array(),
         'request:INPUT_POST'=> array(),
         'request:INPUT_SERVER'=> array(),
-        'request:INPUT_FILES'=> array(),
-        'request:method' => null
+        'request:INPUT_FILES'=> array()
     );
 
     protected function _get_ready(){
@@ -24,12 +22,8 @@ class request extends mysfw\frame\dna{
         $this->_post = $this->inform('request:INPUT_POST')?:$_POST;
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
         $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
-        $this->_method = $this->inform('request:method')?:$_SERVER['REQUEST_METHOD'];
-        $this->_filter = $this->pop('filter');
+        $this->_filter = $this->get_popper()->pop('filter');
     }
-
-    public function get_method() {return $this->_method;}
-
     public function get_raw_input(){
         return file_get_contents("php://input");
     }
@@ -87,6 +81,18 @@ class request extends mysfw\frame\dna{
 
     public function is_put(){
         return $this->get_server('REQUEST_METHOD',array('trim'))=='PUT';
+    }
+
+    public function is_get(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='GET';
+    }
+
+    public function is_delete(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='DELETE';
+    }
+
+    public function is_patch(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='PATCH';
     }
 
     public function accepts_json(){
