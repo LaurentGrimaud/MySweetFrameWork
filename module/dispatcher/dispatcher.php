@@ -24,15 +24,16 @@
   public function dispatch(request $request) {
    $filter = $this->pop('filter');
    if($controller = $filter->apply($request->get_query($this->inform('dispatcher:parameter')),array(array($filter,'filter_string')))){
-    $this->report_debug("Found specified controller `$controller`");
+    $this->report_debug("Specified controller `$controller` requested");
    }else{
     $controller = $this->inform('dispatcher:default');
-    $this->report_debug("No specified controller, will use default `{$this->inform('dispatcher:default')}` one");
+    $this->report_debug("No specified controller requested, will use default `{$this->inform('dispatcher:default')}` one");
    }
 
    try {
     $controller_o = $this->pop($controller.$this->inform('dispatcher:controller_suffix')); // First, try to find a controller object
    } catch(frame\exception\dna $e) { // Fallback to generic_controller
+    $this->report_debug("Specific controller not found, will try the generic ".$this->inform('dispatcher:controller'));
     $controller_o = $this->pop($this->inform('dispatcher:controller'))->set_param($controller);
    }
 

@@ -33,6 +33,7 @@
 
   // XXX Draft
   public function e($k){echo $this->get($k);}
+  public function g($k){return $this->get($k);}
 
   /**
    * Process to the given template
@@ -42,6 +43,8 @@
    */
   public function reveal($t, $buffer = false) {
    $e = [$this, "e"];
+   $g = [$this, "g"];
+   $r = [$this, "reveal"];
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
    if($buffer) {
     ob_start();

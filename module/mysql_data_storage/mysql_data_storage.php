@@ -76,6 +76,13 @@
       }
       if( $order_by) $sql= sprintf('%s ORDER BY %s',$sql,$order_by);
     }
+    if(isset($metacrit['l'])) {
+     if(isset($metacrit['o'])) {
+      $sql = sprintf('%s LIMIT %s, %s', $sql, $c->real_escape_string($metacrit['o']), $c->real_escape_string($metacrit['l']));
+     }else{
+      $sql = sprintf('%s LIMIT %s', $sql, $c->real_escape_string($metacrit['l']));
+     }
+    }
    }
    return $this->_query_and_fetch($sql, $c);
   }
