@@ -16,7 +16,7 @@ class request extends mysfw\frame\dna{
         'request:INPUT_POST'=> array(),
         'request:INPUT_SERVER'=> array(),
         'request:INPUT_FILES'=> array(),
-	'request:method' => null
+        'request:method' => null
     );
 
     protected function _get_ready(){
@@ -24,7 +24,7 @@ class request extends mysfw\frame\dna{
         $this->_post = $this->inform('request:INPUT_POST')?:$_POST;
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
         $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
-	$this->_method = $this->inform('request:method')?:$_SERVER['REQUEST_METHOD'];
+        $this->_method = $this->inform('request:method')?:$_SERVER['REQUEST_METHOD'];
         $this->_filter = $this->pop('filter');
     }
 
