@@ -51,6 +51,12 @@
    return $this->_query_and_fetch_on_key($sql, $c, $k);
   }
 
+  public function sql_exec($sql) {
+   $c = $this->_connect();
+   $this->_query($c, $sql);
+   return $c->affected_rows;
+  }
+
   // XXX Refactor needed
   public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
    $this->report_info('`retrieve` action requested');
@@ -153,13 +159,14 @@
 
   // XXX temp
   private function _connect() {
-   if(! $this->_m) {
+   if(! $this->_m || !$this->_m->ping()) {
     $this->_m = new \mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
     if($this->_m->connect_errno) {
      throw $this->except("Failed to connect to mysql data storage. Message was: ".$this->_m->connect_error);
     }
+    $this->_m->set_charset($this->inform('mysql:charset'));
    }
-   $this->_m->set_charset($this->inform('mysql:charset'));
+
    return $this->_m;
   }
 
