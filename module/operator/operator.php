@@ -99,9 +99,9 @@
 
 
   /**
-   * Find the current operator definitions 
+   * Find the current operator definitions
    *
-   * @return array the operator definitions 
+   * @return array the operator definitions
    * ie: ['_id' => null]
    */
   protected function _find_definitions() {
@@ -128,7 +128,7 @@
    */
   public function identify($field, $value) {
    if($this->_is_uided()) throw $this->except("Trying to identify an already identified operator"); // XXX != loaded...
-   if(!is_null(@$this->_criteria[$field])) throw $this->except("UID part `$field` already valued (to `{$this->_criteria[$field]}`)");
+   if(isset($this->_criteria[$field]) && !is_null($this->_criteria[$field])) throw $this->except("UID part `$field` already valued (to `{$this->_criteria[$field]}`)");
    $this->_identify($field, $value);
    return $this;
   }
@@ -172,7 +172,7 @@
    * Checks is the current operator is uniquely identified via
    * the alternative method and records the result into the
    * internal flag _a_uided.
-   * 
+   *
    * @return $this
    */
   protected function _check_a_uided() {
@@ -186,7 +186,7 @@
   public function get($property){
     if( ! isset($this->_values[$property])) return null;
     return $this->_values[$property];
-  } 
+  }
 
   /**
    * Generic setter for operator property
@@ -236,7 +236,7 @@
    * Object's data are created in underlaying data storage
    * @throw myswf\exception on error
    */
-  public function create() {   
+  public function create() {
    $this->_check_uided();
    if($this->_is_uided())
     throw $this->except("`create` action requested on UIDed `operator` object (type is `{$this->_underlaying_type}`)");
@@ -251,7 +251,7 @@
    * Updates the object's data in underlaying data storage
    *
    * @var boolean $uptodate_is_error toggle error raise if data already up-to-date in underlaying data storage
-   * 
+   *
    * @return $this
    *
    * @throw myswf\exception on error
