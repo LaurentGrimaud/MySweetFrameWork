@@ -89,6 +89,18 @@ class request extends mysfw\frame\dna{
         return $this->get_server('REQUEST_METHOD',array('trim'))=='PUT';
     }
 
+    public function is_get(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='GET';
+    }
+
+    public function is_delete(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='DELETE';
+    }
+
+    public function is_patch(){
+        return $this->get_server('REQUEST_METHOD',array('trim'))=='PATCH';
+    }
+
     public function accepts_json(){
         return ( false !== strpos($this->get_server('HTTP_ACCEPT',array('trim')),'application/json'));
     }
