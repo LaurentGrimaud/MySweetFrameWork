@@ -26,6 +26,7 @@
 
   // XXX to be checked
   public function get_view(){if(! $this->_v) throw $this->except("Underlaying view does not exist"); return $this->_v;}
+  public function set_view($v){$this->_v = $v;return $this;}
 
   public function control_and_reveal($p) {
    $this->control($p);
