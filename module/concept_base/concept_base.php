@@ -42,7 +42,10 @@
      || (count($this->_op_conf['operator:custom_definitions'][$this->_op_type]) != 1)){
     throw $this->except('Unvalid definition for load_by_id() operation');
    }
-   $this->_op->identify($this->_op_conf['operator:custom_definitions'][$this->_op_type][0], $id);
+   // XXX temp
+   foreach($this->_op_conf['operator:custom_definitions'][$this->_op_type] as $key => $null){ break;}
+   $this->_op->identify($key, $id)->recall();
+   return $this;
   }
 
  }
