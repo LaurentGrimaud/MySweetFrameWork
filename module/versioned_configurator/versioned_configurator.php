@@ -100,12 +100,7 @@
 
   public function inform($c, $cc = '_default_'){ // XXX temp
    if(null != ($_ = $this->_to_use->inform($c, $cc))) return $_; 
-   $this->report_debug(sprintf('No value found on current configuration for (%s, %s), trying base one', $c, $cc));
-   if(null != ($_ = $this->_base->inform($c, $cc))){
-    $this->report_debug(sprintf('Value found on base configuration for (%s, %s): %s', $c, $cc, $_));
-    return $_;
-   }
-   $this->report_debug(sprintf('No value found on base configuration for (%s, %s) - returning null', $c, $cc));
+   if(null != ($_ = $this->_base->inform($c, $cc))) return $_;
    return null;
   }
  }
