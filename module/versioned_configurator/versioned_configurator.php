@@ -35,8 +35,16 @@
    $this->get_popper()->register($role, $this);
   }
 
-  public function add_version($name, $conf = null) {
-   $this->_versions[$name] = $conf ? : $this->pop($this->inform('versioned_configurator:configurator_to_pop')); // XXX TEMP
+  /*
+   * Adds an alternative configurator ("version")
+   * Uses the given name as entry name
+   * Uses the given configurator, or creates a new one
+   *
+   * @param string $name, the name of the alternative
+   * @param frame $name, the name of the alternative
+   */
+  public function add_version($name, $configurator = null) {
+   $this->_versions[$name] = $configurator ? : $this->pop($this->inform('versioned_configurator:configurator_to_pop')); // XXX TEMP
    if(count($this->_versions) == 0) $this->_to_use = $this->_base = $this->get_version($name);
    return $this;
   }
@@ -47,14 +55,29 @@
    return $this;
   }
 
+  public function use_default(){$this->_to_use = $this->_base; return $this;}
+
   public function get_version($name) {
    if(! @$this->_versions[$name]) throw new exception\dna("No configurator defined for `$name` environment"); 
    return $this->_versions[$name];
   }
 
-
   public function configure($module) {
-   return $this->_to_use->configure($module);
+   if(! $defaults = $module->get_defaults()) return;
+   $context       = $module->get_configuration_context();
+   $custom_conf   = $module->get_custom_conf();
+   $conf          = [];
+   foreach($defaults as $entry => $value){
+    if(isset($custom_conf[$entry])){
+     self::define($entry, $custom_conf[$entry], $context);
+    }else{
+     if(! self::inform($entry, $context)){
+      self::define($entry, $value, $context);
+     }
+    }
+    $conf[$entry] = self::inform($entry, $context); // XXX TEMP DRAFT
+   }
+   $module->set_conf($conf);
   }
 
   /**
@@ -77,12 +100,7 @@
 
   public function inform($c, $cc = '_default_'){ // XXX temp
    if(null != ($_ = $this->_to_use->inform($c, $cc))) return $_; 
-   $this->report_debug(sprintf('No value found on current configuration for (%s, %s), trying base one', $c, $cc));
-   if(null != ($_ = $this->_base->inform($c, $cc))){
-    $this->report_debug(sprintf('Value found on base configuration for (%s, %s): %s', $c, $cc, $_));
-    return $_;
-   }
-   $this->report_debug(sprintf('No value found on base configuration for (%s, %s) - returning null', $c, $cc));
+   if(null != ($_ = $this->_base->inform($c, $cc))) return $_;
    return null;
   }
  }
