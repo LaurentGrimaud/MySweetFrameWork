@@ -1,5 +1,9 @@
 <?php
 
+ /* Generic REST controller
+  * WIP
+  */
+
  namespace t0t1\mysfw\module;
  use t0t1\mysfw\frame;
 
