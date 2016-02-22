@@ -2,6 +2,11 @@
 
  /* Generic REST controller
   * WIP
+  * 
+  * Action == HTTP verb
+  * params syntax:
+  *  criteria are prefixed by @ (ie: @id=11111)
+  *  meta are prefixed by ^ (ie: ^desc=created_on) 
   */
 
  namespace t0t1\mysfw\module;
@@ -64,9 +69,47 @@
 
   protected function _build_criteria($entity, $request, $mandatory = true) {
    $criteria = [];
+   // "Primary key" part of criteria
    if($entity_id = $this->_check_entity_id($request, $mandatory))
     $criteria = $this->_check_definition($entity, [$entity_id]);
+   // Potential extra criteria
+   foreach($request->get_query() as $k => $v) {
+    $this->report_debug("Found param $k = $v");
+    if($k[0] == '@') {
+     $crit = substr($k, 1);
+     if(isset($criteria[$crit]) && $criteria[$crit] != $v) {
+      throw $this->except(sprintf("Criteria collision for key %s: %s found but %s already defined", $crit, $v, $criteria[$crit])); 
+     }
+     $criteria[$crit] = $v;
+    }
+   }
    return $criteria; 
+  }
+
+  protected function _build_meta($request) {
+   $res = [];
+   foreach($request->get_query() as $k => $v){
+    if($k[0] == '^') {
+     $meta = substr($k, 1);
+     switch($meta) {
+
+      case 'order':
+       foreach($v as $field => $desc){
+        $res['s'][$field] = $desc;
+       }
+       break;
+
+      case 'limit':
+       $res['l'] = $v;
+       break;
+
+      default:
+       throw $this->except("Unrecognized meta $meta");
+     }
+    }
+   }
+
+   return $res;
   }
 
   protected function _build_response($action, $results) {
@@ -79,8 +122,9 @@
   protected function _read($request) {
    $entity = $this->_check_entity($request);
    $criteria = $this->_build_criteria($entity, $request, false);
+   $meta = $this->_build_meta($request);
    $ds = $this->indicate($this->inform('rest:data_storage'));
-   $res = $ds->retrieve($entity, $criteria, ['l' => 500]); // XXX temp - dumb limit
+   $res = $ds->retrieve($entity, $criteria, $meta);
    $response = $this->_build_response('READ', $res);
    return $this->_finalize($response);
   }
