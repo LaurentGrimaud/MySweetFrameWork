@@ -161,7 +161,7 @@
    if(!$this->_uid_def) return $this;
    if(!$this->_criteria) return $this;
    foreach($this->_uid_def as $_uid_part){
-    if(!(@$this->_criteria[$_uid_part])) return $this;
+    if(!isset($this->_criteria[$_uid_part])) return $this;
    }
 
    return $this->_set_uided();

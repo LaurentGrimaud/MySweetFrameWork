@@ -20,7 +20,7 @@
 
   protected function _get_ready() {
    $this->_file = $this->pop('file_utility')->project_full_path($this->inform('reporter:directory'), $this->inform('reporter:filename'));
-   if(! is_writable($this->_file) || ! $this->_fd = \fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
+   if(! $this->_fd = @\fopen($this->_file, 'a')) throw $this->except("Failed to open report file `{$this->_file}`");
    $this->_eid = $this->build_eid();
   }
 
