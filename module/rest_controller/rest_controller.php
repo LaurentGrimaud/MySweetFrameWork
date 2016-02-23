@@ -24,7 +24,8 @@
     'rest:entity_id_placeholder' => 'entity_id',
     'rest:data_storage'          => 'data_storage',
     'rest:post_data'             => 'data',
-    'rest:tmpl'                  => 'rest.tmpl'
+    'rest:tmpl'                  => 'rest.tmpl',
+    'rest:entities_whitelist'    => [] // Default is _no_ entities allowed
    ];
 
   protected $_ds_actions = [
@@ -46,6 +47,9 @@
    $entity = $request->get_query($this->inform('rest:entity_placeholder'));
    if(! $entity) 
     throw $this->except('No entity name found in request');
+   if(! in_array($entity, $this->inform('rest:entities_whitelist'))){
+    throw $this->except("Entity $entity is not REST allowed");
+   }
    return $entity;
   }
 
@@ -103,6 +107,10 @@
        $res['l'] = $v;
        break;
 
+      case 'result_hash':
+       $res['h'] = $v;
+       break;
+
       default:
        throw $this->except("Unrecognized meta $meta");
      }
@@ -119,8 +127,7 @@
    return $response;
   }
 
-  protected function _read($request) {
-   $entity = $this->_check_entity($request);
+  protected function _read($request, $entity) {
    $criteria = $this->_build_criteria($entity, $request, false);
    $meta = $this->_build_meta($request);
    $ds = $this->indicate($this->inform('rest:data_storage'));
@@ -133,7 +140,7 @@
    $this->set('response', $response);
   }
 
-  protected function _update($request){
+  protected function _update($request, $entity){
    $entity = $this->_check_entity($request);
    $criteria = $this->_build_criteria($entity, $request, false);
    $values = json_decode($request->get_raw_input(), true); // XXX temp - get_raw_input() 
@@ -145,11 +152,12 @@
 
   public function control($request) {
    $method = $request->get_method();
+   $entity = $this->_check_entity($request);
    switch($method){
     case 'GET':
-     return $this->_read($request);
+     return $this->_read($request, $entity);
     case 'PUT':
-     return $this->_update($request);
+     return $this->_update($request, $entity);
     case 'DELETE':
     case 'POST':
     default:
