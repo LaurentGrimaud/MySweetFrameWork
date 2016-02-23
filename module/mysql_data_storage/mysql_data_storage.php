@@ -93,6 +93,14 @@
    return $this->_query_and_fetch($sql, $c);
   }
 
+  public function count($type, $crit = null) {
+   $this->report_info('`count` action requested');
+   $c = $this->_connect();
+   $sql = "SELECT COUNT(*) FROM $type ";
+   if($crit) $sql .= $this->_criteria_talk($c, $crit);
+   return $this->sql_count($sql);
+  }
+
   protected function _query_and_fetch($sql, $c, $k = '*') {
    $r = $this->_query($c, $sql);
 
