@@ -90,14 +90,15 @@
      }
     }
    }
-   return $this->_query_and_fetch($sql, $c);
+   $result_hash = isset($metacrit['h']) ? $metacrit['h'] : null;
+   return $this->_query_and_fetch($sql, $c, $result_hash);
   }
 
-  protected function _query_and_fetch($sql, $c, $k = '*') {
+  protected function _query_and_fetch($sql, $c, $k = null) {
    $r = $this->_query($c, $sql);
 
    $res = [];
-   if ($k == '*') {
+   if (! $k) {
     while($row = $r->fetch_object()) {
      $res[] = $row;
     }
