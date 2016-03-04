@@ -41,7 +41,7 @@
    return $row[0];
   }
 
-  public function sql_query($sql, $k= '*') {
+  public function sql_query($sql, $k = null) {
    $c = $this->_connect();
    return $this->_query_and_fetch($sql, $c, $k);
   }
