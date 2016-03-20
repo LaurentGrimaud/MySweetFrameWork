@@ -73,21 +73,32 @@
 
   protected function _build_criteria($entity, $request, $mandatory = true) {
    $criteria = [];
+   $ft_criteria = []; // XXX temp
    // "Primary key" part of criteria
    if($entity_id = $this->_check_entity_id($request, $mandatory))
     $criteria = $this->_check_definition($entity, [$entity_id]);
    // Potential extra criteria
    foreach($request->get_query() as $k => $v) {
     $this->report_debug("Found param $k = $v");
-    if($k[0] == '@') {
-     $crit = substr($k, 1);
-     if(isset($criteria[$crit]) && $criteria[$crit] != $v) {
-      throw $this->except(sprintf("Criteria collision for key %s: %s found but %s already defined", $crit, $v, $criteria[$crit])); 
-     }
-     $criteria[$crit] = $v;
+    switch($k[0]){
+     case '@':
+      $crit = substr($k, 1);
+      if(isset($criteria[$crit]) && $criteria[$crit] != $v) {
+       throw $this->except(sprintf("Criteria collision for key %s: %s found but %s already defined", $crit, $v, $criteria[$crit])); 
+      }
+      $criteria[$crit] = $v;
+      break;
+
+     case '~':
+      $crit = substr($k, 1);
+      if(isset($ft_criteria[$crit]) && $ft_criteria[$crit] != $v) {
+       throw $this->except(sprintf("Full-text criteria collision for key %s: %s found but %s already defined", $crit, $v, $ft_criteria[$crit])); 
+      }
+      $ft_criteria[$crit] = $v;
+      break;
     }
    }
-   return $criteria; 
+   return ['crit' => $criteria, 'ft_crit' => $ft_criteria]; 
   }
 
   protected function _build_meta($request) {
@@ -131,7 +142,7 @@
    $criteria = $this->_build_criteria($entity, $request, false);
    $meta = $this->_build_meta($request);
    $ds = $this->indicate($this->inform('rest:data_storage'));
-   $res = $ds->retrieve($entity, $criteria, $meta);
+   $res = $ds->retrieve($entity, $criteria['crit'], $meta, null, $criteria['ft_crit']);
    $response = $this->_build_response('READ', $res);
    return $this->_finalize($response);
   }
@@ -145,7 +156,7 @@
    $criteria = $this->_build_criteria($entity, $request, false);
    $values = json_decode($request->get_raw_input(), true); // XXX temp - get_raw_input() 
    $ds = $this->indicate($this->inform('rest:data_storage'));
-   $res = $ds->change($entity, $criteria, $values);
+   $res = $ds->change($entity, $criteria['crit'], $values, null, $criteria['ft_crit']);
    $response = $this->_build_response('UPDATE', $res);
    return $this->_finalize($response);
   }
