@@ -58,7 +58,7 @@
   }
 
   // XXX Refactor needed
-  public function retrieve($type, $crit = null, $metacrit = null, $fields = null) {
+  public function retrieve($type, $crit = null, $metacrit = null, $fields = null, $ft_crit = null) { // XXX temp
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
    if ($fields !== null && is_array($fields) && count($fields)) {
@@ -66,7 +66,7 @@
    } else {
     $sql = "SELECT * FROM $type ";
    }
-   if($crit) $sql .= $this->_criteria_talk($c, $crit);
+   if($crit || $ft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit);
    if($metacrit){
     if(isset($metacrit['s']) and is_array($metacrit['s'])){
       $order_by= null;
@@ -206,7 +206,7 @@
    return $sql;
   }
 
-  private function _criteria_talk($c, $o) {
+  private function _criteria_talk($c, $o, $ft = null) {
    $sql = 'WHERE ';
    $s = '';
    foreach($o as $k => $v){
@@ -217,6 +217,14 @@
     }
     $s = ' AND ';
    }
+
+   if($ft) {
+    foreach($ft as $k => $v) {
+     $sql .= "$s$k LIKE '%{$c->real_escape_string($v)}%'";
+     $s = ' AND ';
+    }
+   }
+
    return $sql;
   }
  }
