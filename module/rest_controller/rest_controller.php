@@ -79,7 +79,7 @@
     $criteria = $this->_check_definition($entity, [$entity_id]);
    // Potential extra criteria
    foreach($request->get_query() as $k => $v) {
-    $this->report_debug("Found param $k = $v");
+    $this->report_debug("Found param $k = ".print_r($v, true));
     switch($k[0]){
      case '@':
       $crit = substr($k, 1);
