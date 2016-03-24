@@ -2,8 +2,8 @@
 use t0t1\mysfw;
 
 class request extends mysfw\frame\dna{
+    protected $_params = [];
 
-    protected $_query= array();
     protected $_post= array();
     protected $_server= array();
     protected $_files= array();
@@ -20,7 +20,7 @@ class request extends mysfw\frame\dna{
     );
 
     protected function _get_ready(){
-        $this->_query = $this->inform('request:INPUT_GET')?:$_GET;
+        $this->_params['query'] = $this->inform('request:INPUT_GET')?:$_GET;
         $this->_post = $this->inform('request:INPUT_POST')?:$_POST;
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
         $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
@@ -34,15 +34,15 @@ class request extends mysfw\frame\dna{
         return file_get_contents("php://input");
     }
     public function get_query($k=null, array $filters=null) {
-        if(empty($k)  and $k!==0) return $this->_query;
+        if(empty($k)  and $k!==0) return $this->_params['query'];
         if($this->has_query($k)){
-            return $this->_filter->apply($this->_query[$k],$filters);
+            return $this->_filter->apply($this->_params['query'][$k],$filters);
         }
         return false;
     }
 
     public function has_query($k){
-        return array_key_exists($k,$this->_query);
+        return array_key_exists($k,$this->_params['query']);
     }
 
     public function get_post($k=null, array $filters=null) {
@@ -109,9 +109,24 @@ class request extends mysfw\frame\dna{
     public function set($nature, $name, $value) {
      switch($nature) {
       case 'query':
-       $this->report_debug("Setting `$nature` parameter `$name` to `$value`");
-       $this->_query[$name] = $value;
+      case 'internal':
+       $this->report_debug("Setting `$nature` parameter `$name` to `".print_r($value, true)."`");
+       $this->_params[$nature][$name] = $value;
        return $this;
+     }
+    }
+
+    // XXX draft
+    public function get($nature, $name = null) {
+     switch($nature) {
+      case 'query':
+      case 'internal':
+       if($name) {
+        if(isset($this->_params[$nature][$name]))
+         return $this->_params[$nature][$name];
+        return null;
+       }
+       return $this->_params[$nature];
      }
     }
 }
