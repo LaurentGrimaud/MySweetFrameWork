@@ -24,10 +24,18 @@
    foreach($this->inform('uri_rewriter:rules') as $rule => $prm){
     if(1 === preg_match($rule, $server['REQUEST_URI'], $matches)) {
      $this->report_debug("Rule `$rule` matches");
-     $i=1;
-     foreach($prm as $name => $value) {
-      if ($value !== null || isset($matches[$i])) {
-       $request->set('query', $name, ($value !== null ? $value : $matches[$i++]));
+     if(isset($prm['query'])) {
+      $i=1;
+      foreach($prm['query'] as $name => $value) {
+       if ($value !== null || isset($matches[$i])) {
+	$request->set('query', $name, ($value !== null ? $value : $matches[$i++]));
+       }
+      }
+     }
+     if(isset($prm['internal'])) {
+      $i=1;
+      foreach($prm['internal'] as $name => $value) {
+       $request->set('internal', $name, $value);
       }
      }
      return $this;
