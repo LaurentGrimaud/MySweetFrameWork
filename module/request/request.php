@@ -33,6 +33,7 @@ class request extends mysfw\frame\dna{
     public function get_raw_input(){
         return file_get_contents("php://input");
     }
+
     public function get_query($k=null, array $filters=null) {
         if(empty($k)  and $k!==0) return $this->_params['query'];
         if($this->has_query($k)){
@@ -103,6 +104,20 @@ class request extends mysfw\frame\dna{
 
     public function accepts_json(){
         return ( false !== strpos($this->get_server('HTTP_ACCEPT',array('trim')),'application/json'));
+    }
+
+    public function unset_query($name) {
+     return $this->_unset('query', $name);
+    }
+
+    protected function _unset($nature, $name) {
+     switch($nature) {
+      case 'query':
+      case 'internal':
+       $this->report_debug("Unsetting `$nature` parameter `$name`");
+       unset($this->_params[$nature][$name]);
+       return $this;
+     }
     }
 
     // XXX draft
