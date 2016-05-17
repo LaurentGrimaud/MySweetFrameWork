@@ -122,6 +122,10 @@
        $res['h'] = $v;
        break;
 
+      case 'offset':
+       $res['o'] = $v;
+       break;
+
       default:
        throw $this->except("Unrecognized meta $meta");
      }
@@ -131,9 +135,9 @@
    return $res;
   }
 
-  protected function _build_response($action, $results) {
+  protected function _build_response($action, $results, $meta = []) {
    $response = [];
-   $response['meta']['method'] = $action;
+   $response['meta'] = $meta + ['method' => $action];
    $response['doc'] = $results;
    return $response;
   }
@@ -143,7 +147,8 @@
    $meta = $this->_build_meta($request);
    $ds = $this->indicate($this->inform('rest:data_storage'));
    $res = $ds->retrieve($entity, $criteria['crit'], $meta, null, $criteria['ft_crit']);
-   $response = $this->_build_response('READ', $res);
+   $count = $ds->count($entity, $criteria['crit'], $criteria['ft_crit']);
+   $response = $this->_build_response('READ', $res, ['total' => $count]);
    return $this->_finalize($response);
   }
 

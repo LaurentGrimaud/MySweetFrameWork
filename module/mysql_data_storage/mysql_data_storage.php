@@ -94,11 +94,11 @@
    return $this->_query_and_fetch($sql, $c, $result_hash);
   }
 
-  public function count($type, $crit = null) {
+  public function count($type, $crit = null, $ft_crit = null) {
    $this->report_info('`count` action requested');
    $c = $this->_connect();
    $sql = "SELECT COUNT(*) FROM $type ";
-   if($crit) $sql .= $this->_criteria_talk($c, $crit);
+   if($crit || $ft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit);
    return $this->sql_count($sql);
   }
 
@@ -167,7 +167,7 @@
   }
 
   // XXX temp
-  private function _connect() {
+  protected function _connect() {
    if(! $this->_m || !$this->_m->ping()) {
     $this->_m = new \mysqli($this->inform('mysql:host'), $this->inform('mysql:user'), $this->inform('mysql:pass'), $this->inform('mysql:db'), $this->inform('mysql:port'));
     if($this->_m->connect_errno) {
@@ -182,7 +182,7 @@
   /**
    * @throw mysfw\exception if query failed
    */
-  private function _query($c, $sql) {
+  protected function _query($c, $sql) {
    $this->report_debug("Will execute: $sql"); // XXX test
    if(false === $res = $c->query($sql)){
     $this->report_error("mySQL error: ".$c->error); // XXX test
