@@ -17,15 +17,16 @@
 
  class rest_controller extends controller_base implements frame\contract\controller, frame\contract\dna {
    protected $_defaults = [
-    'rest:response'              => 'http_response',
-    'rest:mime_type_placeholder' => 'response:mime-type',
-    'rest:mime_type'             => 'application/json',
-    'rest:entity_placeholder'    => 'entity',
-    'rest:entity_id_placeholder' => 'entity_id',
-    'rest:data_storage'          => 'data_storage',
-    'rest:post_data'             => 'data',
-    'rest:tmpl'                  => 'rest.tmpl',
-    'rest:entities_whitelist'    => [] // Default is _no_ entities allowed
+    'rest:response'                => 'http_response'
+    , 'rest:mime_type_placeholder' => 'response:mime-type'
+    , 'rest:mime_type'             => 'application/json'
+    , 'rest:entity_placeholder'    => 'entity'
+    , 'rest:entity_id_placeholder' => 'entity_id'
+    , 'rest:data_storage'          => 'data_storage'
+    , 'rest:post_data'             => 'data'
+    , 'rest:tmpl'                  => 'rest.tmpl'
+    , 'rest:entities_whitelist'    => [] // Default is _no_ entities allowed
+    , 'rest:read_with_count'       => false
    ];
 
   protected $_ds_actions = [
@@ -160,8 +161,12 @@
    $meta = $this->_build_meta($request);
    $ds = $this->indicate($this->inform('rest:data_storage'));
    $res = $ds->retrieve($entity, $criteria['crit'], $meta, null, $criteria['ft_crit']);
-   $count = $ds->count($entity, $criteria['crit'], $criteria['ft_crit']);
-   $response = $this->_build_response('READ', $res, ['total' => $count]);
+   if($this->inform('rest:read_with_count')) {
+    $count = $ds->count($entity, $criteria['crit'], $criteria['ft_crit']);
+    $response = $this->_build_response('READ', $res, ['total' => $count]);
+   }else{
+    $response = $this->_build_response('READ', $res);
+   }
    return $this->_finalize($response);
   }
 
