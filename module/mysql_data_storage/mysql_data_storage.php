@@ -154,12 +154,12 @@
    return $c->affected_rows;
   }
 
-  // XXX to be implemented
-  public function delete($type, $crit) {
+  // XXX Meta criteria handling is missing
+  public function delete($type, $crit, $metacrit = [], $ft_crit = []) {
    $this->report_info('`delete` action requested');
    $c = $this->_connect();
 
-   $sql = "DELETE FROM $type {$this->_criteria_talk($c, $crit)}";
+   $sql = "DELETE FROM $type {$this->_criteria_talk($c, $crit, $ft_crit)}";
 
    $this->_query($c, $sql);
 
