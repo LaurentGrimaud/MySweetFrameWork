@@ -142,6 +142,19 @@
    return $response;
   }
 
+  protected function _finalize($response) {
+   $this->set('response', $response);
+  }
+  
+  /** Crud **/
+  protected function _create($request, $entity) {
+   $ds = $this->indicate($this->inform('rest:data_storage'));
+   $res = $ds->add($entity, null, json_decode($request->get_raw_input(), true));
+   $response = $this->_build_response('CREATE', $res);
+   return $this->_finalize($response);
+  }
+
+  /** cRud **/
   protected function _read($request, $entity) {
    $criteria = $this->_build_criteria($entity, $request, false);
    $meta = $this->_build_meta($request);
@@ -152,10 +165,7 @@
    return $this->_finalize($response);
   }
 
-  protected function _finalize($response) {
-   $this->set('response', $response);
-  }
-
+  /** crUd **/
   protected function _update($request, $entity){
    $entity = $this->_check_entity($request);
    $criteria = $this->_build_criteria($entity, $request, false);
@@ -166,6 +176,17 @@
    return $this->_finalize($response);
   }
 
+  /** cruD **/
+  protected function _delete($request, $entity) {
+   $criteria = $this->_build_criteria($entity, $request, false);
+   $meta = $this->_build_meta($request);
+   $ds = $this->indicate($this->inform('rest:data_storage'));
+   $res = $ds->delete($entity, $criteria['crit'], $meta, $criteria['ft_crit']);
+   $response = $this->_build_response('DELETE', $res);
+   return $this->_finalize($response);
+  }
+
+
   public function control($request) {
    $method = $request->get_method();
    $entity = $this->_check_entity($request);
@@ -175,7 +196,9 @@
     case 'PUT':
      return $this->_update($request, $entity);
     case 'DELETE':
+     return $this->_delete($request, $entity);
     case 'POST':
+     return $this->_create($request, $entity);
     default:
      throw $this->except("Unhandled HTTP method: $method");
    }
