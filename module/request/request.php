@@ -23,7 +23,7 @@ class request extends mysfw\frame\dna{
         $this->_params['query'] = $this->inform('request:INPUT_GET')?:$_GET;
         $this->_post = $this->inform('request:INPUT_POST')?:$_POST;
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
-        $this->_files = $this->inform('request:INPUT_FILES')?:$_FILES;
+        $this->_params['files'] = $this->inform('request:INPUT_FILES')?:$_FILES;
         $this->_method = $this->inform('request:method')?:$_SERVER['REQUEST_METHOD'];
         $this->_filter = $this->pop('filter');
     }
@@ -71,15 +71,15 @@ class request extends mysfw\frame\dna{
     }
 
     public function get_files($k=null, array $filters=null) {
-        if(empty($k)  and $k!==0) return $this->_files;
+        if(empty($k)  and $k!==0) return $this->_params['files'];
         if($this->has_file($k)){
-            return $this->_filter->apply($this->_files[$k],$filters);
+            return $this->_filter->apply($this->_params['files'][$k],$filters);
         }
         return false;
     }
 
     public function has_file($k){
-        return array_key_exists($k,$this->_files);
+        return array_key_exists($k,$this->_params['files']);
     }
 
     public function is_post(){
@@ -112,6 +112,7 @@ class request extends mysfw\frame\dna{
 
     protected function _unset($nature, $name) {
      switch($nature) {
+      case 'files':
       case 'query':
       case 'internal':
        $this->report_debug("Unsetting `$nature` parameter `$name`");
@@ -123,6 +124,7 @@ class request extends mysfw\frame\dna{
     // XXX draft
     public function set($nature, $name, $value) {
      switch($nature) {
+      case 'files':
       case 'query':
       case 'internal':
        $this->report_debug("Setting `$nature` parameter `$name` to `".print_r($value, true)."`");
@@ -134,6 +136,7 @@ class request extends mysfw\frame\dna{
     // XXX draft
     public function get($nature, $name = null) {
      switch($nature) {
+      case 'files':
       case 'query':
       case 'internal':
        if($name) {
