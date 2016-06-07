@@ -21,7 +21,7 @@ class request extends mysfw\frame\dna{
 
     protected function _get_ready(){
         $this->_params['query'] = $this->inform('request:INPUT_GET')?:$_GET;
-        $this->_post = $this->inform('request:INPUT_POST')?:$_POST;
+        $this->_params['post'] = $this->inform('request:INPUT_POST')?:$_POST;
         $this->_server = $this->inform('request:INPUT_SERVER')?:$_SERVER;
         $this->_params['files'] = $this->inform('request:INPUT_FILES')?:$_FILES;
         $this->_method = $this->inform('request:method')?:$_SERVER['REQUEST_METHOD'];
@@ -47,15 +47,15 @@ class request extends mysfw\frame\dna{
     }
 
     public function get_post($k=null, array $filters=null) {
-        if(empty($k)  and $k!==0) return $this->_post;
+        if(empty($k)  and $k!==0) return $this->_params['post'];
         if($this->has_post($k)){
-            return $this->_filter->apply($this->_post[$k],$filters);
+            return $this->_filter->apply($this->_params['post'][$k],$filters);
         }
         return false;
     }
 
     public function has_post($k){
-        return array_key_exists($k,$this->_post);
+        return array_key_exists($k,$this->_params['post']);
     }
 
     public function get_server($k=null, array $filters=null) {
@@ -113,6 +113,7 @@ class request extends mysfw\frame\dna{
     protected function _unset($nature, $name) {
      switch($nature) {
       case 'files':
+      case 'post':
       case 'query':
       case 'internal':
        $this->report_debug("Unsetting `$nature` parameter `$name`");
@@ -125,6 +126,7 @@ class request extends mysfw\frame\dna{
     public function set($nature, $name, $value) {
      switch($nature) {
       case 'files':
+      case 'post':
       case 'query':
       case 'internal':
        $this->report_debug("Setting `$nature` parameter `$name` to `".print_r($value, true)."`");
@@ -137,6 +139,7 @@ class request extends mysfw\frame\dna{
     public function get($nature, $name = null) {
      switch($nature) {
       case 'files':
+      case 'post':
       case 'query':
       case 'internal':
        if($name) {
