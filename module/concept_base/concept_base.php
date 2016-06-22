@@ -36,7 +36,7 @@
   public function set($property, $value){$this->_op->set($property, $value); return $this;}
   public function create(){$this->_op->create();return $this;}
   public function update($uptodate_is_error = true){$this->_op->update($uptodate_is_error);return $this;}
-  public function recall(){$this->_op->recall();return $this;}
+  public function recall($rank = null){$this->_op->recall($rank);return $this;}
   public function erase(){$this->_op->erase();return $this;}
   public function load_by_id($id){
    if(! isset($this->_op_conf['operator:custom_definitions'][$this->_op_type])

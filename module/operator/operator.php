@@ -276,13 +276,19 @@
    * Object's data are retrieved from underlaying data storage
    * Operator needs to be uided (primary or alternatively)
    *
+   * @param $rank integer, the rank, starting from 0
+   *
    * @throw myswf\exception on error
    */
-  public function recall() {
-   $this->_check_uided();
-//   print $this->status();
-    if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is `{$this->_underlaying_type}`)");
-   $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria);
+  public function recall($rank = null) {
+   $this->_check_uided($rank);
+   if(! $this->_is_uided()) throw $this->except("`recall` action requested on un-UIDed `operator` object (type is `{$this->_underlaying_type}`)");
+   $meta = [];
+   if($rank !== null) {
+    $meta['l'] = 1;
+    $meta['o'] = $rank;
+   }
+   $values = $this->get_data_storage()->retrieve($this->_underlaying_type, $this->_criteria, $meta);
    switch(count($values)) {
     case 0:
      throw $this->except("No matching entry found in data storage", 'no_entry');

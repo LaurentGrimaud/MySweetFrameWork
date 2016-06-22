@@ -10,6 +10,6 @@
 
   public function create();
   public function update($uptodate_is_error = true);
-  public function recall();
+  public function recall($rank = null);
   public function erase();
  }
