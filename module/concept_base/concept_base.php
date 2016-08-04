@@ -29,7 +29,7 @@
   public function identify($k, $v){$this->_op->identify($k, $v);return $this;} // XXX to be checked
 
   public function get_values(){return $this->_op->get_values();}
-  public function set_values($v){return $this->_op->set_values($v);}
+  public function set_values($v){$this->_op->set_values($v); return $this;}
 
   /** operator interface **/
   public function get($property) {return $this->_op->get($property);}
