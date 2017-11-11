@@ -58,15 +58,15 @@
   }
 
   // XXX Refactor needed
-  public function retrieve($type, $crit = null, $metacrit = null, $fields = null, $ft_crit = null) { // XXX temp
+  public function retrieve($type, $crit = null, $metacrit = null, $fields = null, $ft_crit = null, $rft_crit = null) { // XXX temp
    $this->report_info('`retrieve` action requested');
    $c = $this->_connect();
    if ($fields !== null && is_array($fields) && count($fields)) {
-    $sql = 'SELECT ' . join(',', $fields) . " FROM $type ";
+    $sql = 'SELECT ' . join(',', $fields) . " FROM `$type` ";
    } else {
-    $sql = "SELECT * FROM $type ";
+    $sql = "SELECT * FROM `$type` ";
    }
-   if($crit || $ft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit);
+   if($crit || $ft_crit || $rft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit, $rft_crit);
    if($metacrit){
     if(isset($metacrit['s']) and is_array($metacrit['s'])){
       $order_by= null;
@@ -97,7 +97,7 @@
   public function count($type, $crit = null, $ft_crit = null) {
    $this->report_info('`count` action requested');
    $c = $this->_connect();
-   $sql = "SELECT COUNT(*) FROM $type ";
+   $sql = "SELECT COUNT(*) FROM `$type` ";
    if($crit || $ft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit);
    return $this->sql_count($sql);
   }
@@ -136,7 +136,7 @@
    $this->report_info('`add` action requested');
    $c = $this->_connect();
 
-   $sql = "INSERT INTO $type ".$this->_values_talk($c, $mysfw_data_object);
+   $sql = "INSERT INTO `$type` ".$this->_values_talk($c, $mysfw_data_object);
    $this->_query($c, $sql);
 
    return $c->insert_id;
@@ -147,7 +147,7 @@
    $this->report_info('`change` action requested');
    $c = $this->_connect();
 
-   $sql = "UPDATE $type {$this->_values_talk($c, $values)} {$this->_criteria_talk($c, $crit)}";
+   $sql = "UPDATE `$type` {$this->_values_talk($c, $values)} {$this->_criteria_talk($c, $crit)}";
 
    $this->_query($c, $sql);
 
@@ -159,7 +159,7 @@
    $this->report_info('`delete` action requested');
    $c = $this->_connect();
 
-   $sql = "DELETE FROM $type {$this->_criteria_talk($c, $crit, $ft_crit)}";
+   $sql = "DELETE FROM `$type` {$this->_criteria_talk($c, $crit, $ft_crit)}";
 
    $this->_query($c, $sql);
 
@@ -206,21 +206,31 @@
    return $sql;
   }
 
-  private function _criteria_talk($c, $o, $ft = null) {
+  private function _criteria_talk($c, $o, $ft = null, $rft = null) {
+   if(! $o && ! $ft && ! $rft) return '';
    $sql = 'WHERE ';
    $s = '';
-   foreach($o as $k => $v){
-    if(null === $v) {
-     $sql .= "$s$k IS NULL";
-    }else{
-     $sql .= "$s$k = '{$c->real_escape_string($v)}'";
+   if($o) {
+    foreach($o as $k => $v){
+     if(null === $v) {
+      $sql .= "$s$k IS NULL";
+     }else{
+      $sql .= "$s$k = '{$c->real_escape_string($v)}'";
+     }
+     $s = ' AND ';
     }
-    $s = ' AND ';
    }
 
    if($ft) {
     foreach($ft as $k => $v) {
      $sql .= "$s$k LIKE '%{$c->real_escape_string($v)}%'";
+     $s = ' AND ';
+    }
+   }
+
+   if($rft) {
+    foreach($rft as $k => $v) {
+     $sql .= $s."MATCH(`$k`) AGAINST ('{$c->real_escape_string($v)}' IN BOOLEAN MODE)";
      $s = ' AND ';
     }
    }
