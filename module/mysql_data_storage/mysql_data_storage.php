@@ -94,11 +94,11 @@
    return $this->_query_and_fetch($sql, $c, $result_hash);
   }
 
-  public function count($type, $crit = null, $ft_crit = null) {
+  public function count($type, $crit = null, $ft_crit = null, $rft_crit = null) {
    $this->report_info('`count` action requested');
    $c = $this->_connect();
    $sql = "SELECT COUNT(*) FROM `$type` ";
-   if($crit || $ft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit);
+   if($crit || $ft_crit || $rft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit, $rft_crit);
    return $this->sql_count($sql);
   }
 
