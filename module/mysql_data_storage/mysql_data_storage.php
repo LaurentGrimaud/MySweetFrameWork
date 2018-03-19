@@ -206,16 +206,29 @@
    return $sql;
   }
 
+  // XXX Draft
+  private function _criteria_operator($c, $field, $value, $operator) {
+   if(! in_array($operator, ['=', '<', '<=', '>', '>='])) throw $this->except('Invalid criteria operator: '.$operator);
+   return "$field $operator '{$c->real_escape_string($value)}'";
+  }
+
   private function _criteria_talk($c, $o, $ft = null, $rft = null) {
    if(! $o && ! $ft && ! $rft) return '';
    $sql = 'WHERE ';
    $s = '';
    if($o) {
     foreach($o as $k => $v){
-     if(null === $v) {
-      $sql .= "$s$k IS NULL";
+     if(is_array($v)) {
+      foreach($v as $vx){
+       $sql .= $s.$this->_criteria_operator($c, $k, $vx['v'], $vx['o']);
+       $s = ' AND ';
+      }
      }else{
-      $sql .= "$s$k = '{$c->real_escape_string($v)}'";
+      if(null === $v) {
+       $sql .= "$s$k IS NULL";
+      }else{
+       $sql .= "$s$k = '{$c->real_escape_string($v)}'";
+      }
      }
      $s = ' AND ';
     }
