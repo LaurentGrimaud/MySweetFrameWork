@@ -208,7 +208,16 @@
 
   // XXX Draft
   private function _criteria_operator($c, $field, $value, $operator) {
-   if(! in_array($operator, ['=', '<', '<=', '>', '>='])) throw $this->except('Invalid criteria operator: '.$operator);
+   if(! in_array($operator, ['=', '<', '<=', '>', '>=', '!='])) throw $this->except('Invalid criteria operator: '.$operator);
+
+   // null value needs a peculiar process
+
+   // XXX temp
+   if(is_array($value)){
+    if($operator != '=') throw $this->except('Invalid criteria operator for array value: '.$operator);
+    return sprintf("$field IN (%s)", implode(', ', array_map($c->real_escape_string, $value)));
+   }
+
    return "$field $operator '{$c->real_escape_string($value)}'";
   }
 
