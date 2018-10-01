@@ -57,41 +57,187 @@
    return $c->affected_rows;
   }
 
-  // XXX Refactor needed
-  public function retrieve($type, $crit = null, $metacrit = null, $fields = null, $ft_crit = null, $rft_crit = null) { // XXX temp
-   $this->report_info('`retrieve` action requested');
-   $c = $this->_connect();
-   if ($fields !== null && is_array($fields) && count($fields)) {
-    $sql = 'SELECT ' . join(',', $fields) . " FROM `$type` ";
-   } else {
-    $sql = "SELECT * FROM `$type` ";
-   }
-   if($crit || $ft_crit || $rft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit, $rft_crit);
-   if($metacrit){
-    if(isset($metacrit['s']) and is_array($metacrit['s'])){
-      $order_by= null;
-      foreach( $metacrit['s'] as $field=>$sort){
-        switch($sort){
-         case -1:
-           $order_by= sprintf('%s DESC',$field );
-         break;
-         case 1:
-           $order_by= sprintf('%s ASC',$field );
-         break;
-        }
-      }
-      if( $order_by) $sql= sprintf('%s ORDER BY %s',$sql,$order_by);
-    }
-    if(isset($metacrit['l'])) {
-     if(isset($metacrit['o'])) {
-      $sql = sprintf('%s LIMIT %s, %s', $sql, $c->real_escape_string($metacrit['o']), $c->real_escape_string($metacrit['l']));
+  /*
+   * Build left join clauses using data_storage definition
+   *
+   * XXX Should handle more cases for ON part
+   [ [table => [
+    a => table_alias,
+    on => [
+     [f => [a => table_alias, f => from_field], t => [a => table_alias, f => to_field], o => operator],
+     [f => [a => table_alias, f => from_field], t => [a => table_alias, f => to_field], o => operator]
+    ]
+    ]
+   ]]
+
+   left join table2 t2 on (t1.f1 = t2.f2) left join table3 t3 on (t1.f3 = t3.f4)
+   [
+    [table2 => [
+      a => t2
+      on => [
+        [ f => [a => t1, f => f1], t => [ a => t2, f => f2], o => '=']
+      ]
+    ],
+    [table3 => [
+      a => t3
+      on => [
+        [ f => [a => t1, f => f3], t => [ a => t3, f => f4], o => '=']
+      ]
+    ],
+
+
+   ]
+   ]
+  */
+  protected function _left_join_clause($left_joins = null) {
+   if(! $left_joins) return '';
+   if(!is_array($left_joins))
+    throw $this->except('Invalid parameter for `left join` clause: '.json_encode($left_joins));
+
+   $sql = '';
+   foreach($left_joins as $table => $table_data) {
+    $sql .= " LEFT JOIN `$table` AS `{$table_data['a']}` ON (";
+    $sep = '';
+    foreach($table_data['on'] as $on_data) {
+     if(isset($on_data['t']['v'])) {
+      $sql .= $sep.sprintf("`%s`.`%s`%s%s", $on_data['f']['a'], $on_data['f']['f'], $on_data['o'], $on_data['t']['v']);
      }else{
-      $sql = sprintf('%s LIMIT %s', $sql, $c->real_escape_string($metacrit['l']));
+      $sql .= $sep.sprintf("`%s`.`%s`%s`%s`.`%s`", $on_data['f']['a'], $on_data['f']['f'], $on_data['o'], $on_data['t']['a'], $on_data['t']['f']);
+     }
+     $sep = ' AND ';
+    }
+    $sql .= ')';
+   }
+
+   return $sql;
+  }
+
+  protected function _from_clause($type) {
+   if(is_string($type)) return " FROM `$type` ";
+   if(is_array($type) && count($type) == 2) return " FROM `".join('` AS `', $type)."` ";
+   throw $this->except('Invalid parameter for `from` clause: '.json_encode($type));
+  }
+
+  /*
+   * $fields == null => al fields
+   * $fields == numeric array starting at 0 => simple case, flat list
+   * $fields == associative array => complex cases
+   * $fields = [ [
+   *  a => result alias,
+   *  r => result is from a sub-retrieve,
+   *  ed => result is from an external definition, treated as raw SQL fragment
+   * ],
+   * ...
+   * ]
+   */
+  protected function _select_clause($c, $fields = null) {
+   if(! $fields) return 'SELECT *';
+   if(! is_array($fields))
+    throw $this->except('Invalid parameter for `select` clause: '.json_encode($fields));
+
+   // Simple case - flat array of pure column names
+   if(is_string($fields[0]))
+    return 'SELECT `'.join('`, `', $fields).'`';
+
+   // Complex case
+   // XXX some cases are mutually exclusive
+   $sql = 'SELECT ';
+   $sep = ' ';
+   foreach($fields as $field) {
+    if(isset($field['r'])) { // sub-retrieve
+     $sql .= $sep.'('.$this->_select_statement($c, $field['r']).')';
+    }
+    if(isset($field['ed'])) { // external definition, ie raw SQL fragment
+     $sql .= $sep.' '.$field['ed'];  // XXX Dangerous, SQL injection friendly
+    }
+    if(isset($field['f'])) { // field reference
+     if(isset($field['t'])) { // table alias/name
+      $sql .= "$sep`{$field['t']}`.`{$field['f']}`";
+     }else{
+      $sql .= "$sep`{$field['f']}`";
      }
     }
+    if(isset($field['a'])) { // column alias
+     $sql .= " AS `{$field['a']}`";
+    }
+    $sep = ', ';
    }
+   
+   return $sql;
+  }
+
+  /*
+   * Handles s and l meta-criteria
+   * XXX missing column aliases 
+   */
+  protected function _metacrit($c, $metacrit = null) {
+   $sql = '';
+   if(! $metacrit) return $sql;
+
+   // order by clause
+   if(isset($metacrit['s']) and is_array($metacrit['s'])){
+    $sql .= ' ORDER BY';
+    $s = '';
+    foreach($metacrit['s'] as $field => $sort){
+     switch($sort){
+      case -1:
+       $sql .= "$s `$field` DESC";
+       break;
+      default:
+       $sql .= "$s `$field` ASC";
+       break;
+     }
+     $s = ',';
+    }
+   }
+
+   // limit clause
+   if(isset($metacrit['l'])) {
+    if(isset($metacrit['o'])) {
+     $sql .= ' LIMIT '.$c->real_escape_string($metacrit['o']).', '.$c->real_escape_string($metacrit['l']);
+    }else{
+     $sql .= ' LIMIT '.$c->real_escape_string($metacrit['l']);
+    }
+   }
+
+   return $sql;
+  }
+
+  /*
+   * Returns the full SELECT statement defined by `def`
+   */
+  protected function _select_statement($c, $def) {
+   $sql = $this->_select_clause($c, isset($def['f']) ? $def['f'] : null);
+   $sql .= $this->_from_clause(isset($def['t']) ? $def['t'] : null);
+   $sql .= $this->_left_join_clause(isset($def['lj']) ? $def['lj'] : null);
+   $sql .= $this->_criteria_talk($c, isset($def['c']) ? $def['c'] : null, isset($def['ft']) ? $def['ft'] : null, isset($def['rft']) ? $def['rft'] : null);
+   $sql .= $this->_metacrit($c, isset($def['m']) ? $def['m'] : null);
+
+   return $sql;
+  }
+
+  // XXX Refactor needed
+  public function retrieve($type, $crit = null, $metacrit = null, $fields = null, $ft_crit = null, $rft_crit = null, $left_joins = null) { // XXX temp
+   $this->report_info('`retrieve` action requested');
+   $c = $this->_connect();
+
+   // XXX Temp wrapping 'til refactoring of data_storage::retrieve() definition
+   $def = [
+    't'   => $type,
+    'c'   => $crit,
+    'm'   => $metacrit,
+    'f'   => $fields,
+    'ft'  => $ft_crit,
+    'rft' => $rft_crit,
+    'lj'  => $left_joins // XXX Bad key, too SQL-related
+   ];
+
+   $sql = $this->_select_statement($c, $def);
+
+   // XXX Is result hashing a real meta-criterion ?
    $result_hash = isset($metacrit['h']) ? $metacrit['h'] : null;
-   return $this->_query_and_fetch($sql, $c, $result_hash);
+
+   return $this->_query_and_fetch($sql, $c, $result_hash, (boolean)$left_joins);
   }
 
   public function count($type, $crit = null, $ft_crit = null, $rft_crit = null) {
@@ -102,10 +248,33 @@
    return $this->sql_count($sql);
   }
 
-  protected function _query_and_fetch($sql, $c, $k = null) {
+  protected function _query_and_fetch($sql, $c, $k = null, $a = false) {
    $r = $this->_query($c, $sql);
-
+ 
    $res = [];
+
+   if($a) {
+    $defs = $r->fetch_fields();
+    while($row = $r->fetch_row()) {
+     $i = 0;
+     $row_o = (object)[];
+     foreach($row as $f) {
+      if($defs[$i]->table) {
+       $row_o->{$defs[$i]->table.'.'.$defs[$i]->orgname} = $f;
+      }else{
+       $row_o->{$defs[$i]->name} = $f;
+      }
+      $i++;
+     }
+     if($k) {
+      $res[$row_o->$k] = $row_o;
+     }else{
+      $res[] = $row_o;
+     }
+    }
+    return $res;
+   }
+
    if (! $k) {
     while($row = $r->fetch_object()) {
      $res[] = $row;
@@ -207,53 +376,75 @@
   }
 
   // XXX Draft
-  private function _criteria_operator($c, $field, $value, $operator) {
+  private function _criteria_operator($c, $field, $value, $operator = '=', $f_alias = null, $t_field = null, $t_alias = null) {
    if(! in_array($operator, ['=', '<', '<=', '>', '>=', '!='])) throw $this->except('Invalid criteria operator: '.$operator);
 
-   // null value needs a peculiar process
+   if($f_alias) {
+    $from = " `$f_alias`.`$field`";
+   }else{
+    $from = " `$field`";
+   }
+
+   if($t_field) {
+    if($t_alias) {
+     return "$from$operator`$t_alias`.`$t_field`"; 
+    }
+    return "$from$operator`$t_field`"; 
+   }
 
    // XXX temp
    if(is_array($value)){
     if($operator != '=') throw $this->except('Invalid criteria operator for array value: '.$operator);
-    return sprintf("$field IN (%s)", implode(', ', array_map($c->real_escape_string, $value)));
+    return sprintf("$from IN (%s)", implode(', ', array_map($c->real_escape_string, $value)));
+   }
+
+   if($value === null){
+    switch($operator) {
+     case '=':
+      return "$from IS NULL ";
+
+     case '!=':
+      return "$from IS NOT NULL ";
+    }
    }
 
    return "$field $operator '{$c->real_escape_string($value)}'";
   }
 
+  // XXX Draft
   private function _criteria_talk($c, $o, $ft = null, $rft = null) {
    if(! $o && ! $ft && ! $rft) return '';
-   $sql = 'WHERE ';
-   $s = '';
+   $sql = ' WHERE';
+   $s = ' ';
    if($o) {
     foreach($o as $k => $v){
      if(is_array($v)) {
       foreach($v as $vx){
-       $sql .= $s.$this->_criteria_operator($c, $k, $vx['v'], $vx['o']);
-       $s = ' AND ';
+       $sql .= $s.$this->_criteria_operator($c, $k, @$vx['v'], @$vx['o'], @$vx['a'], @$vx['f'], @$vx['t']);
+       $s = ' AND';
       }
      }else{
       if(null === $v) {
-       $sql .= "$s$k IS NULL";
+       $sql .= "$s $k IS NULL";
       }else{
-       $sql .= "$s$k = '{$c->real_escape_string($v)}'";
+       $sql .= "$s $k = '{$c->real_escape_string($v)}'";
       }
      }
-     $s = ' AND ';
+     $s = ' AND';
     }
    }
 
    if($ft) {
     foreach($ft as $k => $v) {
-     $sql .= "$s$k LIKE '%{$c->real_escape_string($v)}%'";
-     $s = ' AND ';
+     $sql .= "$s $k LIKE '%{$c->real_escape_string($v)}%'";
+     $s = ' AND';
     }
    }
 
    if($rft) {
     foreach($rft as $k => $v) {
-     $sql .= $s."MATCH(`$k`) AGAINST ('{$c->real_escape_string($v)}' IN BOOLEAN MODE)";
-     $s = ' AND ';
+     $sql .= $s." MATCH(`$k`) AGAINST ('{$c->real_escape_string($v)}' IN BOOLEAN MODE)";
+     $s = ' AND';
     }
    }
 
