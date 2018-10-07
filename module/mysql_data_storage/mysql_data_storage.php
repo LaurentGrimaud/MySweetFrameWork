@@ -151,10 +151,16 @@
      $sql .= $sep.' '.$field['ed'];  // XXX Dangerous, SQL injection friendly
     }
     if(isset($field['f'])) { // field reference
-     if(isset($field['t'])) { // table alias/name
-      $sql .= "$sep`{$field['t']}`.`{$field['f']}`";
+     // * wildcard escaping bothers MariaDB (v10.1.26)
+     if($field['f'] == '*') {
+      $f_value = $field['f'];
      }else{
-      $sql .= "$sep`{$field['f']}`";
+      $f_value = "`{$field['f']}`";
+     }
+     if(isset($field['t'])) { // table alias/name
+      $sql .= "$sep`{$field['t']}`.$f_value";
+     }else{
+      $sql .= "$sep$f_value`";
      }
     }
     if(isset($field['a'])) { // column alias
@@ -210,7 +216,7 @@
    $sql = $this->_select_clause($c, isset($def['f']) ? $def['f'] : null);
    $sql .= $this->_from_clause(isset($def['t']) ? $def['t'] : null);
    $sql .= $this->_left_join_clause(isset($def['lj']) ? $def['lj'] : null);
-   $sql .= $this->_criteria_talk($c, isset($def['c']) ? $def['c'] : null, isset($def['ft']) ? $def['ft'] : null, isset($def['rft']) ? $def['rft'] : null);
+   $sql .= $this->_criteria_talk($c, $def['t'], isset($def['c']) ? $def['c'] : null, isset($def['ft']) ? $def['ft'] : null, isset($def['rft']) ? $def['rft'] : null);
    $sql .= $this->_metacrit($c, isset($def['m']) ? $def['m'] : null);
 
    return $sql;
@@ -244,7 +250,7 @@
    $this->report_info('`count` action requested');
    $c = $this->_connect();
    $sql = "SELECT COUNT(*) FROM `$type` ";
-   if($crit || $ft_crit || $rft_crit) $sql .= $this->_criteria_talk($c, $crit, $ft_crit, $rft_crit);
+   if($crit || $ft_crit || $rft_crit) $sql .= $this->_criteria_talk($c, $type, $crit, $ft_crit, $rft_crit);
    return $this->sql_count($sql);
   }
 
@@ -316,7 +322,7 @@
    $this->report_info('`change` action requested');
    $c = $this->_connect();
 
-   $sql = "UPDATE `$type` {$this->_values_talk($c, $values)} {$this->_criteria_talk($c, $crit)}";
+   $sql = "UPDATE `$type` {$this->_values_talk($c, $values)} {$this->_criteria_talk($c, $type, $crit)}";
 
    $this->_query($c, $sql);
 
@@ -328,7 +334,7 @@
    $this->report_info('`delete` action requested');
    $c = $this->_connect();
 
-   $sql = "DELETE FROM `$type` {$this->_criteria_talk($c, $crit, $ft_crit)}";
+   $sql = "DELETE FROM `$type` {$this->_criteria_talk($c, $type, $crit, $ft_crit)}";
 
    $this->_query($c, $sql);
 
@@ -376,13 +382,14 @@
   }
 
   // XXX Draft
-  private function _criteria_operator($c, $field, $value, $operator = '=', $f_alias = null, $t_field = null, $t_alias = null) {
+  private function _criteria_operator($c, $table, $field, $value, $operator = '=', $f_alias = null, $t_field = null, $t_alias = null) {
+   if(! $operator) $operator = '=';
    if(! in_array($operator, ['=', '<', '<=', '>', '>=', '!='])) throw $this->except('Invalid criteria operator: '.$operator);
 
    if($f_alias) {
     $from = " `$f_alias`.`$field`";
    }else{
-    $from = " `$field`";
+    $from = " `$table`.`$field`";
    }
 
    if($t_field) {
@@ -412,7 +419,7 @@
   }
 
   // XXX Draft
-  private function _criteria_talk($c, $o, $ft = null, $rft = null) {
+  private function _criteria_talk($c, $t, $o, $ft = null, $rft = null) {
    if(! $o && ! $ft && ! $rft) return '';
    $sql = ' WHERE';
    $s = ' ';
@@ -420,14 +427,14 @@
     foreach($o as $k => $v){
      if(is_array($v)) {
       foreach($v as $vx){
-       $sql .= $s.$this->_criteria_operator($c, $k, @$vx['v'], @$vx['o'], @$vx['a'], @$vx['f'], @$vx['t']);
+       $sql .= $s.$this->_criteria_operator($c, $t, $k, @$vx['v'], @$vx['o'], @$vx['a'], @$vx['f'], @$vx['t']);
        $s = ' AND';
       }
      }else{
       if(null === $v) {
-       $sql .= "$s $k IS NULL";
+       $sql .= "$s `$t`.`$k` IS NULL";
       }else{
-       $sql .= "$s $k = '{$c->real_escape_string($v)}'";
+       $sql .= "$s `$t`.`$k` = '{$c->real_escape_string($v)}'";
       }
      }
      $s = ' AND';
@@ -436,14 +443,14 @@
 
    if($ft) {
     foreach($ft as $k => $v) {
-     $sql .= "$s $k LIKE '%{$c->real_escape_string($v)}%'";
+     $sql .= "$s `$t`.`$k` LIKE '%{$c->real_escape_string($v)}%'";
      $s = ' AND';
     }
    }
 
    if($rft) {
     foreach($rft as $k => $v) {
-     $sql .= $s." MATCH(`$k`) AGAINST ('{$c->real_escape_string($v)}' IN BOOLEAN MODE)";
+     $sql .= $s." MATCH(`$t`.`$k`) AGAINST ('{$c->real_escape_string($v)}' IN BOOLEAN MODE)";
      $s = ' AND';
     }
    }
