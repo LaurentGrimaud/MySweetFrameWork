@@ -119,7 +119,7 @@
   }
 
   /*
-   * $fields == null => al fields
+   * $fields == null => all fields
    * $fields == numeric array starting at 0 => simple case, flat list
    * $fields == associative array => complex cases
    * $fields = [ [
@@ -415,7 +415,7 @@
     }
    }
 
-   return "$field $operator '{$c->real_escape_string($value)}'";
+   return "$from $operator '{$c->real_escape_string($value)}'";
   }
 
   // XXX Draft
