@@ -41,10 +41,17 @@
    *
    * @throw frame\exception\dna on include error
    */
-  public function reveal($t, $buffer = false) {
+  public function reveal($t, $buffer = false, $local_variables = []) {
    $e = [$this, "e"];
    $g = [$this, "g"];
    $r = [$this, "reveal"];
+
+   if($local_variables) {
+    foreach($local_variables as $k => $v) {
+     ${"_${k}_"} = $v;
+    }
+   }
+
    $tmpl_name = $this->inform('root').$this->inform('view:tmpl_dir').$t.'.tmpl.php';
    if($buffer) {
     ob_start();
